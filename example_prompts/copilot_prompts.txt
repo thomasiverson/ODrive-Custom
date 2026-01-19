@@ -125,3 +125,100 @@ Use this to utilize Visual Studio Code features, settings, and UI.
    "@vscode How do I enable word wrap?"
    "@vscode How do I format the document?"
    "@vscode What is Zen Mode?"
+   ---------------------------------------------------------------------------------
+
+   Common Plan Examples
+
+   ## Stall Detection Feature Implementation Plan
+   Complexity: Multi-file, cross-layer feature
+  
+
+Spans motor control logic, error handling, and configuration
+Requires algorithm research + implementation + testing
+Involves firmware (C++), Python tools, and interface definitions
+
+### Phase 1: Research & Design (Agent Mode)
+- [ ] Research industry-standard stall detection methods (back-EMF monitoring, current thresholds)
+- [ ] Analyze existing `Motor::update()` in `Firmware/MotorControl/motor.cpp`
+- [ ] Design state machine for stall detection (PreStall → Stalled → Recovery)
+
+### Phase 2: Configuration Schema (Edit Mode)
+- [ ] Add `StallDetectionConfig` to `odrive-interface.yaml`
+  - `enable_stall_detection: bool`
+  - `stall_current_threshold: float32`
+  - `stall_time_threshold: float32`
+- [ ] Regenerate Python enums with `interface_generator_stub.py`
+
+### Phase 3: Core Logic Implementation (Edit Mode)
+- [ ] Add `detect_stall()` method to `Motor` class in `motor.cpp`
+- [ ] Monitor `current_meas_` vs `vel_estimate_` correlation
+- [ ] Integrate into main control loop in `axis.cpp`
+- [ ] Add `ERROR_STALL_DETECTED` to error flags
+
+### Phase 4: Safety & Recovery (Edit Mode)
+- [ ] Implement gradual current reduction on stall detect
+- [ ] Add automatic retry logic with backoff
+- [ ] Update `clear_errors()` to reset stall state
+
+### Phase 5: Testing & Validation (Agent Mode)
+- [ ] Create `tools/odrive/tests/stall_test.py` using `test_runner.py`
+- [ ] Add unit tests in `Firmware/Tests/test_motor.cpp` (doctest)
+- [ ] Document behavior in `docs/troubleshooting.rst`
+
+2. CAN Bus Protocol Refactor
+Complexity: Large-scale refactor across communication layers
+Why Perfect for Plans:
+
+Multiple protocol files (can_simple.cpp, CAN interface definitions)
+Requires backward compatibility strategy
+Involves protocol documentation updates
+
+## CAN Protocol Modernization Plan
+
+### Phase 1: Audit Current Implementation
+- [ ] Map all CAN message IDs in `communication/can_simple.cpp`
+- [ ] Identify deprecated messages vs. active messages
+- [ ] Compare against `docs/can-protocol.rst` for discrepancies
+
+### Phase 2: Design New Protocol Structure
+- [ ] Standardize message frame format (extended vs. standard)
+- [ ] Implement priority-based message queuing
+- [ ] Add CRC validation for critical messages
+
+### Phase 3: Incremental Migration
+- [ ] Implement new handlers in parallel with old ones
+- [ ] Add feature flag `config.can_protocol_version`
+- [ ] Update Python `can.py` utilities to support both versions
+
+### Phase 4: Testing & Documentation
+- [ ] Create integration test suite in `tools/odrive/tests/can_test.py`
+- [ ] Update all CAN documentation
+- [ ] Add migration guide to `CHANGELOG.md`
+
+Real-Time Performance Profiling Dashboard
+Complexity: Full-stack feature (firmware → GUI)
+Why Perfect for Plans:
+
+Touches all layers: embedded timing, communication protocol, GUI
+Requires new data structures and visualization
+## Performance Profiling System Plan
+
+### Phase 1: Firmware Instrumentation
+- [ ] Enhance `TaskTimer` in `odrive-interface.yaml`
+- [ ] Add ring buffer for storing last 1000 samples
+- [ ] Implement DMA-based timestamp capture
+
+### Phase 2: Protocol Extension
+- [ ] Add streaming endpoint for timer data in `fibre-cpp`
+- [ ] Design binary protocol for efficient transfer
+- [ ] Add Python client in `tools/odrive/utils.py`
+
+### Phase 3: GUI Visualization
+- [ ] Create real-time chart component in `GUI/src/components/`
+- [ ] Add "Performance" tab to Dashboard
+- [ ] Implement WebSocket streaming to GUI
+
+### Phase 4: Analysis Tools
+- [ ] Add outlier detection algorithm
+- [ ] Generate PDF reports with matplotlib
+- [ ] Add CI check for performance regression
