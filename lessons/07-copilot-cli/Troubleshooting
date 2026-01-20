@@ -1,0 +1,64 @@
+## Section 1: Prerequisites & Verification Script
+
+Run this script in PowerShell to verify your environment is ready:
+
+```powershell
+# Check PowerShell version
+$version = $PSVersionTable.PSVersion
+Write-Host "PowerShell Version: $version"
+
+if ($version.Major -lt 6) {
+    Write-Host "❌ PowerShell 6+ required. You have version $version" -ForegroundColor Red
+    Write-Host "Install PowerShell 7: winget install Microsoft.PowerShell" -ForegroundColor Yellow
+    Write-Host "Or download from: https://github.com/PowerShell/PowerShell/releases" -ForegroundColor Yellow
+} else {
+    Write-Host "✅ PowerShell version OK" -ForegroundColor Green
+}
+
+# Check if winget is available
+if (Get-Command winget -ErrorAction SilentlyContinue) {
+    Write-Host "✅ winget available" -ForegroundColor Green
+} else {
+    Write-Host "❌ winget not found" -ForegroundColor Red
+    Write-Host "Install from Microsoft Store: App Installer" -ForegroundColor Yellow
+}
+
+# Check if Copilot CLI is installed
+if (Get-Command copilot -ErrorAction SilentlyContinue) {
+    $copilotVersion = copilot --version
+    Write-Host "✅ Copilot CLI installed: $copilotVersion" -ForegroundColor Green
+} else {
+    Write-Host "⚠️ Copilot CLI not installed" -ForegroundColor Yellow
+    Write-Host "Install with: winget install GitHub.Copilot" -ForegroundColor Yellow
+}
+```
+
+### Prerequisites Checklist
+
+- [ ] PowerShell 7+ installed
+- [ ] winget available
+- [ ] GitHub Copilot subscription active
+- [ ] Copilot CLI installed
+- [ ] Workshop repository cloned
+
+---
+
+## Section 2: Presenter Demo Script (20 min)
+
+### Installation Demo (5 min)
+
+1. **Open PowerShell 7** (not Windows PowerShell 5.1)
+   ```powershell
+   pwsh
+   ```
+
+2. **Install Copilot CLI**
+   ```powershell
+   winget install GitHub.Copilot
+   ```
+
+3. **Verify installation**
+   ```powershell
+   copilot --version
+   ```
+   > If not found, restart PowerShell
