@@ -7,6 +7,26 @@
 
 ---
 
+## Section 2: Presenter Demo Script (20 min)
+
+### Installation Demo (5 min)
+
+1. **Open PowerShell 7** (not Windows PowerShell 5.1)
+   ```powershell
+   pwsh
+   ```
+
+2. **Install Copilot CLI**
+   ```powershell
+   winget install GitHub.Copilot
+   ```
+
+3. **Verify installation**
+   ```powershell
+   copilot --version
+   ```
+   > If not found, restart PowerShell
+
 ### Authentication Demo (3 min)
 
 1. **Navigate to workshop repo**
