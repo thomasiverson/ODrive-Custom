@@ -4,7 +4,8 @@
 **Location:** Phoenix, Arizona (In-Person)  
 **Focus:** C++ Development with GitHub Copilot (General techniques + Embedded patterns)  
 **Schedule:** 8:00 AM - 3:00 PM (Both Days)  
-**Workshop Repo:** 🔴 GitHub repo with lessons, examples, and hands-on exercises
+**Workshop Repo:** 🔴 GitHub repo with lessons, examples, and hands-on exercises  
+**Instructor Guide:** See [.github/copilot-instructions.md](.github/copilot-instructions.md) for lesson-authoring constraints and checklist.
 
 ---
 
@@ -27,35 +28,7 @@
 - Open folder in VS Code
 - Verify folder structure visible in Explorer
 
-**Repo Structure:**
-```
-hon-copilot-workshop/
-├── README.md
-├── SETUP.md
-├── lessons/
-│   ├── 01-basic-features/
-│   ├── 02-planning/
-│   ├── 03-agentic-development/
-│   ├── 04-cpp-best-practices/
-│   ├── 05-debugging/
-│   ├── 06-copilot-cli/
-│   ├── 07-parallel-agents/
-│   └── 08-foundry-local/
-├── examples/
-│   ├── general/                    # Simple examples for lessons 1-3, 5-8
-│   │   ├── algorithms/             # Sorting, searching
-│   │   ├── parsers/                # Config/data parsers
-│   │   └── utilities/              # String/file utilities
-│   └── embedded/                   # Domain-specific for lesson 4
-│       ├── led-driver/
-│       ├── state-machine/
-│       └── hal-abstraction/
-└── hands-on/
-    ├── exercises/
-    └── solutions/
-```
-
-#### 2. Basic Feature Overview (8:40 - 9:25) — 45 min - GB
+#### 2. Basic Feature Overview (8:40 - 9:25) — 45 min - TI
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
 | Copilot Chat Modes | Ask, Edit, Agent mode - when to use each | 10 min |
