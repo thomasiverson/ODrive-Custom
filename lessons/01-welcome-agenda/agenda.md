@@ -55,7 +55,7 @@ hon-copilot-workshop/
     └── solutions/
 ```
 
-#### 2. Basic Feature Overview (8:40 - 9:25) — 45 min - TI
+#### 2. Basic Feature Overview (8:40 - 9:25) — 45 min - GB
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
 | Copilot Chat Modes | Ask, Edit, Agent mode - when to use each | 10 min |
