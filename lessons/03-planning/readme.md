@@ -45,7 +45,8 @@ Before starting this session, ensure you have:
 
 2. **Enable customization features:**
    - Open VS Code Settings (Ctrl+,)
-   - Search for `github.copilot.chat.codeGeneration.useInstructionFiles` and enable it
+   - Make sure custom instructions is checked out
+   ![alt text](image.png)
    - Search for `chat.useAgentSkills` and enable it
 
 3. **Test basic functionality:**
@@ -190,29 +191,6 @@ description: Embedded C coding standards
 - Use volatile for hardware registers
 - Follow MISRA C guidelines where applicable
 ```
-
-### Create a Custom Instructions File
-
-1. **Enable instructions files:**
-   - Open Settings (Ctrl+,)
-   - Search for `github.copilot.chat.codeGeneration.useInstructionFiles`
-   - Enable the setting
-
-2. **Create the file:**
-   ```
-   .github/
-   └── copilot-instructions.md
-   ```
-
-3. **Author your instructions:**
-   - Use clear, concise language
-   - Provide specific examples
-   - Organize by topic
-
-4. **Test the instructions:**
-   - Open Chat view (Ctrl+Alt+I)
-   - Ask Copilot to generate code
-   - Verify it follows your guidelines
 
 ---
 
@@ -504,10 +482,9 @@ For each issue found:
 
 ### Create a Custom Agent
 
-1. **Access agents configuration:**
-   - Select agents dropdown in Chat view
-   - Choose "Configure Custom Agents" > "Create new custom agent"
-   - Or Command Palette: `Chat: New Custom Agent`
+1. **In Chat view:**
+   - Select Configure Chat (gear icon) > Custom Agents > Create new custom agent
+   - Or use Command Palette: `Chat: New Custom Agent`
 
 2. **Choose location:**
    - **Workspace:** `.github/agents/` (team sharing)
@@ -515,7 +492,7 @@ For each issue found:
 
 3. **Author the agent:**
    - Fill in YAML frontmatter
-   - Define tools available
+   - Define tools and model
    - Write specialized instructions
    - Add handoffs if needed
 
@@ -524,6 +501,7 @@ For each issue found:
    - All prompts use this agent's configuration
 
 ---
+
 
 ## Agent Skills (SKILL.md folders)
 
@@ -683,7 +661,7 @@ See [workflow-template.yml](./workflow-template.yml) for a production-ready temp
 Use [scripts/analyze-logs.sh](./scripts/analyze-logs.sh) to parse workflow logs and identify common patterns.
 ```
 
-### Create a Skill
+### Create an Agent Skill
 
 1. **Enable skills:**
    - Open Settings (Ctrl+,)
