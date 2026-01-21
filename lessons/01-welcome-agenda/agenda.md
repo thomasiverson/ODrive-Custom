@@ -21,13 +21,6 @@
 | Workspace Validation | Verify VS Code + C/C++ extensions + Copilot enabled | 15 min |
 | Copilot Architecture Quick Overview | Context windows, model basics | 5 min |
 
-**Workshop Materials Setup:**
-- Navigate to GitHub repo URL
-- Click **Code** → **Download ZIP**
-- Extract to local folder (e.g., `C:\HON-Workshop\`)
-- Open folder in VS Code
-- Verify folder structure visible in Explorer
-
 #### 2. Basic Feature Overview (8:40 - 9:25) — 45 min - TI
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
@@ -46,21 +39,6 @@
 | Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 10 min |
 | **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 8 min |
 
-**Copilot Customization Hierarchy:**
-
-| Customization | Location | When Loaded | Purpose |
-|---------------|----------|-------------|---------|
-| **Instructions** | `.github/copilot-instructions.md` | Always (every request) | Global coding standards, style guides |
-| **Prompt Files** | `.github/prompts/*.prompt.md` | When user invokes | Reusable task templates |
-| **Custom Agents** | `.github/agents/*.agent.md` | When selected/assigned | Specialized assistant personas with tool configs |
-| **Agent Skills** | `.github/skills/*/SKILL.md` | Auto-discovered from prompt | Task workflows with bundled scripts/references/templates |
-
-**Key Concepts:**
-- **Custom Agents**: Markdown files with YAML frontmatter defining specialized Copilot personas (name, description, tools, instructions)
-- **Agent Skills**: Folders containing `SKILL.md` plus optional bundled resources (`scripts/`, `references/`, `templates/`) - Copilot loads these automatically when relevant to your prompt
-- Skills are an open standard ([agentskills.io](https://agentskills.io)) working across VS Code, GitHub.com, and Copilot CLI
-
-> **Embedded Examples:** Create agents for "Embedded Expert", "MISRA Reviewer", "HAL Generator" and skills for compliance checking, state machine generation, etc.
 
 **☕ Break (10:25 - 10:40) — 15 min**
 
@@ -80,7 +58,7 @@
 | Embedded C++ Specifics | Static allocation, no exceptions, ISR handlers, volatile correctness | 12 min |
 | RTOS & Hardware Patterns | State machines, HAL abstractions, task synchronization, peripheral drivers | 10 min |
 | **Hands-On:** Generate C++ Components | Create embedded patterns with Copilot (LED driver, state machine) | 16 min |
-**Don't forget unit testing!**
+TODO: **Don't forget unit testing!**
 
 > **For Ada developers:** Examples translate to Ada tasking, package design, and contract programming
 
@@ -192,49 +170,10 @@
 
 ---
 
-## Time Summary
-
-| Day | Session | Duration |
-|-----|---------|----------|
-| Day 1 | Morning (Setup + Features + Planning + Agentic + C++) | 4.25 hours |
-| Day 1 | Afternoon (Debugging + CLI + Agents + Wrap-Up) | 2.25 hours |
-| Day 2 | Morning (Kickoff + Sprints 1-2) | 4 hours |
-| Day 2 | Afternoon (Sprint 3 + Demos + Closing) | 2.5 hours |
-| **Total** | | **12.75 hours** |
-
----
-
-## Logistics & Notes
-
-### Pre-Work Email (Send 1 Week Before)
-
-> **Subject:** HON Hackathon - Pre-Setup Required
-> 
-> Please complete before Day 1:
-> 1. Install VS Code with C/C++ extension (Ada extension optional)
-> 2. Verify GitHub Copilot is enabled and working
-> 3. Download workshop materials:
->    - Go to: `https://github.com/[org]/hon-copilot-workshop`
->    - Click **Code** → **Download ZIP**
->    - Extract to `C:\HON-Workshop\`
-> 4. Open folder in VS Code, verify files appear
-> 
-> **Note:** Day 1 uses simple examples to teach Copilot fundamentals. Day 2 lets you apply techniques to your real embedded projects.
-> 
-> See attached setup guide with screenshots.
-
 ### Recording
 - ✅ Sessions can be recorded for playback (per customer request)
 - Recommend recording Day 1 instructional content only
 - Day 2 hack sessions typically not recorded (IP concerns)
-
-### Customization Applied
-- Primary focus on C++ developers (with Ada developer support)
-- Day 1 uses simple, clear examples to teach Copilot capabilities
-- C++ Best Practices section (50 min) covers embedded/RTOS patterns in depth
-- Day 2 offers both general and embedded-specific modernization tracks
-- ZIP download approach (no git required)
-- Hands-on exercises after each topic
 
 ### Materials Needed
 - Pre-configured VS Code workspaces with C/C++ extensions
@@ -256,32 +195,3 @@
 4. **Copilot CLI:** Can attendees install CLI tools (may require admin rights)?
 5. **Network capacity:** Can venue handle 100 simultaneous Copilot users?
 
----
-
-## Workshop Repo To-Do List
-
-- [ ] Create GitHub repository structure
-- [ ] Write lesson markdown files for each topic
-- [ ] Build general C++ examples (algorithms, parsers, utilities) for lessons 1-3, 5-8
-- [ ] Build embedded C++ example projects (LED driver, state machine, HAL) for lesson 4
-- [ ] Create hands-on exercises with starter code (mix of general and embedded)
-- [ ] Create solutions folder with completed exercises
-- [ ] Write SETUP.md with screenshots (include C++ and Ada extension setup)
-- [ ] Test ZIP download and extraction workflow
-- [ ] Prepare USB backup drives
-- [ ] Create example custom agents (embedded-expert, code-reviewer, test-generator)
-- [ ] Create example agent skills with bundled resources (misra-compliance, state-machine-generator)
-- [ ] Create reference card: Instructions vs. Agents vs. Skills decision guide
-
-### Foundry Local Demo To-Do List
-
-- [ ] Create `lessons/08-foundry-local/README.md` - Overview and embedded use cases
-- [ ] Create `lessons/08-foundry-local/SETUP.md` - Step-by-step installation guide with screenshots
-- [ ] Create `lessons/08-foundry-local/MODELS.md` - List of recommended small models (Phi, etc.)
-- [ ] Create `lessons/08-foundry-local/examples/local-completion/` - Basic local code completion demo
-- [ ] Create `lessons/08-foundry-local/examples/offline-workflow/` - Air-gapped development scenario
-- [ ] Create `lessons/08-foundry-local/embedded-use-cases.md` - Specific RTOS/embedded scenarios
-- [ ] Build demo script for live presentation (12 min)
-- [ ] Test Foundry Local installation on Windows with typical enterprise restrictions
-- [ ] Verify model download works or provide offline model files
-- [ ] Document hardware requirements (RAM, disk space)
