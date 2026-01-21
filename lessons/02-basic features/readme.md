@@ -1,9 +1,27 @@
 # Basic Feature Overview: GitHub Copilot in VS Code
 
 **Session Duration:** 45 minutes  
-**Audience:** Embedded/C++ Developers  
-**Environment:** Windows, VS Code, PowerShell 7+  
+**Audience:** Embedded/C++ Developers/Project Managers/QA engineers/Firmware Engineers  
+**Environment:** Windows, VS Code  
+**Extensions:** GitHub Copilot  
 **Source Control:** GitHub/Bitbucket
+
+---
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Get Started with Chat in VS Code](#get-started-with-chat-in-vs-code)
+- [Essential Keyboard Shortcuts](#essential-keyboard-shortcuts)
+- [Agenda](#agenda-basic-feature-overview-45-min)
+- [Speaker Instructions](#speaker-instructions)
+- [Participant Instructions](#participant-instructions)
+- [Quick Reference](#quick-reference-github-copilot-chat)
+- [Tips for Effective Prompts](#tips-for-effective-prompts)
+- [Language Models](#explore-different-language-models)
+- [Customization Options](#customize-your-chat-experience)
+- [Troubleshooting](#troubleshooting)
+- [Additional Resources](#additional-resources)
 
 ---
 
@@ -13,7 +31,6 @@ Before starting this session, ensure you have:
 
 - **Visual Studio Code** installed (latest version recommended)
 - **GitHub Copilot subscription** (or Copilot Free plan with monthly limits)
-- **PowerShell 7+** installed on Windows
 - Active internet connection for AI model access
 - A GitHub account for authentication
 
@@ -237,18 +254,6 @@ Use tools in chat to accomplish specialized tasks. Type `#` followed by the tool
 - **Search codebase:**
   - In Chat view: "Find all error handling code #codebase"
 
-| Command/Prompt | What It Does |
-|----------------|-------------|
-| `/help`        | List available slash commands |
-| `/model`       | Change AI model |
-| `/compact`     | Reduce context size |
-| `/login`       | Authenticate Copilot |
-| `@file`        | Reference a file in prompt |
-| `!git status`  | Run shell command |
-| `@workspace`   | Project-wide context |
-| `@terminal`    | Shell integration |
-| `@vscode`      | VS Code features |
-
 ---
 
 ## Quick Reference: GitHub Copilot Chat
@@ -358,6 +363,26 @@ VS Code offers different language models optimized for different tasks:
 
 ---
 
+## Customize Your Chat Experience
+
+Customize your chat experience to generate responses that match your coding style, tools, and developer workflow:
+
+### Custom Instructions
+Define common guidelines for tasks like generating code, performing code reviews, or generating commit messages. Custom instructions describe the conditions in which the AI should operate (how a task should be done).
+
+### Reusable Prompt Files
+Define reusable prompts for common tasks. Prompt files are standalone prompts that you can run directly in chat by typing `/prompt-name`.
+
+### Custom Agents
+Define how chat operates, which tools it can use, and how it interacts with the codebase. Each chat prompt runs within the boundaries of the agent.
+
+### MCP Servers
+Extend chat with custom capabilities by integrating external tools and services through the Model Context Protocol.
+
+**Tips:**
+- Define language-specific instructions to get more accurate generated code
+- Store your instructions in your workspace to easily share them with your team
+- Define reusable prompt files for common tasks to save time
 
 ---
 
@@ -365,14 +390,15 @@ VS Code offers different language models optimized for different tasks:
 
 | Issue | Solution |
 |-------|----------|
+| Copilot not responding | Restart VS Code; verify Copilot extension is installed and enabled |
 | Chat view not opening | Verify GitHub Copilot Chat extension is installed and enabled |
-| winget not found | Install "App Installer" from Microsoft Store |
 | Authentication fails | Verify Copilot subscription at https://github.com/settings/copilot |
 | "Not authenticated" error | Sign in to GitHub through VS Code (File → Preferences → Settings → GitHub) |
 | Directory not trusted | Approve when prompted, or mark folder as trusted in workspace settings |
 | Slow responses | Use `/compact` to reduce context size, or switch to a faster language model |
 | Wrong file being modified | Review carefully before accepting; use full path with `#file:` |
 | Inline suggestions not appearing | Check that GitHub Copilot extension is enabled and you're signed in |
+| PowerShell version issues | Update to PowerShell 7+: `winget install Microsoft.PowerShell` |
 
 
 ### Getting Help
@@ -393,4 +419,17 @@ VS Code offers different language models optimized for different tasks:
 
 ---
 
-*GitHub Copilot Basic Feature Overview Guide*
+## Next Steps
+
+After completing this session:
+
+1. **Practice with your own projects** - Try using different modes on your actual codebase
+2. **Experiment with custom instructions** - Define your coding standards and preferences
+3. **Create reusable prompts** - Build a library of common tasks for your team
+4. **Explore advanced features** - Try agents, custom tools, and MCP servers
+5. **Share knowledge** - Help your team adopt best practices
+
+---
+
+*GitHub Copilot Basic Feature Overview Guide*  
+*Last Updated: January 2026*
