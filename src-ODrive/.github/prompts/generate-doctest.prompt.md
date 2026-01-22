@@ -2,9 +2,10 @@
 name: generate-doctest
 description: Generate a unit test for MotorController initialization
 agent: ask
+model: Claude Sonnet 4.5 (copilot)
 ---
 
-Create a unit test using `doctest` for the `MotorController` class initialization logic found in [Firmware/MotorControl/](Firmware/MotorControl/).
+Create a unit test using `doctest` for the `MotorController` class initialization logic found in [Firmware/MotorControl/](../../Firmware/MotorControl/).
 
 The test should verify:
 1. Default parameter initialization

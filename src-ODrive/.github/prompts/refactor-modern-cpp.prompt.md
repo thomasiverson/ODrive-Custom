@@ -1,13 +1,8 @@
 ---
 name: refactor-modern-cpp
-description: Identify C++17 refactoring opportunities in MotorControl
+description: Refactor MotorControl code to follow C++17 best practices
 agent: ask
-model: GPT-4o (copilot)
+model: Claude Sonnet 4.5 (copilot)
 ---
 
-Refactor [Firmware/MotorControl/](../../Firmware/MotorControl/) code to use modern C++17 features following the guidelines in [CPP_Coding_Practices.instructions.md](../instructions/CPP_Coding_Practices.instructions.md).
-
-Specifically look for:
-1. Replaces `macros` with `constexpr`
-2. Uses of `std::optional` instead of error codes/magic values
-3. Opportunities for structured binding
+Refactor [Firmware/MotorControl/](../../Firmware/MotorControl/) code to follow modern C++17 best practices as outlined in [CPP_Coding_Practices.instructions.md](../instructions/CPP_Coding_Practices.instructions.md).

@@ -2,7 +2,7 @@
 name: check-safety
 description: 'Perform a safety check on a specific module'
 agent: agent
-tools: ['read_file', 'file_search']
+tools: ['read/readFile']
 ---
 I want you to perform a safety analysis on a specific module file provided by the user (or the active file).
 

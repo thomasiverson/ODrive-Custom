@@ -2,6 +2,7 @@
 name: debug-motor-error
 description: Analyze how motor errors are reported and handled
 agent: ask
+model: Claude Sonnet 4.5 (copilot)
 ---
 
 I'm seeing a 'Motor Error' in the logs. How does the error reporting mechanism work in [Firmware/MotorControl/](../../Firmware/MotorControl/)?

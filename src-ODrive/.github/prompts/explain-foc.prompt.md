@@ -4,7 +4,7 @@ description: Explain how Field Oriented Control (FOC) is implemented in this cod
 agent: ask
 ---
 
-Explain how the Field Oriented Control (FOC) loop is implemented in [Firmware/MotorControl/](Firmware/MotorControl/).
+Explain how the Field Oriented Control (FOC) loop is implemented in [Firmware/MotorControl/](../../Firmware/MotorControl/).
 Focus on:
 1. The mathematical transformations (Clarke/Park)
 2. The current control loop structure
