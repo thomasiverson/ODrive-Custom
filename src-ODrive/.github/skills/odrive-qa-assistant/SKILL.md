@@ -41,7 +41,18 @@ Activate this skill when the user asks questions like:
 **Purpose:** Compile firmware for a specific board variant using `tup`  
 **When to use:** To verify code changes compile without errors  
 **Safe:** ✅ Does not flash hardware, only builds locally  
-**Requires:** `tup` build tool installed
+**Requires:** 
+- `tup` build tool installed
+- ARM GCC toolchain (arm-none-eabi-gcc)
+- Python virtual environment (optional but recommended)
+
+**Features:**
+- Automatically detects ARM GCC and tup in PATH
+- Updates `tup.config` with correct board version
+- Generates required `version.c` file
+- Displays binary size information
+- Lists output files (.elf, .bin, .hex)
+- Supports Windows, Linux, macOS
 
 ### 3. Test Runner (`run_tests`)
 **Purpose:** Execute the Python-based test harness  
@@ -56,26 +67,64 @@ Activate this skill when the user asks questions like:
 
 ## 📖 Usage Instructions
 
-All scripts are PowerShell-based and run from the repository root:
+### Using Python Scripts (Preferred)
 
-### 1. Find Symbol
-```powershell
-.\\.github\\skills\\odrive-qa-assistant\\scripts\\find_symbol.ps1 -Symbol "Axis::step_cb"
+All helper scripts are located in `.github/skills/odrive-qa-assistant/scripts/`:
+
+**1. Build Firmware**
+```bash
+# Check build environment
+python .github/skills/odrive-qa-assistant/scripts/build_firmware.py --check-tools
+
+# List available board configurations
+python .github/skills/odrive-qa-assistant/scripts/build_firmware.py --list-configs
+
+# Build firmware for specific board
+python .github/skills/odrive-qa-assistant/scripts/build_firmware.py board-v3.6-56V
+
+# Clean build (removes build/ and autogen/ directories first)
+python .github/skills/odrive-qa-assistant/scripts/build_firmware.py board-v3.5-24V --clean
 ```
 
-### 2. Build Firmware
+**Windows with Virtual Environment:**
 ```powershell
-.\\.github\\skills\\odrive-qa-assistant\\scripts\\build_firmware.ps1 -Board v3.6
+# Activate venv and set PATH for tools
+& venv\Scripts\Activate.ps1
+$env:PATH = "C:\path\to\tup;C:\path\to\arm-gcc\bin;$env:PATH"
+python .github\skills\odrive-qa-assistant\scripts\build_firmware.py board-v3.6-56V
 ```
 
-### 3. Run Tests
-```powershell
-.\\.github\\skills\\odrive-qa-assistant\\scripts\\run_tests.ps1
+**2. Search for Symbols**
+```bash
+python .github/skills/odrive-qa-assistant/scripts/search_symbol.py Motor::update
+python .github/skills/odrive-qa-assistant/scripts/search_symbol.py "ERROR_*" --regex
+python .github/skills/odrive-qa-assistant/scripts/search_symbol.py Encoder --type class
 ```
 
-### 4. List Error Flags
-```powershell
-.\\.github\\skills\\odrive-qa-assistant\\scripts\\list_errors_from_yaml.ps1
+**3. List Error Codes**
+```bash
+python .github/skills/odrive-qa-assistant/scripts/list_errors.py
+python .github/skills/odrive-qa-assistant/scripts/list_errors.py --filter encoder
+python .github/skills/odrive-qa-assistant/scripts/list_errors.py --format table
+```
+
+**4. Run Tests**
+```bash
+python tools/run_tests.py
+python tools/run_tests.py --test encoder_test
+```
+
+### Manual Commands (Alternative)
+
+```bash
+# Build firmware directly
+cd Firmware && make CONFIG=board-v3.6-56V
+
+# Search symbols with grep
+grep -rn "Axis::step_cb" Firmware/
+
+# List error codes
+grep -A 5 "error_code" Firmware/odrive-interface.yaml
 ```
 
 ## 🔒 Security & Safety
