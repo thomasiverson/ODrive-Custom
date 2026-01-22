@@ -4,7 +4,7 @@ Refactor firmware code to follow modern C++17 best practices and coding standard
 
 ## Instructions
 
-Use the **ODrive-Engineer** agent with **odrive-qa-assistant** skill to refactor code while maintaining compatibility.
+Use the **ODrive-Engineer** agent with **odrive-toolchain** skill to refactor code while maintaining compatibility.
 
 ### Input Required
 - **File or Directory**: ${{TARGET_PATH}} (e.g., "Firmware/MotorControl/motor.cpp")
@@ -37,7 +37,7 @@ python tools/run_tests.py
 grep -r "new " Firmware/MotorControl/  # Find raw pointers
 grep -r "for (int i" Firmware/         # Find index-based loops
 
-# Use odrive-qa-assistant to build after changes
+# Use odrive-toolchain to build after changes
 cd Firmware && make CONFIG=board-v3.6-56V
 ```
 
@@ -100,7 +100,7 @@ After refactoring:
 
 | Skill | Purpose |
 |-------|---------|
-| **odrive-qa-assistant** | Build firmware, run tests, verify changes |
+| **odrive-toolchain** | Build firmware, run tests, verify changes |
 | **ODrive-Engineer** | Refactor code, apply modern patterns |
 
 ### Related Prompts

@@ -4,7 +4,19 @@ Build ODrive firmware for specific board variants and configurations.
 
 ## Instructions
 
-Use the **odrive-qa-assistant** skill to build firmware with proper board configuration.
+Use the **odrive-toolchain** skill to build firmware with proper board configuration.
+
+### Workflow Hierarchy
+
+```
+copilot-instructions.md (Constitution)
+        ↓
+  ODrive-Toolchain.agent (Orchestrator)
+        ↓
+  odrive-toolchain skill
+        ↓
+  build_firmware.py + setup-env.ps1
+```
 
 ### Input Required
 - **Board Variant**: ${{BOARD_CONFIG}} (e.g., "board-v3.6-56V", "board-v3.5-24V", "board-v4.2")
@@ -12,29 +24,47 @@ Use the **odrive-qa-assistant** skill to build firmware with proper board config
 
 ### What This Prompt Does
 
-1. **Validates board configuration** exists in Makefile
-2. **Builds firmware** for specified board variant
-3. **Reports build status** (success/failure)
-4. **Lists output files** (firmware binary location)
-5. **Checks for warnings** and reports issues
+1. **Sources environment** via `setup-env.ps1` (adds tup + ARM GCC to PATH)
+2. **Validates board configuration** exists
+3. **Builds firmware** using `build_firmware.py` for specified board variant
+4. **Reports build status** (success/failure)
+5. **Lists output files** (firmware binary location)
+6. **Checks for warnings** and reports issues
+
+### Script Locations
+
+```
+.github/skills/odrive-toolchain/setup-env.ps1      # Environment setup
+.github/skills/odrive-toolchain/build_firmware.py  # Build script
+```
 
 ### Commands
 
+```powershell
+# Step 1: Source environment (Windows PowerShell - once per session)
+. .github\skills\odrive-toolchain\setup-env.ps1
+
+# Step 2: Build using the skill script (recommended)
+python .github\skills\odrive-toolchain\build_firmware.py board-v3.6-56V
+
+# Build with clean
+python .github\skills\odrive-toolchain\build_firmware.py board-v3.6-56V --clean
+
+# List available configurations
+python .github\skills\odrive-toolchain\build_firmware.py --list-configs
+
+# Check tools are available
+python .github\skills\odrive-toolchain\build_firmware.py --check-tools
+```
+
+### Legacy Commands (Manual Setup Required)
+
 ```bash
-# Build for specific board variant
-cd Firmware && make CONFIG=board-v3.6-56V
+# Direct tup/make commands (requires manual tup.config setup)
+cd Firmware && tup --no-environ-check
 
-# Clean build
-cd Firmware && make clean
-
-# Build all variants (CI mode)
-cd Firmware && make all-boards
-
-# Check available configurations
-grep "CONFIG.*board" Firmware/Makefile
-
-# Build with verbose output
-cd Firmware && make CONFIG=board-v3.6-56V V=1
+# Check available configurations in tup.config.default
+grep "CONFIG_BOARD_VERSION" Firmware/tup.config.default
 ```
 
 ### Available Board Variants
@@ -47,37 +77,38 @@ cd Firmware && make CONFIG=board-v3.6-56V V=1
 
 ### Prerequisites
 
-- Firmware build toolchain installed (ARM GCC)
-- Make build system
-- Firmware source code
+- ARM GCC toolchain installed (`arm-none-eabi-gcc`)
+- Tup build system installed
+- Python 3.x
+- Windows: Run `setup-env.ps1` to add tools to PATH
 
 ### Example Usage
 
 Build for v3.6 board:
 ```
-@odrive-qa Build firmware for board v3.6
+@odrive-toolchain Build firmware for board v3.6
 ```
 
 Build multiple variants:
 ```
-@odrive-qa Build firmware for both v3.5-24V and v3.6-56V boards
+@odrive-toolchain Build firmware for both v3.5-24V and v3.6-56V boards
 ```
 
 Clean and rebuild:
 ```
-@odrive-qa Clean build directory and rebuild firmware for board v3.6
+@odrive-toolchain Clean build directory and rebuild firmware for board v3.6
 ```
 
 Check build system:
 ```
-@odrive-qa List all available board configurations
+@odrive-toolchain List all available board configurations
 ```
 
 ### Output
 
 **On Success:**
 - ✅ Build completed successfully
-- 📦 Binary location: `Firmware/build/{config}/ODriveFirmware.elf`
+- 📦 Binary location: `Firmware/build/ODriveFirmware.elf`
 - 📊 Build statistics (size, warnings)
 - 🎯 Ready to flash or test
 
@@ -89,24 +120,26 @@ Check build system:
 ### Build Workflow
 
 ```
-1. Navigate to Firmware directory
+1. Source environment (setup-env.ps1)
         ↓
-2. Invoke make with CONFIG
+2. Run build_firmware.py with board config
         ↓
-3. Toolchain compiles source
+3. Script updates tup.config
         ↓
-4. Linker creates binary
+4. Tup compiles source with ARM GCC
         ↓
-5. Post-build size report
+5. Linker creates binary
         ↓
-6. Output: ODriveFirmware.elf
+6. Post-build size report
+        ↓
+7. Output: ODriveFirmware.elf/.bin/.hex
 ```
 
 ### Skills Invoked
 
 | Skill | Purpose |
 |-------|---------|
-| **odrive-qa-assistant** | Execute build commands, report results |
+| **odrive-toolchain** | Execute build commands, report results |
 | **ODrive-Engineer** | Fix build errors if needed |
 
 ### Common Build Issues
@@ -123,15 +156,29 @@ Check build system:
 After successful build:
 - [ ] Check binary size fits in flash
 - [ ] Verify no new warnings introduced
-- [ ] Run unit tests: `python tools/run_tests.py`
 - [ ] **DO NOT** auto-flash to hardware (requires confirmation)
+
+### Unit Tests (Optional - CI Only)
+
+C++ unit tests are located in `Firmware/Tests/` and use the doctest framework.
+These tests run automatically in CI (GitHub Actions) but require additional setup locally.
+
+**Local Requirements (Optional):**
+- Native `g++` compiler (MinGW-w64 or MSYS2 on Windows)
+- Set `CONFIG_DOCTEST=true` in `Firmware/tup.config`
+- Rebuild with tup - tests compile and run automatically
+
+**Note:** A successful firmware build validates the core code compiles correctly.
+Full test coverage is verified in CI before merging to main branches.
 
 ### Related Prompts
 
 | Need | Use |
 |------|-----|
-| Run tests | `generate-doctest.prompt.md` |
-| Deploy firmware | Use devops-engineer skill |
+| Run tests | `run-tests.prompt.md` |
+| Find symbols | `find-symbol.prompt.md` |
+| List errors | `list-errors.prompt.md` |
+| Deploy firmware | `devops-ci.prompt.md` |
 | Debug build errors | `debug-motor-error-v2.prompt.md` |
 | Optimize binary size | `optimize-critical.prompt.md` |
 

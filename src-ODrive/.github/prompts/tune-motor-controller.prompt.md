@@ -155,7 +155,7 @@ Optimize response time:
 |-------|---------|--------|
 | **foc-tuning** | Automated tuning procedures | 🚧 Planned |
 | **ODrive-Engineer** | Manual tuning guidance | ✅ |
-| **odrive-qa-assistant** | Build firmware with new gains | ✅ |
+| **odrive-toolchain** | Build firmware with new gains | ✅ |
 
 ### Safety Notes
 

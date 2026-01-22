@@ -2,7 +2,7 @@
 
 **Agentic Workflow & Spec-Driven Development Framework**
 
-This directory contains the intelligent agent system for ODrive firmware and tools development. It provides specialized AI assistants for firmware engineering, motor control, hardware design, and quality assurance.
+This directory contains the intelligent agent system for ODrive firmware and tools development. It provides specialized AI assistants for firmware engineering, motor control, hardware design, and operations.
 
 ---
 
@@ -13,20 +13,18 @@ This directory contains the intelligent agent system for ODrive firmware and too
         ↓
   🤖 [Primary Orchestrator - GitHub Copilot]
         ↓
-  ┌────────────────┴────────────────┐
-  ↓                                 ↓
-ODrive-Engineer               ODrive-QA
-(Development Orchestrator)    (Testing/DevOps Orchestrator)
-  ↓                                 ↓
-  │                                 │
-Skills:                       Skills:
-• odrive-qa-assistant (✅)    • odrive-qa-assistant (✅)
-• devops-engineer (✅)        • test-automation (🚧)
-• control-algorithms (🚧)    • devops-engineer (✅)
+  ┌─────────────┬──────────────────┬─────────────────┐
+  ↓             ↓                  ↓                 ↓
+ODrive-       ODrive-            ODrive-          [Future]
+Engineer      Toolchain          Ops
+  ↓             ↓                  ↓
+Skills:      Skill:             Skill:
+• control-   odrive-toolchain   odrive-ops
+  algorithms (🚧)
 • foc-tuning (🚧)
-• sensorless-control (🚧)
+• sensorless (🚧)
 • pcb-review (🚧)
-• signal-integrity (🚧)
+• signal-int (🚧)
 ```
 
 ---
@@ -37,15 +35,22 @@ Skills:                       Skills:
 .github/
 ├── copilot-instructions.md          # 📋 Constitution - Core rules & boundaries
 │
-├── agents/                           # 🤖 Orchestrator agents (2)
-│   ├── ODrive-Engineer.agent.md        # Development orchestrator (all dev work)
-│   └── ODrive-QA.agent.md              # Testing/CI/CD orchestrator
+├── agents/                           # 🤖 Orchestrator agents (3)
+│   ├── ODrive-Engineer.agent.md        # Development orchestrator
+│   ├── ODrive-Toolchain.agent.md       # Build/test/search agent
+│   └── ODrive-Ops.agent.md             # CI/CD/releases agent
 │
 ├── skills/                           # 🔧 Reusable operational skills
-│   ├── odrive-qa-assistant/
-│   │   └── SKILL.md                    # Build, test, symbol search
-│   └── devops-engineer/
-│       └── SKILL.md                    # CI/CD, releases, deployments
+│   ├── odrive-toolchain/               # Build, test, symbol search
+│   │   ├── SKILL.md
+│   │   ├── build_firmware.py
+│   │   ├── search_symbol.py
+│   │   ├── list_errors.py
+│   │   ├── setup-env.ps1
+│   │   └── run_tests.ps1
+│   ├── odrive-ops/                     # CI/CD, releases
+│   │   └── SKILL.md
+│   └── [stub skills for future...]
 │
 ├── instructions/                     # 📖 Coding standards & guidelines
 │   ├── cpp_coding_standards.instructions.md
@@ -54,10 +59,10 @@ Skills:                       Skills:
 │   └── python_coding_standards.instructions.md
 │
 ├── prompts/                          # 💡 Common development workflows
-│   ├── refactor-modern-cpp.prompt.md
-│   ├── generate-doctest.prompt.md
-│   ├── debug-motor-error.prompt.md
-│   └── ... (10 total prompts)
+│   ├── build-firmware.prompt.md
+│   ├── toolchain.prompt.md
+│   ├── ops.prompt.md
+│   └── ... (more prompts)
 │
 └── workflows/                        # ⚙️ GitHub Actions CI/CD
     └── firmware.yaml
@@ -65,11 +70,11 @@ Skills:                       Skills:
 
 ---
 
-## 🤖 Agents Hierarchy
+## 🤖 Agent Responsibilities
 
-### 1. ODrive-Engineer Agent (Development Orchestrator)
+### 1. ODrive-Engineer Agent (Development)
 **File:** `agents/ODrive-Engineer.agent.md`  
-**Domains:** Firmware, Motor Control, Hardware (All Development)
+**Domains:** Firmware, Motor Control, Hardware
 
 **Responsibilities:**
 - Implement firmware features and drivers (STM32, FreeRTOS)
@@ -77,51 +82,41 @@ Skills:                       Skills:
 - Analyze hardware interfaces (PCB, signal integrity, power electronics)
 - Protocol implementation (USB, CAN, UART, SPI, I2C)
 - Code optimization and refactoring
-- Hardware abstraction layers
 
 **Skills Invoked:**
-- ✅ `odrive-qa-assistant` - Build, test, symbol search
-- ✅ `devops-engineer` - CI/CD workflows, releases
 - 🚧 `control-algorithms` - Control patterns (planned)
 - 🚧 `foc-tuning` - Auto-tuning procedures (planned)
 - 🚧 `sensorless-control` - Observer implementations (planned)
 - 🚧 `pcb-review` - PCB design review (planned)
 - 🚧 `signal-integrity` - Signal analysis (planned)
 
-**When to Use:**
-- "Implement USB protocol handler"
-- "Tune velocity PI controller"
-- "Review gate driver schematic"
-- "Debug encoder signal noise"
-- "Optimize motor control loop"
-- "Add sensorless observer"
+---
+
+### 2. ODrive-Toolchain Agent (Build/Test)
+**File:** `agents/ODrive-Toolchain.agent.md`  
+**Domains:** Build, Test, Search, Error Inspection
+
+**Responsibilities:**
+- Build firmware for board variants
+- Run unit tests
+- Search for symbols and definitions
+- List and explain error codes
+
+**Skill:** `odrive-toolchain`
 
 ---
 
-### 2. ODrive-QA Agent (Testing & DevOps Orchestrator)
-**File:** `agents/ODrive-QA.agent.md`  
-**Domains:** Testing, Validation, CI/CD, Deployment
+### 3. ODrive-Ops Agent (CI/CD)
+**File:** `agents/ODrive-Ops.agent.md`  
+**Domains:** CI/CD, Releases, Deployments
 
 **Responsibilities:**
-- Build firmware for all board variants
-- Run test suites (unit, integration, HIL)
-- Manage CI/CD pipelines and releases
-- Quality gate enforcement
-- Test automation and coverage analysis
-- Performance benchmarking
+- Check CI pipeline status
+- Create and publish releases
+- Deploy documentation
+- Manage GitHub Actions workflows
 
-**Skills Invoked:**
-- ✅ `odrive-qa-assistant` - Build, test, workspace inspection
-- ✅ `devops-engineer` - Release automation, deployments
-- 🚧 `test-automation` - HIL testing, test generation (planned)
-
-**When to Use:**
-- "Build firmware for board v3.6"
-- "Run full test suite"
-- "Generate unit tests"
-- "Check CI pipeline status"
-- "Create release v0.5.7"
-- "Deploy documentation"
+**Skill:** `odrive-ops`
 
 ---
 
@@ -131,8 +126,8 @@ Skills are reusable modules that agents invoke for specific operational tasks.
 
 ### ✅ Production Skills
 
-#### odrive-qa-assistant
-**File:** `skills/odrive-qa-assistant/SKILL.md`  
+#### odrive-toolchain
+**File:** `skills/odrive-toolchain/SKILL.md`  
 **Purpose:** Build automation, testing, workspace inspection
 
 **Capabilities:**
@@ -142,24 +137,29 @@ Skills are reusable modules that agents invoke for specific operational tasks.
 - List error flags from interface YAML
 - Workspace structure inspection
 
-**Used By:** firmware-engineer, QA-engineer
+**Scripts:**
+```
+.github/skills/odrive-toolchain/
+├── build_firmware.py    # Build firmware
+├── search_symbol.py     # Search symbols
+├── list_errors.py       # List error codes
+├── setup-env.ps1        # Environment setup (Windows)
+└── run_tests.ps1        # Run tests
+```
 
 **Example Usage:**
 ```bash
 # Build for specific board
-make CONFIG=board-v3.6-56V
-
-# Run tests
-python tools/run_tests.py
+python .github/skills/odrive-toolchain/build_firmware.py board-v3.6-56V
 
 # Search for symbol
-grep -r "Axis::step_cb" Firmware/
+python .github/skills/odrive-toolchain/search_symbol.py Motor::update
 ```
 
 ---
 
-#### devops-engineer
-**File:** `skills/devops-engineer/SKILL.md`  
+#### odrive-ops
+**File:** `skills/odrive-ops/SKILL.md`  
 **Purpose:** CI/CD workflows, release automation, deployment
 
 **Capabilities:**
@@ -167,15 +167,8 @@ grep -r "Axis::step_cb" Firmware/
 - Firmware build matrix configuration
 - Release channel management
 - Documentation deployment
-- Secret and credential management
 
-**Used By:** firmware-engineer, QA-engineer
-
-**Example Usage:**
-- Trigger CI/CD pipeline
-- Create release tags
-- Deploy documentation
-- Configure build variants
+**Used By:** ODrive-Ops agent
 
 ---
 
@@ -184,32 +177,27 @@ grep -r "Axis::step_cb" Firmware/
 #### control-algorithms
 **Status:** Stub - In Development  
 **Purpose:** Common control algorithm implementations  
-**Used By:** motor-control-engineer
+**Used By:** ODrive-Engineer
 
 #### foc-tuning
 **Status:** Stub - In Development  
 **Purpose:** Automated FOC parameter tuning procedures  
-**Used By:** motor-control-engineer
+**Used By:** ODrive-Engineer
 
 #### sensorless-control
 **Status:** Stub - In Development  
 **Purpose:** Observer and estimation implementations  
-**Used By:** motor-control-engineer
+**Used By:** ODrive-Engineer
 
 #### pcb-review
 **Status:** Stub - In Development  
 **Purpose:** Automated PCB schematic and layout review  
-**Used By:** hardware-engineer
+**Used By:** ODrive-Engineer
 
 #### signal-integrity
 **Status:** Stub - In Development  
 **Purpose:** Signal integrity and EMI analysis  
-**Used By:** hardware-engineer
-
-#### test-automation
-**Status:** Stub - In Development  
-**Purpose:** Automated test framework and execution  
-**Used By:** QA-engineer
+**Used By:** ODrive-Engineer
 
 ---
 
@@ -234,15 +222,16 @@ Reusable workflow prompts for common development tasks.
 
 | Prompt | Purpose |
 |--------|---------|
-| `refactor-modern-cpp.prompt.md` | Modernize legacy C++ code to C++17 |
-| `generate-doctest.prompt.md` | Generate doctest unit tests |
-| `debug-motor-error.prompt.md` | Systematic motor error debugging |
+| `build-firmware.prompt.md` | Build firmware for board variants |
+| `toolchain.prompt.md` | Unified toolchain operations |
+| `ops.prompt.md` | CI/CD and release operations |
+| `refactor-modern-cpp-v2.prompt.md` | Modernize legacy C++ code to C++17 |
+| `modernize-cpp.prompt.md` | Apply modern C++ patterns |
 | `add-doxygen.prompt.md` | Add Doxygen documentation |
 | `optimize-critical.prompt.md` | Optimize performance-critical code |
-| `modernize-cpp.prompt.md` | Apply modern C++ patterns |
 | `check-safety.prompt.md` | Safety validation for motor control |
 | `explain-foc.prompt.md` | Explain FOC algorithm concepts |
-| `doc-arduino-interface.prompt.md` | Document Arduino interface |
+| `tune-motor-controller.prompt.md` | Tune motor control parameters |
 | `audit-todos.prompt.md` | Audit and prioritize TODO comments |
 
 ---
@@ -253,27 +242,24 @@ Reusable workflow prompts for common development tasks.
 ```bash
 # Activate ODrive Engineer agent
 @odrive-engineer Implement CAN bus message handler for velocity commands
+```
 
+### For Build/Test Operations
+```bash
 # Build firmware
-@odrive-qa Build firmware for board v3.6
+@odrive-toolchain Build firmware for board v3.6
+
+# Search for symbols
+@odrive-toolchain Find definition of Motor::update
 ```
 
-### For Motor Control Work
+### For CI/CD Operations
 ```bash
-# Activate ODrive Engineer for motor control
-@odrive-engineer Tune the velocity PI controller for better response
-
-# Analyze control performance
-@odrive-engineer Explain why I'm seeing oscillations at 5 Hz
-```
-
-### For Testing & Validation
-```bash
-# Run full test suite
-@odrive-qa Generate unit tests for the encoder module
-
 # Check CI/CD status
-@odrive-qa Check firmware CI pipeline status
+@odrive-ops Check firmware CI pipeline status
+
+# Create release
+@odrive-ops Create release v0.5.7
 ```
 
 ---
@@ -281,9 +267,9 @@ Reusable workflow prompts for common development tasks.
 ## 📋 Usage Rules
 
 ### Agent Selection
-1. **Single-domain tasks:** Direct to specialized agent
-2. **Cross-domain tasks:** Route through primary orchestrator
-3. **Unclear scope:** Start with QA agent for assessment
+1. **Development tasks:** ODrive-Engineer
+2. **Build/Test/Search tasks:** ODrive-Toolchain
+3. **CI/CD/Release tasks:** ODrive-Ops
 
 ### Safety First
 - ⚠️ **Hardware operations require explicit confirmation**
@@ -336,21 +322,21 @@ Reusable workflow prompts for common development tasks.
 ## 📊 Status Dashboard
 
 | Component | Status | Last Updated |
-|-----------|--------|--------------|
+|-----------|--------|------------|
 | Constitution | ✅ Complete | 2026-01-22 |
-| **Agents (2 Orchestrators)** | | |
+| **Agents (3 Orchestrators)** | | |
 | ODrive-Engineer.agent | ✅ Complete | 2026-01-22 |
-| ODrive-QA.agent | ✅ Complete | 2026-01-22 |
+| ODrive-Toolchain.agent | ✅ Complete | 2026-01-22 |
+| ODrive-Ops.agent | ✅ Complete | 2026-01-22 |
 | **Production Skills (2)** | | |
-| odrive-qa-assistant | ✅ Production | 2026-01-22 |
-| devops-engineer | ✅ Production | 2026-01-22 |
-| **Planned Skills (6)** | | |
+| odrive-toolchain | ✅ Production | 2026-01-22 |
+| odrive-ops | ✅ Production | 2026-01-22 |
+| **Planned Skills (5)** | | |
 | control-algorithms | 🚧 Planned | - |
 | foc-tuning | 🚧 Planned | - |
 | sensorless-control | 🚧 Planned | - |
 | pcb-review | 🚧 Planned | - |
 | signal-integrity | 🚧 Planned | - |
-| test-automation | 🚧 Planned | - |
 
 ---
 

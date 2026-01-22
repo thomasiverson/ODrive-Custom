@@ -127,35 +127,34 @@ copilot-instructions.md (Constitution)
         ↓
   [Primary Orchestrator - GitHub Copilot]
         ↓
-  ┌────────────────┴────────────────┐
-  ↓                                 ↓
-ODrive-Engineer.agent         ODrive-QA.agent
-(Development Orchestrator)    (Testing/DevOps Orchestrator)
-  ↓                                 ↓
-  │                                 │
-Skills:                       Skills:
-• odrive-qa-assistant (✅)    • odrive-qa-assistant (✅)
-• devops-engineer (✅)        • test-automation (🚧)
-• control-algorithms (🚧)    • devops-engineer (✅)
-• foc-tuning (🚧)
-• sensorless-control (🚧)
-• pcb-review (🚧)
-• signal-integrity (🚧)
+  ┌─────────────┬─────────────┬─────────────┐
+  ↓             ↓             ↓             ↓
+ODrive-       ODrive-       ODrive-      [Future]
+Engineer      Toolchain     Ops
+  ↓             ↓             ↓
+Skills:      Skill:        Skill:
+• control-   odrive-       odrive-ops
+  algorithms toolchain
+• foc-tuning
+• sensorless
+• pcb-review
+• signal-int
 ```
 
 ### Agent Responsibilities
 
-| Agent | Primary Domain | Key Tasks | Skills Invoked |
-|-------|---------------|-----------|----------------|
-| **ODrive-Engineer** | All development: Firmware, Motor Control, Hardware | Code implementation, algorithm design, hardware interfaces | odrive-qa-assistant, devops-engineer, control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity |
-| **ODrive-QA** | Testing, validation, CI/CD, deployment | Test planning, automation, quality gates, releases | odrive-qa-assistant, test-automation, devops-engineer |
+| Agent | Primary Domain | Key Tasks | Skill |
+|-------|---------------|-----------|-------|
+| **ODrive-Engineer** | Development: Firmware, Motor Control, Hardware | Code implementation, algorithm design | control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity |
+| **ODrive-Toolchain** | Build, Test, Search | Build firmware, run tests, find symbols, list errors | odrive-toolchain |
+| **ODrive-Ops** | CI/CD, Releases, Deployments | Check CI, create releases, deploy docs | odrive-ops |
 
 ### Delegation Rules
 - Primary Copilot orchestrator delegates to agents based on request type
 - **Development requests** → ODrive-Engineer agent
-- **Testing/CI/CD requests** → ODrive-QA agent
-- Agents invoke skills for specific operational tasks
-- Skills are reusable modules shared across agents
+- **Build/Test/Search requests** → ODrive-Toolchain agent
+- **CI/CD/Release requests** → ODrive-Ops agent
+- Each agent has ONE primary skill for focused operations
 - **Multi-domain tasks**: Complex tasks route through primary orchestrator for coordination
 
 ---
@@ -164,36 +163,40 @@ Skills:                       Skills:
 
 **These agents have DISTINCT roles - understand boundaries:**
 
-### 1. ODrive-Engineer Agent (Development Orchestrator)
-- **Focus**: All development - firmware, motor control, hardware
-- **Handles**: Code implementation, algorithms, hardware interfaces, optimization
-- **Invokes**: odrive-qa-assistant, devops-engineer, control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity
-- **Does NOT**: Directly execute hardware operations without confirmation, skip testing, bypass quality gates
+### 1. ODrive-Engineer Agent (Development)
+- **Focus**: Firmware, motor control, hardware development
+- **Handles**: Code implementation, algorithms, hardware interfaces
+- **Skills**: control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity
+- **Does NOT**: Execute hardware operations without confirmation
 
-**Development Sub-Domains:**
-- **Firmware**: STM32, FreeRTOS, protocols, drivers, bootloaders
-- **Motor Control**: FOC algorithms, PID tuning, observers, trajectory planning
-- **Hardware**: PCB review, signal integrity, gate drives, sensors
+### 2. ODrive-Toolchain Agent (Build & Test)
+- **Focus**: Build, test, code navigation
+- **Handles**: Build firmware, run tests, find symbols, list errors
+- **Skill**: odrive-toolchain
+- **Does NOT**: Implement features, deploy to production
 
-### 2. ODrive-QA Agent (Testing & DevOps Orchestrator)
-- **Focus**: Testing, validation, quality assurance, CI/CD, deployment
-- **Handles**: Building, testing, quality gates, releases, CI/CD workflows
-- **Invokes**: odrive-qa-assistant, test-automation, devops-engineer
-- **Does NOT**: Implement core functionality (routes to ODrive-Engineer)
+### 3. ODrive-Ops Agent (CI/CD & Releases)
+- **Focus**: CI/CD, releases, deployments
+- **Handles**: Check CI status, trigger workflows, create releases
+- **Skill**: odrive-ops
+- **Does NOT**: Implement features, modify source code
 
 **Routing Rules:**
 
 | User Request | Route To | Skill Invoked |
 |--------------|----------|---------------|
-| "Implement USB protocol" | ODrive-Engineer | Self + odrive-qa-assistant |
+| "Implement USB protocol" | ODrive-Engineer | Self + odrive-toolchain |
 | "Tune velocity controller" | ODrive-Engineer | foc-tuning (🚧) |
 | "Review PCB schematic" | ODrive-Engineer | pcb-review (🚧) |
-| "Write unit tests" | ODrive-QA | test-automation (🚧) |
-| "Build firmware" | ODrive-QA | odrive-qa-assistant |
-| "Deploy release" | ODrive-QA | devops-engineer |
-| "Debug FOC instability" | ODrive-Engineer | Multi-skill (control-algorithms + self) |
-| "STM32 peripheral setup" | ODrive-Engineer | Self + odrive-qa-assistant |
-| "Run test suite" | ODrive-QA | odrive-qa-assistant |
+| "Write unit tests" | ODrive-Engineer | Self + odrive-toolchain |
+| "Build firmware" | ODrive-Toolchain | odrive-toolchain |
+| "Deploy release" | ODrive-Ops | odrive-ops |
+| "Debug FOC instability" | ODrive-Engineer | control-algorithms (🚧) |
+| "STM32 peripheral setup" | ODrive-Engineer | Self |
+| "Run test suite" | ODrive-Toolchain | odrive-toolchain |
+| "Find symbol" | ODrive-Toolchain | odrive-toolchain |
+| "List error codes" | ODrive-Toolchain | odrive-toolchain |
+| "Check CI status" | ODrive-Ops | odrive-ops |
 | "Analyze trace impedance" | ODrive-Engineer | signal-integrity (🚧) |
 
 ---

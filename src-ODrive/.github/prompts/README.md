@@ -10,14 +10,15 @@ Reusable workflow prompts for common ODrive development tasks. Each prompt is de
 
 | Prompt | Description | Skills Used | Status |
 |--------|-------------|-------------|--------|
-| **[build-firmware](build-firmware.prompt.md)** | Build ODrive firmware for specific board variants | odrive-qa-assistant | ✅ |
-| **[generate-doctest](generate-doctest.prompt.md)** | Generate unit tests using doctest framework | odrive-qa-assistant, ODrive-Engineer | ⚠️ |
+| **[build-firmware](build-firmware.prompt.md)** | Build ODrive firmware for specific board variants | odrive-toolchain | ✅ |
+| **[toolchain](toolchain.prompt.md)** | Unified toolchain operations (build, search, errors) | odrive-toolchain | ✅ |
 
 ### Code Quality
 
 | Prompt | Description | Skills Used | Status |
 |--------|-------------|-------------|--------|
-| **[refactor-modern-cpp-v2](refactor-modern-cpp-v2.prompt.md)** | Refactor code to modern C++17 standards | ODrive-Engineer, odrive-qa-assistant | ✅ |
+| **[refactor-modern-cpp-v2](refactor-modern-cpp-v2.prompt.md)** | Refactor code to modern C++17 standards | ODrive-Engineer, odrive-toolchain | ✅ |
+| **[modernize-cpp](modernize-cpp.prompt.md)** | Quick inline C++17 modernization | ODrive-Engineer | ✅ |
 | **[add-doxygen](add-doxygen.prompt.md)** | Add Doxygen documentation to code | ODrive-Engineer | ⚠️ |
 | **[audit-todos](audit-todos.prompt.md)** | Audit and prioritize TODO comments | ODrive-Engineer | ⚠️ |
 | **[check-safety](check-safety.prompt.md)** | Validate safety-critical code | ODrive-Engineer | ⚠️ |
@@ -26,8 +27,7 @@ Reusable workflow prompts for common ODrive development tasks. Each prompt is de
 
 | Prompt | Description | Skills Used | Status |
 |--------|-------------|-------------|--------|
-| **[debug-motor-error-v2](debug-motor-error-v2.prompt.md)** | Analyze and debug motor errors | odrive-qa-assistant, ODrive-Engineer | ✅ |
-| **[explain-foc](explain-foc.prompt.md)** | Explain FOC algorithm concepts | ODrive-Engineer | ⚠️ |
+| **[explain-foc](explain-foc.prompt.md)** | Explain FOC algorithm concepts | ODrive-Engineer | ✅ |
 
 ### Motor Control
 
@@ -39,13 +39,13 @@ Reusable workflow prompts for common ODrive development tasks. Each prompt is de
 
 | Prompt | Description | Skills Used | Status |
 |--------|-------------|-------------|--------|
-| **[optimize-critical](optimize-critical.prompt.md)** | Optimize performance-critical code | ODrive-Engineer, odrive-qa-assistant | ⚠️ |
+| **[optimize-critical](optimize-critical.prompt.md)** | Optimize performance-critical code | ODrive-Engineer, odrive-toolchain | ⚠️ |
 
-### Documentation
+### Operations
 
 | Prompt | Description | Skills Used | Status |
 |--------|-------------|-------------|--------|
-| **[doc-arduino-interface](doc-arduino-interface.prompt.md)** | Document Arduino interface | ODrive-Engineer | ⚠️ |
+| **[ops](ops.prompt.md)** | CI/CD, releases, deployments | odrive-ops | ✅ |
 
 **Legend:**
 - ✅ Enhanced with skill integration
@@ -66,24 +66,24 @@ Reusable workflow prompts for common ODrive development tasks. Each prompt is de
 
 ```bash
 # Using the build-firmware prompt
-@odrive-qa Build firmware for board v3.6
+@odrive-toolchain Build firmware for board v3.6
 ```
 
 Behind the scenes:
 ```
-User Request → ODrive-QA agent → odrive-qa-assistant skill → Executes build commands
+User Request → ODrive-Toolchain agent → odrive-toolchain skill → Executes build commands
 ```
 
-### Example: Debug Motor Error
+### Example: Check CI Status
 
 ```bash
-# Using the debug-motor-error-v2 prompt
-@odrive-engineer Debug ERROR_CONTROL_DEADLINE_MISSED - what causes this?
+# Using the ops prompt
+@odrive-ops Check CI status for current branch
 ```
 
 Behind the scenes:
 ```
-User Request → ODrive-Engineer agent → odrive-qa-assistant skill (symbol search) → Analysis
+User Request → ODrive-Ops agent → odrive-ops skill → CI/CD operations
 ```
 
 ---
@@ -131,8 +131,8 @@ Prompts are designed to work with these skills:
 
 | Skill | Purpose | Files |
 |-------|---------|-------|
-| **odrive-qa-assistant** | Build, test, search | `.github/skills/odrive-qa-assistant/` |
-| **devops-engineer** | CI/CD, releases | `.github/skills/devops-engineer/` |
+| **odrive-toolchain** | Build, test, search, errors | `.github/skills/odrive-toolchain/` |
+| **odrive-ops** | CI/CD, releases | `.github/skills/odrive-ops/` |
 | **foc-tuning** 🚧 | Motor control tuning | `.github/skills/foc-tuning/` |
 | **control-algorithms** 🚧 | Control patterns | `.github/skills/control-algorithms/` |
 
@@ -142,17 +142,17 @@ Prompts are designed to work with these skills:
 
 Skills contain executable scripts that prompts can invoke:
 
-### odrive-qa-assistant Scripts
+### odrive-toolchain Scripts
 
 ```bash
 # Build firmware
-python .github/skills/odrive-qa-assistant/scripts/build_firmware.py board-v3.6-56V
+python .github/skills/odrive-toolchain/build_firmware.py board-v3.6-56V
 
 # Search symbols
-python .github/skills/odrive-qa-assistant/scripts/search_symbol.py Motor::update
+python .github/skills/odrive-toolchain/search_symbol.py Motor::update
 
 # List errors
-python .github/skills/odrive-qa-assistant/scripts/list_errors.py
+python .github/skills/odrive-toolchain/list_errors.py
 ```
 
 ### Benefits
@@ -231,7 +231,6 @@ Examples
 - **Constitution**: `.github/copilot-instructions.md`
 - **Agents**: `.github/agents/`
 - **Skills**: `.github/skills/`
-- **Quick Reference**: `.github/QUICK_REFERENCE.md`
 
 ---
 

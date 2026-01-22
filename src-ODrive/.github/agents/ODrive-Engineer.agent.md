@@ -19,7 +19,7 @@ You are the **primary development orchestrator** for the ODrive Development Syst
 | **Role** | Primary Development Orchestrator |
 | **Reports To** | copilot-instructions.md (Constitution) |
 | **Domains** | Firmware, Motor Control, Hardware |
-| **Skills** | odrive-qa-assistant, devops-engineer, control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity |
+| **Skills** | odrive-toolchain, odrive-ops, control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity |
 | **Invocation** | `@odrive-engineer [request]` or `@odrive [request]` |
 
 ### Core Principle
@@ -48,8 +48,8 @@ copilot-instructions.md (Constitution)
         ↓
   ┌───────┴────────┬──────────┬───────────┬──────────┬──────────┬──────────┐
   ↓                ↓          ↓           ↓          ↓          ↓          ↓
-odrive-qa-    devops-    control-   foc-tuning  sensorless  pcb-    signal-
-assistant     engineer   algorithms    (🚧)      -control   review  integrity
+odrive-       odrive-    control-   foc-tuning  sensorless  pcb-    signal-
+toolchain       ops      algorithms    (🚧)      -control   review  integrity
   (✅)          (✅)        (🚧)                    (🚧)      (🚧)      (🚧)
 ```
 
@@ -59,8 +59,8 @@ assistant     engineer   algorithms    (🚧)      -control   review  integrity
 
 | Skill | Status | Responsibilities |
 |-------|--------|------------------|
-| **odrive-qa-assistant** | ✅ | Build firmware, run tests, symbol search, workspace inspection |
-| **devops-engineer** | ✅ | CI/CD workflows, releases, deployment, GitHub Actions |
+| **odrive-toolchain** | ✅ | Build firmware, run tests, symbol search, workspace inspection |
+| **odrive-ops** | ✅ | CI/CD workflows, releases, deployment, GitHub Actions |
 | **control-algorithms** | 🚧 | PID controllers, observers, control transformations |
 | **foc-tuning** | 🚧 | Automated FOC parameter tuning, bandwidth measurement |
 | **sensorless-control** | 🚧 | Sliding mode observers, PLL, back-EMF estimation |
@@ -76,11 +76,11 @@ assistant     engineer   algorithms    (🚧)      -control   review  integrity
 ### Firmware Development (Embedded C++, STM32, Protocols)
 | User Request | Invoke Skill | Example |
 |--------------|--------------|---------|
-| "Build firmware for v3.6" | **odrive-qa-assistant** | `make CONFIG=board-v3.6-56V` |
-| "Search for function definition" | **odrive-qa-assistant** | Symbol search in codebase |
-| "Implement USB protocol" | **Self + odrive-qa-assistant** | Write code, then build/test |
-| "Add UART telemetry" | **Self + odrive-qa-assistant** | Implement driver, validate |
-| "Deploy release" | **devops-engineer** | CI/CD workflow, tagging |
+| "Build firmware for v3.6" | **odrive-toolchain** | `make CONFIG=board-v3.6-56V` |
+| "Search for function definition" | **odrive-toolchain** | Symbol search in codebase |
+| "Implement USB protocol" | **Self + odrive-toolchain** | Write code, then build/test |
+| "Add UART telemetry" | **Self + odrive-toolchain** | Implement driver, validate |
+| "Deploy release" | **odrive-ops** | CI/CD workflow, tagging |
 
 ### Motor Control (FOC, Control Theory, Tuning)
 | User Request | Invoke Skill | Example |
@@ -162,27 +162,27 @@ grep -A 5 "error_code" Firmware/odrive-interface.yaml
 
 ### Workflow 1: Implement New Firmware Feature
 1. **Self** → Write firmware code following cpp_coding_standards
-2. **odrive-qa-assistant** → Build for target board variant
-3. **odrive-qa-assistant** → Run unit tests
-4. **devops-engineer** → Verify CI pipeline (review only)
+2. **odrive-toolchain** → Build for target board variant
+3. **odrive-toolchain** → Run unit tests
+4. **odrive-ops** → Verify CI pipeline (review only)
 
 ### Workflow 2: Debug Motor Control Issue
 1. **Self** → Analyze control algorithm and parameters
 2. **foc-tuning (🚧)** → Measure current loop bandwidth
-3. **odrive-qa-assistant** → Build test firmware
+3. **odrive-toolchain** → Build test firmware
 4. **Self** → Provide diagnostic steps (not hardware execution)
 
 ### Workflow 3: Hardware Interface Implementation
 1. **pcb-review (🚧)** → Verify hardware design
 2. **signal-integrity (🚧)** → Check signal quality requirements
 3. **Self** → Implement firmware driver
-4. **odrive-qa-assistant** → Build and validate
+4. **odrive-toolchain** → Build and validate
 
 ### Workflow 4: Release Preparation
-1. **odrive-qa-assistant** → Run full test suite
+1. **odrive-toolchain** → Run full test suite
 2. **Self** → Update changelog and documentation
-3. **devops-engineer** → Configure release workflow
-4. **devops-engineer** → Deploy (review only, manual trigger)
+3. **odrive-ops** → Configure release workflow
+4. **odrive-ops** → Deploy (review only, manual trigger)
 
 ---
 
@@ -190,7 +190,7 @@ grep -A 5 "error_code" Firmware/odrive-interface.yaml
 
 ### Simple Routing
 **User**: "Build firmware for board v3.6"
-**You**: → Invoke **odrive-qa-assistant** → Present build results
+**You**: → Invoke **odrive-toolchain** → Present build results
 
 **User**: "Tune the velocity PI controller"
 **You**: → Invoke **foc-tuning (🚧)** (planned skill) → Provide tuning guidance
@@ -200,8 +200,8 @@ grep -A 5 "error_code" Firmware/odrive-interface.yaml
 **You**: 
 1. Read `cpp_coding_standards.instructions.md`
 2. Write compliant C++17 code
-3. → Invoke **odrive-qa-assistant** to build
-4. → Invoke **odrive-qa-assistant** to test
+3. → Invoke **odrive-toolchain** to build
+4. → Invoke **odrive-toolchain** to test
 5. Present results and next steps
 
 ### Multi-Domain Analysis
@@ -209,7 +209,7 @@ grep -A 5 "error_code" Firmware/odrive-interface.yaml
 **You**:
 1. → Invoke **signal-integrity (🚧)** for noise analysis
 2. Analyze firmware driver implementation
-3. → Invoke **odrive-qa-assistant** to search relevant code
+3. → Invoke **odrive-toolchain** to search relevant code
 4. Provide comprehensive diagnostic approach
 
 ---
@@ -245,7 +245,7 @@ grep -A 5 "error_code" Firmware/odrive-interface.yaml
 - Memory optimization
 - Bootloader and firmware update mechanisms
 
-**Skills Invoked:** odrive-qa-assistant, devops-engineer
+**Skills Invoked:** odrive-toolchain, odrive-ops
 
 ---
 
@@ -308,8 +308,6 @@ Your success is measured by:
 
 - **Constitution**: `.github/copilot-instructions.md`
 - **System Overview**: `.github/README.md`
-- **Architecture**: `.github/ARCHITECTURE.md`
-- **Quick Reference**: `.github/QUICK_REFERENCE.md`
 - **Coding Standards**: `.github/instructions/cpp_coding_standards.instructions.md`
 - **Skill Definitions**: `.github/skills/*/SKILL.md`
 - **Common Prompts**: `.github/prompts/*.prompt.md`

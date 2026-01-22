@@ -42,7 +42,7 @@ BOARD_CONFIG_MAP = {
 def find_firmware_dir():
     """Find the Firmware directory relative to script location."""
     script_dir = Path(__file__).parent.resolve()
-    repo_root = script_dir.parent.parent.parent.parent  # scripts -> odrive-qa-assistant -> skills -> .github -> repo
+    repo_root = script_dir.parent.parent.parent  # odrive-toolchain -> skills -> .github -> repo
     firmware_dir = repo_root / 'Firmware'
     
     if not firmware_dir.exists():
