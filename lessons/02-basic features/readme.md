@@ -132,12 +132,12 @@ Press **Ctrl+Shift+Alt+L** to open a lightweight chat overlay.
   - Use Inline Chat (Ctrl+I) to generate/refactor code, add documentation, or create scripts/tests.
   - Example prompts:
     1. "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in `controller.cpp` to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
-    2. "Add Doxygen-style comments to the `handle_can_message` function, explaining the different message IDs it handles based on the #file:docs/can-protocol.rst documentation."
-    3. "Write a Python script using `odrive.enums` that connects to a generic ODrive, configures the plotter, and graphs `axis0.motor.current_control.Iq_measured` and `axis0.motor.current_control.Iq_setpoint` in real-time."
-    4. "Optimize the `ClarkeTransform` function using NEON intrinsics or faster math approximations if possible, while maintaining readability."
-    5. "Create a new test case using the `doctest` framework that verifies the `saturate` utility function handles positive, negative, and edge-case inputs correctly."
+    2. "Optimize the `SVM` function in #file:utils.cpp using SIMD intrinsics or faster math approximations if possible, while maintaining readability and accuracy."
+    3. "Add Doxygen-style comments to the `on_measurement` function in #file:foc.cpp, explaining the Clarke transform and the current measurement processing."
+    4. "Write a Python script using `odrive.enums` that connects to a generic ODrive, configures the plotter, and graphs `axis0.motor.current_control.Iq_measured` and `axis0.motor.current_control.Iq_setpoint` in real-time."
+    5. "Create a new test case using the `doctest` framework that verifies the `SVM` utility function in #file:utils.cpp handles all six sextants correctly with edge-case inputs."
 
-- **Agent Mode:**
+- **Agent Mode:**0
   - Use for multi-step, cross-file, or research tasks. Copilot can plan, research, and execute complex changes.
   - Example prompts:
     1. "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
@@ -214,7 +214,7 @@ Use tools in chat to accomplish specialized tasks. Type `#` followed by the tool
   - Try: "Explain this project in simple, layman's terms. What is the high-level functionality? Provide a tour of the folder structure and explain the key external dependencies."
 
 - **Edit Mode:**
-  - Try: "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in `controller.cpp` to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
+  - Try: "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in #controller.cpp to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
 
 - **Agent Mode:**
   - Try: "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
