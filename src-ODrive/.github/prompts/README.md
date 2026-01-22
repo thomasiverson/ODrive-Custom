@@ -6,6 +6,15 @@ Reusable workflow prompts for common ODrive development tasks. Each prompt is de
 
 ## 📋 Available Prompts
 
+### Ada to C++ Migration 🆕
+
+| Prompt | Description | Skills Used | Status |
+|--------|-------------|-------------|--------|
+| **[analyze-ada-project](analyze-ada-project.prompt.md)** | Analyze Ada project and create migration plan | ada-cpp-migration | ✅ |
+| **[migrate-ada-types](migrate-ada-types.prompt.md)** | Convert Ada types to C++ strong types | ada-cpp-migration | ✅ |
+| **[migrate-ada-protected](migrate-ada-protected.prompt.md)** | Convert Ada protected objects to C++ | ada-cpp-migration | ✅ |
+| **[migrate-ada-task](migrate-ada-task.prompt.md)** | Convert Ada tasks to CyclicTask wrappers | ada-cpp-migration | ✅ |
+
 ### Build & Test
 
 | Prompt | Description | Skills Used | Status |
