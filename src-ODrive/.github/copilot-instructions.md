@@ -215,8 +215,8 @@ Agents MUST ask for clarification when:
 ### Mandatory Reading Before Code Changes
 Before modifying C++ code, agents MUST read and apply:
 1. `.github/instructions/cpp_coding_standards.instructions.md` - C++ style, patterns, naming
-2. `.github/instructions/Header_File_Rules.instructions.md` - Header structure, includes
-3. `.github/instructions/General_Codebase_Standards.instructions.md` - Encoding, comments, safety
+2. `.github/instructions/header_file_rules.instructions.md` - Header structure, includes
+3. `.github/instructions/general_codebase_standards.instructions.md` - Encoding, comments, safety
 
 ### Code Review Checklist
 Every code change MUST verify:

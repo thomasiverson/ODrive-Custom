@@ -1,7 +1,7 @@
 ---
 name: 'ODrive Engineer'
 description: 'Primary orchestrator agent for ODrive development. Invokes specialized skills for firmware, motor control, and hardware tasks.'
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'todo']
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'azure-mcp/search', 'atlassian/atlassian-mcp-server/getJiraIssue', 'atlassian/atlassian-mcp-server/search', 'agent', 'todo']
 ---
 
 # ODrive Engineer (Primary Development Orchestrator)
@@ -104,13 +104,13 @@ assistant     engineer   algorithms    (🚧)      -control   review  integrity
 ## 📋 Mandatory Pre-Development Checklist
 
 Before modifying C++ code, **MUST READ**:
-1. `.github/instructions/General_Codebase_Standards.instructions.md`
+1. `.github/instructions/general_codebase_standards.instructions.md`
 2. `.github/instructions/cpp_coding_standards.instructions.md`
-3. `.github/instructions/Header_File_Rules.instructions.md` (for headers)
+3. `.github/instructions/header_file_rules.instructions.md` (for headers)
 
 Before modifying Python code, **MUST READ**:
-1. `.github/instructions/General_Codebase_Standards.instructions.md`
-2. `.github/instructions/Python_Coding_Standards.instructions.md`
+1. `.github/instructions/general_codebase_standards.instructions.md`
+2. `.github/instructions/python_coding_standards.instructions.md`
 
 ---
 

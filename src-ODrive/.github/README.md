@@ -49,9 +49,9 @@ Skills:                       Skills:
 │
 ├── instructions/                     # 📖 Coding standards & guidelines
 │   ├── cpp_coding_standards.instructions.md
-│   ├── Header_File_Rules.instructions.md
-│   ├── General_Codebase_Standards.instructions.md
-│   └── Python_Coding_Standards.instructions.md
+│   ├── header_file_rules.instructions.md
+│   ├── general_codebase_standards.instructions.md
+│   └── python_coding_standards.instructions.md
 │
 ├── prompts/                          # 💡 Common development workflows
 │   ├── refactor-modern-cpp.prompt.md
@@ -220,9 +220,9 @@ Foundational coding standards and guidelines that all agents must follow.
 | Instruction File | Applies To | Purpose |
 |-----------------|------------|---------|
 | `cpp_coding_standards.instructions.md` | `**/*.{cpp,c,hpp,h,cc}` | C++ style, naming, modern practices |
-| `Header_File_Rules.instructions.md` | `**/*.{h,hpp}` | Header structure, includes, pragmas |
-| `General_Codebase_Standards.instructions.md` | `**` | Encoding, comments, security, naming |
-| `Python_Coding_Standards.instructions.md` | `**/*.py` | Python style, PEP 8, testing |
+| `header_file_rules.instructions.md` | `**/*.{h,hpp}` | Header structure, includes, pragmas |
+| `general_codebase_standards.instructions.md` | `**` | Encoding, comments, security, naming |
+| `python_coding_standards.instructions.md` | `**/*.py` | Python style, PEP 8, testing |
 
 **Mandatory:** Agents MUST read applicable instruction files before generating or modifying code.
 

@@ -77,13 +77,13 @@ What are you working on?
 ## 📖 Must-Read Before Coding
 
 **For C++ code:**
-1. `.github/instructions/General_Codebase_Standards.instructions.md`
+1. `.github/instructions/general_codebase_standards.instructions.md`
 2. `.github/instructions/cpp_coding_standards.instructions.md`
-3. `.github/instructions/Header_File_Rules.instructions.md` (headers only)
+3. `.github/instructions/header_file_rules.instructions.md` (headers only)
 
 **For Python code:**
-1. `.github/instructions/General_Codebase_Standards.instructions.md`
-2. `.github/instructions/Python_Coding_Standards.instructions.md`
+1. `.github/instructions/general_codebase_standards.instructions.md`
+2. `.github/instructions/python_coding_standards.instructions.md`
 
 ---
 

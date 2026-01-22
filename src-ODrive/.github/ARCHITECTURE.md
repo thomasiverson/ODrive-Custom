@@ -162,18 +162,18 @@ All Code Changes
      │
      ├─── C++ Files (.cpp, .hpp, .c, .h)
      │         │
-     │         ├─► General_Codebase_Standards.instructions.md
+     │         ├─► general_codebase_standards.instructions.md
      │         ├─► cpp_coding_standards.instructions.md
-     │         └─► Header_File_Rules.instructions.md (headers only)
+     │         └─► header_file_rules.instructions.md (headers only)
      │
      ├─── Python Files (.py)
      │         │
-     │         ├─► General_Codebase_Standards.instructions.md
-     │         └─► Python_Coding_Standards.instructions.md
+     │         ├─► general_codebase_standards.instructions.md
+     │         └─► python_coding_standards.instructions.md
      │
      └─── All Other Files
                │
-               └─► General_Codebase_Standards.instructions.md
+               └─► general_codebase_standards.instructions.md
 ```
 
 ### Mandatory Pre-Change Checklist
@@ -316,9 +316,9 @@ User Request → Orchestrator
 │
 ├── 📖 instructions/                  ← Coding standards
 │   ├── cpp_coding_standards.instructions.md
-│   ├── Header_File_Rules.instructions.md
-│   ├── General_Codebase_Standards.instructions.md
-│   └── Python_Coding_Standards.instructions.md
+│   ├── header_file_rules.instructions.md
+│   ├── general_codebase_standards.instructions.md
+│   └── python_coding_standards.instructions.md
 │
 ├── 💡 prompts/                       ← Reusable workflows
 │   ├── refactor-modern-cpp.prompt.md

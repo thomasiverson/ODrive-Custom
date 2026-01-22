@@ -2,7 +2,7 @@
 name: audit-todos
 description: 'Scan workspace for TODOs and FIXMEs'
 agent: agent
-model: Claude Sonnet 4.5 (copilot)
+model: Claude Opus 4.5 (copilot)
 tools: ['read']
 ---
 Scan the entire `Firmware/` directory for comments containing "TODO" or "FIXME".

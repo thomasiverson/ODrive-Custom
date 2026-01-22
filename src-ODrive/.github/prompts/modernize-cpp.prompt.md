@@ -2,7 +2,7 @@
 name: modernize-cpp
 description: 'Refactor selection to strictly follow C++17 standards'
 agent: edit
-model: Claude Sonnet 4.5 (copilot)
+model: Claude Opus 4.5 (copilot)
 ---
 Refactor the selected code to strictly follow C++17 standards and the project's coding practices.
 
