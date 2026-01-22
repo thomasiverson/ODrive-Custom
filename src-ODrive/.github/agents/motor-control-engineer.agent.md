@@ -5,14 +5,7 @@ argument-hint: 'Describe the control loop, algorithm, or mathematical challenge.
 target: 'vscode'
 infer: true
 tools:
-  - 'read_file'
-  - 'write_file'
-  - 'grep_search'
-  - 'semantic_search'
-  - 'run_in_terminal'
-  - 'list_dir'
-  - 'file_search'
-  - 'awesome-copilot/list_collections'
+  ['execute', 'awesome-copilot/list_collections']
 handoffs:
   - label: 'Implement in firmware'
     agent: 'Firmware Engineer'

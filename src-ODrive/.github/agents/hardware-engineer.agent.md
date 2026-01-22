@@ -5,11 +5,7 @@ argument-hint: 'Ask about schematics, component selection, or electrical specs..
 target: 'vscode'
 infer: true
 tools:
-  - 'read_file'
-  - 'grep_search'
-  - 'semantic_search'
-  - 'file_search'
-  - 'awesome-copilot/list_collections'
+  ['read', 'awesome-copilot/list_collections']
 handoffs:
   - label: 'Write driver firmware'
     agent: 'Firmware Engineer'
