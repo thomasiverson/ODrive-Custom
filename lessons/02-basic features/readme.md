@@ -132,19 +132,21 @@ Press **Ctrl+Shift+Alt+L** to open a lightweight chat overlay.
   - Use Inline Chat (Ctrl+I) to generate/refactor code, add documentation, or create scripts/tests.
   - Example prompts:
     1. "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in `controller.cpp` to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
-    2. "Optimize the `SVM` function in #file:utils.cpp using SIMD intrinsics or faster math approximations if possible, while maintaining readability and accuracy."
+    2. "Create a new test case using the `doctest` framework that verifies the `SVM` utility function in #file:utils.cpp handles all six sextants correctly with edge-case inputs."
     3. "Add Doxygen-style comments to the `on_measurement` function in #file:foc.cpp, explaining the Clarke transform and the current measurement processing."
     4. "Write a Python script using `odrive.enums` that connects to a generic ODrive, configures the plotter, and graphs `axis0.motor.current_control.Iq_measured` and `axis0.motor.current_control.Iq_setpoint` in real-time."
-    5. "Create a new test case using the `doctest` framework that verifies the `SVM` utility function in #file:utils.cpp handles all six sextants correctly with edge-case inputs."
+    5. "Optimize the `SVM` function in #file:utils.cpp using SIMD intrinsics or faster math approximations if possible, while maintaining readability and accuracy."
 
-- **Agent Mode:**0
+- **Agent Mode:**
   - Use for multi-step, cross-file, or research tasks. Copilot can plan, research, and execute complex changes.
   - Example prompts:
-    1. "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
-    2. "I want to port the `Arduino/ArduinoI2C` library to work with an STM32-based Arduino core. Analyze #file:ArduinoI2C.ino and identify which hardware-specific AVR registers or libraries need to be abstracted."
-    3. "Find all instances of raw `printf` debug statements across the `Firmware/` directory. Replace them with a new macro `ODRIVE_LOG()` that respects a compile-time log level defined in #file:freertos_vars.h."
-    4. "Read #file:docs/error-codes.rst and compare it against the actual error enums defined in #file:odrive-interface.yaml. List any discrepancies where the documentation is missing new error codes added to the code."
-    5. "Create a new test plan in `tools/integration_tests/` that uses the `odrivetool` library. It should sequence a full calibration, enter closed loop control, perform a sinusoidal position move, and verify the final position error is within tolerance."
+    1. "Build the ODrive firmware by running the `tup` build command in the terminal. If there are compilation errors, analyze the error output, identify which files are causing issues, examine the problematic code, suggest fixes, apply them, and then rebuild to verify the fixes work."
+    2. "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
+    3. "Create a new test plan in `tools/integration_tests/` that uses the `odrivetool` library. It should sequence a full calibration, enter closed loop control, perform a sinusoidal position move, and verify the final position error is within tolerance."
+    4. "I want to port the `Arduino/ArduinoI2C` library to work with an STM32-based Arduino core. Analyze #file:ArduinoI2C.ino and identify which hardware-specific AVR registers or libraries need to be abstracted."
+    5. "Find all instances of raw `printf` debug statements across the `Firmware/` directory. Replace them with a new macro `ODRIVE_LOG()` that respects a compile-time log level defined in #file:freertos_vars.h."
+    6. "Read #file:docs/error-codes.rst and compare it against the actual error enums defined in #file:odrive-interface.yaml. List any discrepancies where the documentation is missing new error codes added to the code."
+    
 
 ### 2. Demo: Chat Participants & Slash Commands
 
