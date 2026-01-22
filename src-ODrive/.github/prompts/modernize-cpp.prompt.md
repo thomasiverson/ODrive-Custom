@@ -13,4 +13,4 @@ Changes to apply:
 4. Use `constexpr` for any compile-time constants.
 5. Ensure `const` correctness for variables and methods that don't modify state.
 
-Refer to `CPP_Coding_Practices.instructions.md` for style rules.
+Refer to `cpp_coding_standards.instructions.md` for style rules.

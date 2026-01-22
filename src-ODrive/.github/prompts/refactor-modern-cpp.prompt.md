@@ -1,1 +1,1 @@
-Refactor [Firmware/MotorControl/](../../Firmware/MotorControl/) code to follow modern C++17 best practices as outlined in [CPP_Coding_Practices.instructions.md](../instructions/CPP_Coding_Practices.instructions.md).
+Refactor [Firmware/MotorControl/](../../Firmware/MotorControl/) code to follow modern C++17 best practices as outlined in [cpp_coding_standards.instructions.md](../instructions/cpp_coding_standards.instructions.md).
