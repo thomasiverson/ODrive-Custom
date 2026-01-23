@@ -10,13 +10,14 @@
 
 ## Overview
 
-This lesson teaches you how to customize GitHub Copilot's behavior through planning and steering documents. You'll learn to create persistent coding standards, reusable prompts, specialized agents, and skill folders that ensure consistent, high-quality AI output across your team.
+This lesson teaches you how to customize GitHub Copilot's behavior through planning and steering documents. You'll learn to create persistent coding standards, reusable prompts, specialized agents, skill folders, and use **Plan Mode** to turn project ideas into structured issues. These tools ensure consistent, high-quality AI output across your team.
 
 **What You'll Learn:**
 - Creating `copilot-instructions.md` for repo-wide coding standards
 - Building reusable prompt files (`.prompt.md`) for common workflows
 - Designing custom agents (`.agent.md`) for specialized personas
 - Packaging skills with bundled resources for complex tasks
+- Using **Plan Mode** to turn ideas into structured epics and issues
 
 **Key Concepts:**
 
@@ -26,6 +27,7 @@ This lesson teaches you how to customize GitHub Copilot's behavior through plann
 | **Prompt Files** | Reusable task templates invoked with `/prompt-name` |
 | **Custom Agents** | Specialized personas with specific tools and behaviors |
 | **Agent Skills** | Instruction folders with bundled scripts and resources |
+| **Plan Mode** 🆕 | Turn project ideas into structured epics, features, and tasks |
 | **Context Layering** | Building prompts with constitution → agent → files → constraints |
 
 ---
@@ -42,6 +44,7 @@ This lesson teaches you how to customize GitHub Copilot's behavior through plann
 - [Prompt Files](#3-prompt-files-promptmd)
 - [Custom Agents](#4-custom-agents-agentmd)
 - [Agent Skills](#5-agent-skills-skillmd-folders)
+- [**Plan Mode (Preview)**](#6-plan-mode-preview) 🆕
 - [Speaker Instructions](#speaker-instructions)
 - [Participant Instructions](#participant-instructions)
 - [Practice Exercises](#practice-exercises)
@@ -121,27 +124,29 @@ Front-loading context improves output quality dramatically. Instead of repeatedl
 
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
-| Why Planning Matters | Front-loading context improves output quality | 10 min |
-| copilot-instructions.md | Repo-level coding standards, constraints, patterns | 10 min |
-| Prompt Files (.prompt.md) | Reusable task templates for common workflows | 10 min |
-| Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 12 min |
-| Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 10 min |
-| **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 8 min |
+| Why Planning Matters | Front-loading context improves output quality | 5 min |
+| copilot-instructions.md | Repo-level coding standards, constraints, patterns | 8 min |
+| Prompt Files (.prompt.md) | Reusable task templates for common workflows | 8 min |
+| Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 10 min |
+| Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 8 min |
+| **Plan Mode (Preview)** 🆕 | Turn project ideas into structured issues/epics | 8 min |
+| **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 13 min |
 
 ---
 
 ## Learning Path
 
-This lesson covers six key areas. Work through them sequentially for the best learning experience.
+This lesson covers seven key areas. Work through them sequentially for the best learning experience.
 
 | Topic | What You'll Learn | Estimated Time |
 |-------|-------------------|----------------|
-| Customization Hierarchy | Where files go and when they're loaded | 5 min |
-| Custom Instructions | Repo-level coding standards | 10 min |
-| Prompt Files | Reusable task templates | 10 min |
-| Custom Agents | Specialized personas | 12 min |
-| Agent Skills | Bundled instructions with resources | 10 min |
-| Guided Hands-On | Build a complete customization setup | 13 min |
+| Customization Hierarchy | Where files go and when they're loaded | 3 min |
+| Custom Instructions | Repo-level coding standards | 8 min |
+| Prompt Files | Reusable task templates | 8 min |
+| Custom Agents | Specialized personas | 10 min |
+| Agent Skills | Bundled instructions with resources | 8 min |
+| **Plan Mode (Preview)** 🆕 | Turn ideas into structured issues | 8 min |
+| Guided Hands-On | Build a complete customization setup | 15 min |
 
 ---
 
@@ -341,7 +346,6 @@ python .github\skills\odrive-toolchain\build_firmware.py --list-configs
 - ✅ Build completed successfully
 - 📦 Binary location: `Firmware/build/ODriveFirmware.elf`
 - 📊 Build statistics (size, warnings)
-```
 
 ### Example: Optimize Critical Path Prompt
 
@@ -723,6 +727,168 @@ This skill will provide automated tuning procedures for Field-Oriented Control (
 5. **Test the skill:**
    - Create a prompt that matches skill description
    - Copilot auto-loads skill when relevant
+
+---
+
+## 6. Plan Mode (Preview) 🆕
+
+> **Note:** This feature is in public preview and subject to change.
+
+Plan Mode is GitHub Copilot's agentic issue creation feature that transforms your project ideas into structured epics, features, and tasks. It's the bridge between vision and execution.
+
+### What is Plan Mode?
+
+Plan Mode helps you manage project planning using GitHub Issues with Copilot. You can turn product ideas into structured backlogs with epics, features, and tasks - all through natural language conversation.
+
+### Plan Mode Workflow
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│     Legacy      │────▶│  GHCP reviews   │────▶│    Verifies     │
+│   Application   │     │  and documents  │     │  documentation  │
+│                 │     │    codebase     │     │   complete      │
+└─────────────────┘     └─────────────────┘     └────────┬────────┘
+                                                         │
+┌─────────────────┐     ┌─────────────────┐     ┌────────▼────────┐
+│   Agent mode    │◀────│  GHCP in Plan   │◀────│   Works with    │
+│    follows      │     │  Mode generates │     │   GHCP to       │
+│ plan to implement│     │  plan for PRD   │     │ generate PRD    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+### When to Use Plan Mode
+
+| Scenario | Plan Mode Benefit |
+|----------|-------------------|
+| **New project kickoff** | Turn ideas into structured issues |
+| **Legacy migration** | Break down complex migrations into phases |
+| **Feature planning** | Decompose features into actionable tasks |
+| **Sprint planning** | Generate detailed task breakdowns |
+| **Technical debt** | Organize refactoring into manageable chunks |
+
+### Plan Mode Best Practices
+
+1. **Be Specific in Your Prompt**
+   - Include technology stack
+   - Specify requirements and constraints
+   - Mention team structure if relevant
+
+2. **Iterate on Generated Issues**
+   - Ask Copilot to break down high-level issues
+   - Request improved descriptions with code snippets
+   - Add acceptance criteria and technical details
+
+3. **Use Versioning**
+   - Compare different versions of generated issues
+   - Keep the best aspects from each version
+
+4. **Organize Hierarchically**
+   - Epic → Features → Tasks
+   - Use clear naming conventions
+   - Link related issues appropriately
+
+### Example: Ada to C++ Migration Plan
+
+We've created a complete migration plan using Plan Mode. See the example:
+
+📄 **[Ada to C++ Migration Plan](ada-to-cpp-migration-plan.md)**
+
+This plan demonstrates:
+- **Epic structure** for the overall migration project
+- **Feature breakdown** for each migration phase
+- **Task decomposition** with specific prompts
+- **Pattern mappings** between Ada and C++ constructs
+- **Risk assessment** and timeline estimation
+
+### How to Use Plan Mode
+
+#### Step 1: Start the Conversation
+
+```
+I'm planning to migrate an Ada embedded system to Modern C++. 
+The system has cyclic tasks, protected objects, and strong types.
+Please help me create a structured project plan with epics, features, and tasks.
+```
+
+#### Step 2: Review and Refine
+
+After Copilot generates the initial plan:
+- Click on epics to view details
+- Navigate the issue tree
+- Request breakdowns of high-level items
+
+```
+Can you break down the "Feature: Concurrency Migration" into smaller tasks?
+```
+
+#### Step 3: Improve Descriptions
+
+```
+Can you improve the description for "Task: Migrate Storage protected object"?
+Please include:
+- Technical summary
+- Ada to C++ pattern mapping
+- Implementation steps
+- Code snippets
+- Acceptance criteria
+```
+
+#### Step 4: Create Issues
+
+Once satisfied with the plan:
+1. Review all generated issues
+2. Click "Create all" to create issues in your repository
+3. Assign to team members or Copilot
+
+### Plan Mode + Agents + Skills
+
+Plan Mode works seamlessly with custom agents and skills:
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│                         Plan Mode                              │
+│  Creates structured epics, features, and tasks                 │
+└───────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌───────────────────────────────────────────────────────────────┐
+│                      Custom Agents                             │
+│  @ada-to-cpp-migrator executes specific migration tasks        │
+└───────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌───────────────────────────────────────────────────────────────┐
+│                         Skills                                 │
+│  ada-cpp-migration provides patterns, templates, references    │
+└───────────────────────────────────────────────────────────────┘
+```
+
+### Plan Mode Output Example
+
+```markdown
+## 📋 Epic: Migrate Ada System to C++
+
+### 🎯 Feature 1: Project Analysis
+- Task 1.1: Scan Ada source files
+- Task 1.2: Build dependency graph
+- Task 1.3: Inventory concurrency patterns
+
+### 🎯 Feature 2: Foundation Setup
+- Task 2.1: Create C++ project structure
+- Task 2.2: Implement strong type library
+- Task 2.3: Create task wrapper framework
+
+### 🎯 Feature 3: Type Migration
+- Task 3.1: Migrate HK_Data package
+- Task 3.2: Migrate TTC_Data package
+...
+```
+
+### Further Reading
+
+- [Using GitHub Copilot to create or update issues](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-to-create-issues)
+- [Best practices for using GitHub Copilot to work on tasks](https://docs.github.com/en/copilot/using-github-copilot/best-practices-for-using-github-copilot-to-work-on-tasks)
+- [Asking GitHub Copilot to create a pull request](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-to-create-a-pull-request)
 
 ---
 
