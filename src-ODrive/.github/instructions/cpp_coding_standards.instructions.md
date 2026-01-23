@@ -784,6 +784,125 @@ motors.push_back(Motor(config1));  // Constructs then moves
 
 ---
 
+## Additional Style Guidelines
+
+### Self-Contained Headers
+Every header file should compile on its own without requiring specific include order.
+
+```cpp
+// ✅ GOOD - Self-contained header
+#pragma once
+#include <cstdint>
+#include <string>
+
+class MyClass {
+    std::string name_;  // All dependencies included
+};
+
+// ❌ BAD - Requires user to include dependencies first
+class MyClass {
+    std::string name_;  // Compile error if <string> not included
+};
+```
+
+### Include What You Use (IWYU)
+If a source file uses a symbol, include the header that provides it directly.
+
+```cpp
+// ✅ GOOD - Explicit includes
+#include "foo.h"
+#include <vector>
+std::vector<int> data;  // Always works
+
+// ❌ BAD - Relies on transitive includes
+#include "foo.h"
+std::vector<int> data;  // Works only if foo.h includes <vector>
+```
+
+### Explicit Constructors
+Single-argument constructors should be marked `explicit` to prevent accidental implicit conversions.
+
+```cpp
+// ✅ GOOD - Prevents accidental conversion
+class Voltage {
+    explicit Voltage(float v) : value_(v) {}
+};
+
+void setVoltage(Voltage v);
+setVoltage(5.0f);           // Compile error - good!
+setVoltage(Voltage{5.0f});  // OK - explicit and intentional
+
+// ❌ BAD - Allows accidental conversion
+class Voltage {
+    Voltage(float v) : value_(v) {}  // 5.0f silently converts
+};
+```
+
+### Prefer `using` over `typedef`
+Modern `using` syntax is clearer and works with templates.
+
+```cpp
+// ✅ GOOD - Modern syntax
+using Callback = std::function<void(ErrorCode)>;
+using Buffer = std::array<uint8_t, 256>;
+
+// Template aliases (only possible with 'using')
+template<typename T>
+using Vec = std::vector<T>;
+
+// ❌ OLD STYLE
+typedef std::function<void(ErrorCode)> Callback;
+```
+
+### Prefer Preincrement
+Use `++i` instead of `i++` when the result isn't used. Preincrement is never slower and often faster for iterators.
+
+```cpp
+// ✅ GOOD - Preincrement
+for (auto it = vec.begin(); it != vec.end(); ++it) {
+    // No unnecessary copy
+}
+
+for (int i = 0; i < 10; ++i) {
+    // Consistent style
+}
+
+// ❌ AVOID - Postincrement creates temporary
+for (auto it = vec.begin(); it != vec.end(); it++) {
+    // it++ may copy for complex iterators
+}
+```
+
+### Explicit Copy/Move Semantics
+Every class should explicitly declare what copy/move operations it supports.
+
+```cpp
+// ✅ Copyable class
+class Copyable {
+public:
+    Copyable(const Copyable&) = default;
+    Copyable& operator=(const Copyable&) = default;
+};
+
+// ✅ Move-only class (like std::unique_ptr)
+class MoveOnly {
+public:
+    MoveOnly(MoveOnly&&) = default;
+    MoveOnly& operator=(MoveOnly&&) = default;
+    MoveOnly(const MoveOnly&) = delete;
+    MoveOnly& operator=(const MoveOnly&) = delete;
+};
+
+// ✅ Non-copyable, non-movable (like mutex)
+class NoCopyOrMove {
+public:
+    NoCopyOrMove(const NoCopyOrMove&) = delete;
+    NoCopyOrMove& operator=(const NoCopyOrMove&) = delete;
+};
+```
+
+---
+
 ## Summary Checklist
 
 ### Every Code Change Should:

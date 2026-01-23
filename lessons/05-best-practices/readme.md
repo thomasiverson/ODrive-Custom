@@ -1,4 +1,116 @@
 # Lesson 5: C++ Best Practices with GitHub Copilot
+
+**Session Duration:** 50 minutes  
+**Audience:** Embedded/C++ Developers (Intermediate to Advanced)  
+**Environment:** Windows, VS Code  
+**Extensions:** GitHub Copilot  
+**Source Control:** GitHub/Bitbucket
+
+---
+
+## Overview
+
+This lesson teaches you how to leverage GitHub Copilot for modern C++ development in embedded systems. You'll learn to apply RAII patterns, enforce embedded constraints (no heap, no exceptions), implement RTOS patterns, and generate production-quality code using specialized prompts.
+
+**What You'll Learn:**
+- Modern C++ patterns: RAII, templates, const correctness, move semantics
+- Embedded constraints: static allocation, error codes, volatile, ISR safety
+- RTOS patterns: state machines, HAL abstractions, task synchronization
+- Generating embedded-safe code with Copilot using specialized prompts
+
+**Key Concepts:**
+
+| Concept | Description |
+|---------|-------------|
+| **RAII** | Resource Acquisition Is Initialization - automatic cleanup |
+| **Static Allocation** | No heap (malloc/new) - fixed memory footprint |
+| **Error Codes** | No exceptions - return enum class error codes |
+| **Volatile** | Required for hardware registers and ISR-shared variables |
+| **State Machines** | Task chain pattern for complex control flow |
+| **HAL Abstractions** | Hide vendor HAL details behind clean interfaces |
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Why C++ Best Practices Matter](#why-c-best-practices-matter)
+- [Learning Path](#learning-path)
+- [1. Modern C++ Patterns](#1-modern-c-patterns-12-min)
+- [2. Embedded C++ Specifics](#2-embedded-c-specifics-12-min)
+- [3. RTOS & Hardware Patterns](#3-rtos--hardware-patterns-10-min)
+- [4. Hands-On: Generate Components](#4-hands-on-generate-components-16-min)
+- [5. Unit Testing with Copilot](#5-unit-testing-with-copilot-10-min)
+- [6. Additional Modern C++ Practices](#6-additional-modern-c-practices)
+- [7. C++ Style Guidelines](#7-c-style-guidelines)
+- [Creating Embedded C++ Personas](#creating-embedded-c-personas)
+- [Quick Reference: Mode Selection Guide](#quick-reference-mode-selection-guide)
+
+---
+
+## Prerequisites
+
+Before starting this session, ensure you have:
+
+- ✅ **Completed Planning & Steering Documents** - Understanding of custom instructions and agents
+- ✅ **Completed Agentic Development** - Understanding of context engineering
+- ✅ **Visual Studio Code** with GitHub Copilot extensions installed and enabled
+- ✅ **C++ development experience** - Familiar with classes, templates, STL
+- ✅ **ODrive workspace** - Access to the ODrive firmware codebase
+
+### Verify Your Setup
+
+1. **Check ODrive Firmware access:**
+   - Ensure `src-ODrive/Firmware/` folder is accessible
+   - Verify `MotorControl/`, `Drivers/`, and `fibre-cpp/` subdirectories exist
+
+2. **Verify custom agents are available:**
+   - Open Chat view (Ctrl+Alt+I)
+   - Check agents dropdown for `@ODrive-Engineer`, `@ODrive-QA`
+
+3. **Test code navigation:**
+   - Open `src-ODrive/Firmware/MotorControl/axis.cpp`
+   - Verify Go to Definition (F12) works
+
+---
+
+## Why C++ Best Practices Matter
+
+Embedded C++ has unique constraints that distinguish it from desktop/server development. Copilot can help enforce these constraints when given proper context.
+
+### Embedded vs Desktop C++
+
+| Aspect | Desktop C++ | Embedded C++ |
+|--------|-------------|--------------|
+| Memory | Dynamic allocation OK | Static allocation only |
+| Exceptions | Standard practice | Forbidden (code size, determinism) |
+| RTTI | Available | Usually disabled |
+| Stack | Generous | Very limited (KB) |
+| Timing | Best effort | Hard real-time deadlines |
+
+### Benefits of Copilot for Embedded C++
+
+1. **Consistent Patterns** - Generates RAII wrappers automatically, follows project coding standards
+2. **Reduced Boilerplate** - HAL abstractions from templates, error handling patterns
+3. **Learning Accelerator** - Explains unfamiliar patterns, validates designs against constraints
+
+---
+
+## Learning Path
+
+This lesson covers seven key areas. Work through them sequentially for the best learning experience.
+
+| Section | Topic | What You'll Learn | Time |
+|---------|-------|-------------------|------|
+| 1 | Modern C++ Patterns | RAII, templates, const correctness | 12 min |
+| 2 | Embedded C++ Specifics | Static allocation, error codes, volatile | 12 min |
+| 3 | RTOS & Hardware Patterns | State machines, HAL, task sync | 10 min |
+| 4 | Hands-On Exercises | LED driver, SPI sensor, ring buffer | 16 min |
+| 5 | Unit Testing | doctest, mocking, TDD workflow | 10 min |
+| 6 | Additional Practices | `[[nodiscard]]`, `constexpr`, strong types | — |
+| 7 | Style Guidelines | Naming, headers, formatting | — |
+
 ---
 
 ## 1. Modern C++ Patterns (12 min)
@@ -7,8 +119,8 @@
 **🎯 Copilot Modes: Agent + Chat**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp](../src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp#L380-L400) - Custom `variant` with destructor
-- [src-ODrive/Firmware/doctest/doctest.h](../src-ODrive/Firmware/doctest/doctest.h#L1483-L1510) - `ContextScope` RAII pattern
+- [src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp](../../src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp#L380-L400) - Custom `variant` with destructor
+- [src-ODrive/Firmware/doctest/doctest.h](../../src-ODrive/Firmware/doctest/doctest.h#L1483-L1510) - `ContextScope` RAII pattern
 
 **💬 Chat Mode Prompt (Analysis):**
 ```
@@ -54,8 +166,8 @@ Acceptance Criteria:
 **🎯 Copilot Modes: Chat + Agent**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp](../src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp#L113-L140) - `integer_sequence`, type traits
-- [src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp](../src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp#L980-L1010) - Template iterators
+- [src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp](../../src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp#L113-L140) - `integer_sequence`, type traits
+- [src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp](../../src-ODrive/Firmware/fibre-cpp/include/fibre/cpp_utils.hpp#L980-L1010) - Template iterators
 
 **💬 Chat Mode Prompt (Explain Pattern):**
 ```
@@ -96,7 +208,7 @@ Acceptance Criteria:
 **🎯 Copilot Modes: Chat + Agent**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp](../src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp#L70-L80) - Const accessors
+- [src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp](../../src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp#L70-L80) - Const accessors
 
 **💬 Chat Mode Prompt (Audit):**
 ```
@@ -141,7 +253,7 @@ Acceptance Criteria:
 **🎯 Copilot Modes: Agent + Chat**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/fibre-cpp/fibre.cpp](../src-ODrive/Firmware/fibre-cpp/fibre.cpp#L56-L75) - `TheInstance<T>` singleton
+- [src-ODrive/Firmware/fibre-cpp/fibre.cpp](../../src-ODrive/Firmware/fibre-cpp/fibre.cpp#L56-L75) - `TheInstance<T>` singleton
 ```cpp
 template<typename T>
 struct TheInstance {
@@ -197,8 +309,8 @@ Acceptance Criteria:
 **🎯 Copilot Modes: Chat + Agent**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/MotorControl/encoder.cpp](../src-ODrive/Firmware/MotorControl/encoder.cpp#L329-L450) - `set_error()`, returns `bool`
-- [src-ODrive/Firmware/MotorControl/axis.cpp](../src-ODrive/Firmware/MotorControl/axis.cpp#L443-L450) - State machine error handling
+- [src-ODrive/Firmware/MotorControl/encoder.cpp](../../src-ODrive/Firmware/MotorControl/encoder.cpp#L329-L450) - `set_error()`, returns `bool`
+- [src-ODrive/Firmware/MotorControl/axis.cpp](../../src-ODrive/Firmware/MotorControl/axis.cpp#L443-L450) - State machine error handling
 
 **💬 Chat Mode Prompt (Design Error System):**
 ```
@@ -250,8 +362,8 @@ Acceptance Criteria:
 **🎯 Copilot Mode: Inline + Chat**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/Board/v3/board.cpp](../src-ODrive/Firmware/Board/v3/board.cpp#L463-L480) - `volatile` timestamps
-- [src-ODrive/Firmware/Board/v3/Src/stm32f4xx_it.c](../src-ODrive/Firmware/Board/v3/Src/stm32f4xx_it.c#L114-L125) - Direct register access
+- [src-ODrive/Firmware/Board/v3/board.cpp](../../src-ODrive/Firmware/Board/v3/board.cpp#L463-L480) - `volatile` timestamps
+- [src-ODrive/Firmware/Board/v3/Src/stm32f4xx_it.c](../../src-ODrive/Firmware/Board/v3/Src/stm32f4xx_it.c#L114-L125) - Direct register access
 
 **Inline Completion:**
 ```cpp
@@ -277,8 +389,8 @@ Check:
 **🎯 Copilot Mode: Inline + Edit**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp](../src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp#L188-L230) - EXTI interrupt handlers
-- [src-ODrive/Firmware/Drivers/STM32/stm32_system.h](../src-ODrive/Firmware/Drivers/STM32/stm32_system.h#L23-L40) - Critical sections
+- [src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp](../../src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp#L188-L230) - EXTI interrupt handlers
+- [src-ODrive/Firmware/Drivers/STM32/stm32_system.h](../../src-ODrive/Firmware/Drivers/STM32/stm32_system.h#L23-L40) - Critical sections
 
 **Inline Prompt:**
 ```cpp
@@ -306,7 +418,7 @@ Requirements:
 ### State Machines
 **🎯 Copilot Modes: Chat + Agent**
 
-**The Crown Jewel:** [src-ODrive/Firmware/MotorControl/axis.cpp](../src-ODrive/Firmware/MotorControl/axis.cpp#L454-L600)
+**The Crown Jewel:** [src-ODrive/Firmware/MotorControl/axis.cpp](../../src-ODrive/Firmware/MotorControl/axis.cpp#L454-L600)
 
 **Key Pattern:**
 ```cpp
@@ -384,8 +496,8 @@ Acceptance Criteria:
 **🎯 Copilot Modes: Chat + Agent**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp](../src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp#L7-L60) - GPIO HAL
-- [src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp](../src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp#L9-L90) - SPI HAL
+- [src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp](../../src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp#L7-L60) - GPIO HAL
+- [src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp](../../src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp#L9-L90) - SPI HAL
 
 **💬 Chat Mode Prompt (Learn Pattern):**
 ```
@@ -449,8 +561,8 @@ Acceptance Criteria:
 **🎯 Copilot Mode: Inline + Chat**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/MotorControl/main.cpp](../src-ODrive/Firmware/MotorControl/main.cpp#L826-L850) - Thread creation
-- [src-ODrive/Firmware/MotorControl/low_level.cpp](../src-ODrive/Firmware/MotorControl/low_level.cpp#L388-L410) - Polling thread
+- [src-ODrive/Firmware/MotorControl/main.cpp](../../src-ODrive/Firmware/MotorControl/main.cpp#L826-L850) - Thread creation
+- [src-ODrive/Firmware/MotorControl/low_level.cpp](../../src-ODrive/Firmware/MotorControl/low_level.cpp#L388-L410) - Polling thread
 
 **Inline Example:**
 ```cpp
@@ -824,7 +936,7 @@ Include:
 - Works on host and target
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/doctest/doctest.h](../src-ODrive/Firmware/doctest/doctest.h) - ODrive's test framework
+- [src-ODrive/Firmware/doctest/doctest.h](../../src-ODrive/Firmware/doctest/doctest.h) - ODrive's test framework
 
 **💬 Chat Mode Prompt (Generate Tests):**
 ```
@@ -1171,6 +1283,31 @@ Rules:
 5. Keep float/double for calculations (unless fixed-point needed)
 
 Show the conversion with rationale for each change.
+```
+
+---
+
+## 7. C++ Style Guidelines
+
+> 📖 **Reference:** See [cpp_coding_standards.instructions.md](../../src-ODrive/.github/instructions/cpp_coding_standards.instructions.md) for complete C++ coding standards.
+
+**Quick Reference - Naming Conventions:**
+
+| Entity | Style | Example |
+|--------|-------|---------|
+| Types | PascalCase | `MotorController` |
+| Functions | camelCase | `calculatePosition()` |
+| Variables | camelCase | `encoderPosition` |
+| Members | camelCase + `_` | `speed_` |
+| Constants | kPascalCase | `kMaxVoltage` |
+
+**💬 Chat Prompt - Apply Standards:**
+```
+Review this file against our C++ coding standards:
+#file:src-ODrive/.github/instructions/cpp_coding_standards.instructions.md
+#file:src-ODrive/Firmware/MotorControl/encoder.cpp
+
+Check for violations and suggest fixes.
 ```
 
 ---
@@ -2140,3 +2277,79 @@ Generate:
 3. Optional improvements
 4. Testing suggestions
 ```
+
+---
+
+## Quick Reference: Mode Selection Guide
+
+Use this guide to choose the right Copilot mode for each task:
+
+| Task | Mode | Why |
+|------|------|-----|
+| Understand existing code | 💬 Chat | Analysis, explanations |
+| Review for issues | 💬 Chat | Audit, find violations |
+| Generate new files | 🤖 Agent | Multi-file creation |
+| Refactor code | 🤖 Agent | Cross-file changes |
+| Complete patterns | ⌨️ Inline | Quick snippets |
+| Fix specific issues | ✏️ Edit | Targeted changes |
+
+### Common Prompt Patterns
+
+**Analysis Prompt:**
+```
+Analyze [aspect] in:
+#file:path/to/file
+
+Check for:
+1. [Issue type 1]
+2. [Issue type 2]
+3. [Issue type 3]
+
+Provide prioritized recommendations.
+```
+
+**Generation Prompt:**
+```
+@workspace Create [component] following patterns from:
+#file:reference/file.hpp
+
+Requirements:
+- [Requirement 1]
+- [Requirement 2]
+
+Files to create:
+- path/to/new_file.hpp
+- path/to/new_file.cpp
+
+Acceptance Criteria:
+- [Criterion 1]
+- [Criterion 2]
+```
+
+---
+
+## Summary: Key Takeaways
+
+After completing this lesson, you should be able to:
+
+| Skill | Description |
+|-------|-------------|
+| **Apply RAII** | Automatic resource management with destructors |
+| **Enforce Static Allocation** | Use `std::array`, avoid `new`/`malloc` |
+| **Use Error Codes** | Return `enum class` instead of exceptions |
+| **Mark Volatile** | Identify ISR-shared and hardware register variables |
+| **Implement State Machines** | Follow task chain pattern from Axis class |
+| **Create HAL Abstractions** | Hide vendor-specific code behind clean interfaces |
+| **Generate Tests** | Use `/tests` command with doctest framework |
+| **Apply Style Guidelines** | Reference [cpp_coding_standards.instructions.md](../../src-ODrive/.github/instructions/cpp_coding_standards.instructions.md) |
+
+### Next Steps
+
+1. **Practice** - Complete the hands-on exercises with your own variations
+2. **Create Personas** - Build team-specific personas for your projects
+3. **Integrate** - Add validation to your CI/CD pipeline
+4. **Share** - Contribute prompts that work well for your team
+
+---
+
+*This lesson is part of the GitHub Copilot for C++ Developers training curriculum.*
