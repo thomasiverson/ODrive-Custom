@@ -766,8 +766,23 @@ Acceptance Criteria:
 
 ---
 
-## 5. Unit Testing with `/tests`
+## 5. Unit Testing with Copilot (10 min)
 
+> **📌 Note:** This section addresses the agenda TODO: "Don't forget unit testing!"
+
+### Why Unit Testing Matters for Embedded
+
+| Benefit | Embedded-Specific Value |
+|---------|------------------------|
+| **Early bug detection** | Find logic errors without hardware |
+| **Regression prevention** | Catch broken motor control after refactors |
+| **Algorithm validation** | Verify PID, FOC, filters work correctly |
+| **Hardware independence** | Test on dev machine, deploy to target |
+| **Documentation** | Tests show how code should be used |
+
+---
+
+### Using `/tests` Command
 **🎯 Copilot Mode: Chat with `/tests` command**
 
 **Example 1: State Machine Tests**
@@ -795,6 +810,367 @@ Include:
 - Test interrupt subscription
 - Test edge case handling
 - Test thread safety
+```
+
+---
+
+### doctest Framework for Embedded
+**🎯 Copilot Modes: Chat + Agent**
+
+**Why doctest for Embedded:**
+- Header-only (easy integration)
+- Fast compilation
+- Zero heap allocations in test infrastructure
+- Works on host and target
+
+**Files to demonstrate:**
+- [src-ODrive/Firmware/doctest/doctest.h](../src-ODrive/Firmware/doctest/doctest.h) - ODrive's test framework
+
+**💬 Chat Mode Prompt (Generate Tests):**
+```
+Generate doctest unit tests for this motor controller class:
+#file:src-ODrive/Firmware/MotorControl/motor.cpp
+
+Follow these embedded testing practices:
+1. Use TEST_CASE with descriptive names
+2. Use SUBCASE for related scenarios
+3. Mock hardware dependencies (don't touch real registers)
+4. Test boundary conditions (min/max current, zero velocity)
+5. Test error conditions (overcurrent, encoder fault)
+6. Use REQUIRE for critical checks, CHECK for non-fatal
+7. No heap allocation in tests
+8. Test should run in < 10ms each
+
+Structure:
+TEST_CASE("Motor phase current calculation") {
+    SUBCASE("positive current") { ... }
+    SUBCASE("zero current") { ... }
+    SUBCASE("negative current") { ... }
+    SUBCASE("overcurrent protection") { ... }
+}
+```
+
+**🤖 Agent Mode Prompt (Full Test Suite):**
+```
+@workspace Create comprehensive test suite for encoder module
+
+Context: #file:src-ODrive/Firmware/MotorControl/encoder.hpp
+         #file:src-ODrive/Firmware/MotorControl/encoder.cpp
+
+Test Categories:
+1. Initialization tests
+   - Valid config accepted
+   - Invalid config rejected
+   - Default values correct
+
+2. Position tracking tests
+   - Forward count
+   - Backward count
+   - Wraparound at limits
+   - Index pulse detection
+
+3. Error condition tests
+   - Encoder fault detection
+   - Missing index pulse
+   - Invalid state transitions
+
+4. Calibration tests
+   - Offset calibration completes
+   - Calibration timeout handled
+   - Direction detection works
+
+Files to create:
+- Tests/encoder_test.cpp
+
+Test Infrastructure:
+- Create MockEncoderHW class for hardware abstraction
+- Use static allocation for mock objects
+- Include timing tests (verify ISR timing assumptions)
+
+Acceptance Criteria:
+- >80% code coverage on encoder.cpp
+- All error paths tested
+- Tests run in < 1 second total
+- No flaky tests
+```
+
+---
+
+### Mocking Hardware for Host Testing
+**🎯 Copilot Mode: Chat + Agent**
+
+**💬 Chat Mode Prompt (Design Mocks):**
+```
+Design a mocking strategy for testing STM32 drivers on host:
+#file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
+
+Requirements:
+1. Mock GPIO_TypeDef structure
+2. Simulate register reads/writes
+3. Capture callback invocations
+4. Inject errors (timeout, busy)
+
+Provide:
+- MockGpio class definition
+- Example usage in test
+- How to switch between mock and real HAL
+```
+
+**🤖 Agent Mode Prompt (Create Mock Framework):**
+```
+@workspace Create GPIO mock framework for unit testing
+
+Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
+
+MockGpio Requirements:
+```cpp
+class MockGpioPort {
+public:
+    // Simulated registers
+    uint32_t IDR{0};   // Input data register
+    uint32_t ODR{0};   // Output data register
+    
+    // Capture write operations
+    std::vector<uint16_t> write_history;
+    
+    // Control methods for tests
+    void simulate_input(uint16_t pin_mask, bool state);
+    void verify_output(uint16_t pin_mask, bool expected);
+    void clear_history();
+    
+    // Inject callback triggers
+    void trigger_interrupt(uint16_t pin_mask, bool rising);
+};
+
+class MockGpio : public Stm32Gpio {
+    // Override port_ to point to mock
+};
+```
+
+Files to create:
+- Tests/mocks/mock_gpio.hpp
+- Tests/mocks/mock_gpio.cpp
+
+Integration:
+- Compile with -DTESTING to use mocks
+- Maintain same API as real GPIO
+- Add assertion helpers for test verification
+```
+
+---
+
+### Test-Driven Development Workflow
+**🎯 Copilot Mode: Agent Mode**
+
+**🤖 Agent Mode Prompt (TDD Cycle):**
+```
+@workspace Implement PID controller using TDD approach
+
+Step 1 - Write failing tests first:
+```cpp
+TEST_CASE("PID Controller") {
+    SUBCASE("proportional only") {
+        PidController pid(1.0f, 0.0f, 0.0f);
+        float output = pid.update(10.0f, 0.0f, 0.001f);
+        REQUIRE(output == doctest::Approx(10.0f));
+    }
+    
+    SUBCASE("integral accumulation") {
+        PidController pid(0.0f, 1.0f, 0.0f);
+        pid.update(1.0f, 0.0f, 1.0f);  // error=1 for 1 sec
+        float output = pid.update(1.0f, 0.0f, 1.0f);
+        REQUIRE(output == doctest::Approx(2.0f));  // accumulated
+    }
+    
+    SUBCASE("derivative response") {
+        PidController pid(0.0f, 0.0f, 1.0f);
+        float output = pid.update(10.0f, 0.0f, 0.01f);
+        REQUIRE(output == doctest::Approx(1000.0f)); // 10/0.01
+    }
+    
+    SUBCASE("output clamping") {
+        PidController pid(100.0f, 0.0f, 0.0f);
+        pid.set_output_limits(-10.0f, 10.0f);
+        float output = pid.update(1.0f, 0.0f, 0.001f);
+        REQUIRE(output == doctest::Approx(10.0f));  // clamped
+    }
+    
+    SUBCASE("anti-windup") {
+        PidController pid(0.0f, 1.0f, 0.0f);
+        pid.set_output_limits(-10.0f, 10.0f);
+        // Saturate integral
+        for (int i = 0; i < 100; i++) {
+            pid.update(100.0f, 0.0f, 0.1f);
+        }
+        // Error reverses - should recover quickly
+        float output = pid.update(-100.0f, 0.0f, 0.1f);
+        REQUIRE(output < 10.0f);  // Anti-windup prevents overshoot
+    }
+}
+```
+
+Step 2 - Implement minimal code to pass tests
+Step 3 - Refactor while keeping tests green
+
+Files to create:
+- Firmware/MotorControl/pid_controller.hpp
+- Firmware/MotorControl/pid_controller.cpp
+- Tests/pid_controller_test.cpp
+
+Constraints:
+- No dynamic allocation
+- Fixed-point option for targets without FPU
+- constexpr constructor if possible
+```
+
+---
+
+## 6. Additional Modern C++ Practices
+
+### `[[nodiscard]]` for Error Codes
+**🎯 Copilot Mode: Inline + Chat**
+
+**Why It Matters:**
+```cpp
+// ❌ BAD: Ignoring error is silent
+gpio.config(GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+
+// ✅ GOOD: Compiler warns if return value ignored
+[[nodiscard]] bool config(uint32_t mode, uint32_t pull);
+
+// Now this produces warning:
+gpio.config(GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);  // Warning: ignoring return value
+```
+
+**💬 Chat Mode Prompt (Audit Codebase):**
+```
+Audit this file for missing [[nodiscard]] attributes:
+#file:src-ODrive/Firmware/MotorControl/encoder.hpp
+
+Add [[nodiscard]] to functions that:
+1. Return error codes or bool success
+2. Return computed values that shouldn't be ignored
+3. Return references to internal state
+
+Provide a diff showing where to add [[nodiscard]].
+```
+
+---
+
+### `constexpr` for Compile-Time Computation
+**🎯 Copilot Mode: Chat + Agent**
+
+**Why It Matters for Embedded:**
+```cpp
+// ❌ BAD: Computed at runtime, wastes cycles
+float pi = 3.14159f;
+float tau = 2.0f * pi;
+
+// ✅ GOOD: Computed at compile time, zero runtime cost
+constexpr float kPi = 3.14159f;
+constexpr float kTau = 2.0f * kPi;
+
+// Even complex calculations can be constexpr
+constexpr uint32_t calculate_timer_reload(uint32_t freq_hz, uint32_t timer_clock) {
+    return timer_clock / freq_hz - 1;
+}
+constexpr uint32_t kPwmReload = calculate_timer_reload(20000, 168000000);  // Computed at compile time!
+```
+
+**💬 Chat Mode Prompt (Identify Opportunities):**
+```
+Identify constexpr opportunities in:
+#file:src-ODrive/Firmware/MotorControl/motor.hpp
+
+Find:
+1. Constants that could be constexpr
+2. Simple calculations done at runtime that could be compile-time
+3. Lookup tables that could be constexpr generated
+4. Configuration values that are known at compile time
+
+Show before/after for each improvement.
+```
+
+---
+
+### Strong Types (Type Safety)
+**🎯 Copilot Mode: Chat + Agent**
+
+**The Problem:**
+```cpp
+// ❌ DANGEROUS: Easy to mix up parameters
+void set_motor_params(float current, float voltage, float velocity);
+
+set_motor_params(24.0f, 10.0f, 100.0f);  // Wait, is that volts or amps first?
+```
+
+**The Solution:**
+```cpp
+// ✅ SAFE: Units are part of the type
+struct Amps { float value; };
+struct Volts { float value; };
+struct RadPerSec { float value; };
+
+void set_motor_params(Amps current, Volts voltage, RadPerSec velocity);
+
+set_motor_params(Amps{10.0f}, Volts{24.0f}, RadPerSec{100.0f});  // Clear and safe!
+```
+
+**💬 Chat Mode Prompt (Design Strong Types):**
+```
+Design a strong type system for motor control units:
+
+Units needed:
+- Current (Amps, milliamps)
+- Voltage (Volts)  
+- Velocity (rad/s, RPM)
+- Position (radians, encoder counts)
+- Time (seconds, microseconds)
+- Temperature (Celsius, Kelvin)
+
+Requirements:
+1. Zero runtime overhead (constexpr, inline)
+2. Compile error if wrong unit used
+3. Explicit conversion between compatible units
+4. Arithmetic operators that make physical sense:
+   - Volts / Amps = Ohms (ok)
+   - Amps + Volts = ??? (compile error)
+5. Doxygen documentation
+
+Provide complete implementation following ODrive patterns.
+```
+
+---
+
+### Fixed-Width Integers
+**🎯 Copilot Mode: Inline + Chat**
+
+**Why It Matters:**
+```cpp
+// ❌ BAD: 'int' size varies by platform (16, 32, or 64 bit)
+int counter;
+unsigned data;
+
+// ✅ GOOD: Explicit sizes, portable embedded code
+int32_t counter;
+uint32_t data;
+uint8_t register_value;
+int16_t adc_sample;
+```
+
+**💬 Chat Mode Prompt (Convert Codebase):**
+```
+Convert this file to use fixed-width integers:
+#file:src-ODrive/Firmware/MotorControl/trapTraj.cpp
+
+Rules:
+1. Use <cstdint> types: int8_t, int16_t, int32_t, int64_t, uint8_t, etc.
+2. Choose sizes based on actual range needed
+3. Document why each size was chosen
+4. Use size_t for array indices
+5. Keep float/double for calculations (unless fixed-point needed)
+
+Show the conversion with rationale for each change.
 ```
 
 ---
