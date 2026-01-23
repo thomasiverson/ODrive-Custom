@@ -534,7 +534,7 @@ Velocity Trend: ▆▇█ (improving)
 - [ ] Knowledge base articles created for common questions
 - [ ] Support team trained on new feature
 - [ ] Community announcement posted (Discord, forum, mailing list)
-- [ ] Project files archived in company wiki
+- [ ] Project files archived in project wiki
 - [ ] GitHub Project board closed
 - [ ] Team celebration scheduled! 🎉
 
