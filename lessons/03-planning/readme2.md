@@ -288,106 +288,135 @@ Use variables:
 - ${input:variableName:placeholder text}
 ```
 
-### Example: State Machine Generator
+### Example: Build Firmware Prompt
+
+This prompt builds ODrive firmware for specific board variants using the toolchain skill.
+
+**File:** `.github/prompts/build-firmware.prompt.md`
 
 ```markdown
----
-description: Generate embedded state machine with task chain pattern
-name: generate-state-machine
-argument-hint: StateMachineName
-agent: agent
-tools: ['edit_files', 'create_file', 'codebase']
----
+# Build Firmware
 
-# Generate State Machine
+Build ODrive firmware for specific board variants and configurations.
 
-Create a state machine following ODrive's task chain pattern.
+## Instructions
 
-## Requirements
-- State machine name: ${input:name:StateMachineName}
-- Use enum class for states
-- Implement FreeRTOS task with osDelay
-- Add entry/exit actions for each state
-- Include error state with recovery path
-- Static allocation only, no exceptions
+Use the **odrive-toolchain** skill to build firmware with proper board configuration.
 
-## Reference Pattern
-See #file:src-ODrive/Firmware/MotorControl/axis.cpp for the task chain pattern.
+### Workflow Hierarchy
 
-## Output Files
-- ${input:name}_controller.hpp (class definition)
-- ${input:name}_controller.cpp (implementation)
+```
+copilot-instructions.md (Constitution)
+        ↓
+  ODrive-Toolchain.agent (Orchestrator)
+        ↓
+  odrive-toolchain skill
+        ↓
+  build_firmware.py + setup-env.ps1
 ```
 
-### Example: Generate React Form Component
+### Commands
+
+```powershell
+# Step 1: Source environment (Windows PowerShell)
+. .github\skills\odrive-toolchain\setup-env.ps1
+
+# Step 2: Build using the skill script
+python .github\skills\odrive-toolchain\build_firmware.py board-v3.6-56V
+
+# List available configurations
+python .github\skills\odrive-toolchain\build_firmware.py --list-configs
+```
+
+### Available Board Variants
+
+| Board | Config String | Voltage | Notes |
+|-------|--------------|---------|-------|
+| **v3.6** | `board-v3.6-56V` | 56V | Current production |
+| **v3.5** | `board-v3.5-24V` | 24V | Legacy |
+
+### Output
+
+**On Success:**
+- ✅ Build completed successfully
+- 📦 Binary location: `Firmware/build/ODriveFirmware.elf`
+- 📊 Build statistics (size, warnings)
+```
+
+### Example: Optimize Critical Path Prompt
+
+This prompt optimizes performance-critical code in real-time execution paths.
+
+**File:** `.github/prompts/optimize-critical.prompt.md`
 
 ```markdown
 ---
-description: Generate a React form component with validation
-name: create-react-form
-argument-hint: formName=MyForm
+name: optimize-critical
+description: 'Optimize critical path code for performance'
 agent: edit
-tools: ['edit_files', 'create_file']
 ---
 
-# Generate React Form Component
+Analyze the selected code block, which is part of a critical real-time execution path.
 
-Create a React form component with the following requirements:
+1. Identify any potential performance bottlenecks:
+   - Division operations
+   - Heavy trig functions
+   - Memory allocation
 
-1. Form name: ${input:formName:FormName}
-2. Include form validation using Formik
-3. Use Material-UI components
-4. Include TypeScript types
-5. Add unit tests using React Testing Library
+2. Suggest 2-3 specific optimizations to reduce cycle count or memory usage.
 
-The component should:
-- Handle form submission
-- Display validation errors
-- Support controlled inputs
-- Be accessible (ARIA labels)
+3. Apply the changes if they are safe and don't reduce readability significantly.
+
+4. **Strict rule**: No dynamic memory allocation (`new`, `malloc`, `std::vector` resizing) allowed.
+
+5. Avoid unnecessary object copies; pass heavy objects by `const` reference where possible.
 ```
 
-### Example: Security Review
+**Usage:**
+1. Select a code block in the editor
+2. Type `/optimize-critical` in Chat view
+3. Copilot analyzes and suggests optimizations
+
+### Example: Embedded Safety Check Prompt
+
+This prompt performs safety analysis on embedded firmware modules.
+
+**File:** `.github/prompts/check-safety.prompt.md`
 
 ```markdown
 ---
-description: Perform security review of REST API endpoints
-name: security-review
-agent: ask
-tools: ['search', 'codebase', 'usages']
+name: check-safety
+description: 'Perform a safety check on a specific module'
+agent: agent
 ---
 
-# REST API Security Review
+Perform a safety analysis on the specified module file.
 
-Analyze the selected REST API code for security vulnerabilities:
+Check for:
+1. **Race Conditions**: Shared variables accessed without locks/interrupt protection.
+2. **Null Dereferences**: Pointers used without checking.
+3. **Floating Point Safety**: Division by zero or likely NaN propagation.
+4. **Deadlocks**: Potential lock ordering issues.
 
-1. **Authentication & Authorization**
-   - Check for proper authentication on all endpoints
-   - Verify authorization logic
-   - Look for privilege escalation risks
-
-2. **Input Validation**
-   - Identify missing input validation
-   - Check for SQL injection risks
-   - Look for XSS vulnerabilities
-
-3. **Data Exposure**
-   - Check for sensitive data in responses
-   - Verify data sanitization
-   - Look for information leakage
-
-4. **Rate Limiting**
-   - Check for rate limiting on endpoints
-   - Verify DoS protection
-
-Provide specific findings with code locations and remediation steps.
+Output a Markdown report with a "Risk Level" (Low/Medium/High) for each finding.
 ```
+
+**Usage:**
+1. Open a firmware source file (e.g., `motor.cpp`)
+2. Type `/check-safety` in Chat view
+3. Copilot analyzes the code and produces a safety report
 
 ### Using Prompt Files
 
-1. Type `/generate-state-machine` in Chat view
-2. Provide the state machine name when prompted
-3. Copilot generates files following the template
+**Example with Build Firmware:**
+1. Type `/build-firmware` in Chat view
+2. Copilot sources environment and builds for specified board
+3. Reports build status and output files
+
+**Example with Optimize Critical:**
+1. Select performance-critical code in the editor
+2. Type `/optimize-critical` in Chat view
+3. Copilot analyzes and applies safe optimizations
 
 ### Create a Prompt File
 
@@ -436,146 +465,98 @@ handoffs:
 Your specialized instructions go here...
 ```
 
-### Example: Embedded Expert Agent
+### Example: ODrive Engineer Agent
+
+The primary development orchestrator for ODrive firmware.
+
+**File:** `.github/agents/ODrive-Engineer.agent.md`
 
 ```markdown
 ---
-description: Expert in embedded C/C++ and RTOS development
-name: Embedded-Expert
-tools: ['search', 'edit_files', 'create_file', 'codebase']
-model: Claude Sonnet 4
+name: 'ODrive Engineer'
+description: 'Primary orchestrator agent for ODrive development. Invokes specialized skills for firmware, motor control, and hardware tasks.'
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'agent', 'todo']
 ---
 
-# Embedded Systems Expert
+# ODrive Engineer (Primary Development Orchestrator)
 
-You are an expert in embedded C/C++ development with deep knowledge of 
-RTOS, hardware abstraction layers, and real-time constraints.
+You are the **primary development orchestrator** for the ODrive Development System.
 
-## Embedded Constraints
+## Quick Reference
 
-**Always consider:**
-- No dynamic memory allocation
-- No exceptions
-- Static allocation only
-- Interrupt safety
-- Real-time requirements
-- Memory constraints
-- Power consumption
+| Attribute | Value |
+|-----------|-------|
+| **Role** | Primary Development Orchestrator |
+| **Domains** | Firmware, Motor Control, Hardware |
+| **Skills** | odrive-toolchain, control-algorithms, foc-tuning |
+| **Invocation** | `@odrive-engineer [request]` |
 
-## Code Patterns
+## Skills Hierarchy
 
-**Use these patterns:**
-- State machines for complex logic
-- Hardware abstraction layers (HAL)
-- Volatile for hardware registers
-- Const correctness
-- RAII patterns (C++)
-
-## MISRA Compliance
-
-**Follow MISRA C/C++ guidelines:**
-- No goto statements
-- Single return point per function
-- Explicit type conversions
-- No recursion
-- Limited nesting depth
+```
+copilot-instructions.md (Constitution)
+        ↓
+  ODrive-Engineer.agent (You - Primary Orchestrator)
+        ↓
+  ┌───────┴────────┬──────────┬───────────┐
+  ↓               ↓          ↓          ↓
+odrive-       odrive-    control-   foc-tuning
+toolchain       ops      algorithms    (🚧)
+  (✅)          (✅)        (🚧)
 ```
 
-### Example: Planning Agent with Handoffs
+## Safety
+
+**CRITICAL:** Before ANY hardware operation (flashing, calibration, motor operation),
+provide clear warnings and wait for explicit user confirmation.
+```
+
+**Usage:**
+- Invoke with `@odrive-engineer` in Chat view
+- Automatically routes requests to appropriate skills
+
+### Example: ODrive Toolchain Agent
+
+Handles build, test, and code navigation operations.
+
+**File:** `.github/agents/ODrive-Toolchain.agent.md`
 
 ```markdown
 ---
-description: Generate implementation plans for features
-name: Planner
-tools: ['search', 'fetch', 'githubRepo', 'usages', 'codebase']
-model: Claude Sonnet 4
-handoffs:
-  - label: Start Implementation
-    agent: agent
-    prompt: Implement the plan outlined above.
-    send: false
+name: 'ODrive Toolchain'
+description: 'Build, compile, test, and code navigation for ODrive firmware development'
+tools: ['execute', 'read', 'search']
 ---
 
-# Planning Instructions
+# ODrive Toolchain Agent
 
-You are in planning mode. Generate implementation plans WITHOUT making 
-code edits.
+You handle **build, test, and code navigation** for ODrive firmware.
 
-## Plan Structure
+## Quick Reference
 
-1. **Overview**: Brief description of the feature/task
-2. **Requirements**: Detailed requirements list
-3. **Architecture**: High-level design decisions
-4. **Implementation Steps**: Step-by-step plan
-5. **Testing Strategy**: How to verify
-6. **Risks & Considerations**: Potential issues
+| Attribute | Value |
+|-----------|-------|
+| **Role** | Build & Test Operations |
+| **Invocation** | `@odrive-toolchain [request]` |
+| **Skill** | `odrive-toolchain` |
 
-## Process
+## What You Do
 
-1. Analyze existing codebase using #tool:codebase
-2. Research similar implementations using #tool:githubRepo
-3. Identify affected files using #tool:usages
-4. Generate comprehensive plan
-5. Don't make any code changes - planning only
+| Operation | Command |
+|-----------|--------|
+| **Build firmware** | `python .github/skills/odrive-toolchain/build_firmware.py board-v3.6-56V` |
+| **Find symbols** | `python .github/skills/odrive-toolchain/search_symbol.py Controller` |
+| **List errors** | `python .github/skills/odrive-toolchain/list_errors.py --filter encoder` |
+
+## Safety
+
+✅ **Safe**: Build, search, list errors, run software tests  
+⚠️ **Confirmation Required**: Flash firmware, HIL tests
 ```
 
-### Example: Code Review Agent
-
-```markdown
----
-description: Perform thorough code reviews
-name: Code-Reviewer
-tools: ['search', 'codebase', 'usages']
-model: Claude Sonnet 4
-handoffs:
-  - label: Fix Issues
-    agent: edit
-    prompt: Fix the issues identified in the code review above.
-    send: false
----
-
-# Code Review Instructions
-
-Perform comprehensive code review focusing on:
-
-## Review Checklist
-
-1. **Code Quality**
-   - Readability and maintainability
-   - Naming conventions
-   - Code duplication
-   - Function complexity
-
-2. **Best Practices**
-   - Design patterns usage
-   - Error handling
-   - Resource management
-   - Thread safety
-
-3. **Testing**
-   - Unit test coverage
-   - Edge cases
-   - Error conditions
-
-4. **Performance**
-   - Algorithm efficiency
-   - Memory usage
-   - Potential bottlenecks
-
-5. **Security**
-   - Input validation
-   - Authentication/authorization
-   - Data sanitization
-
-## Output Format
-
-For each issue found:
-- **Severity**: Critical/High/Medium/Low
-- **Location**: File and line number
-- **Issue**: Clear description
-- **Recommendation**: How to fix
-- **Example**: Code snippet if helpful
-```
+**Usage:**
+- Invoke with `@odrive-toolchain build firmware for v3.6`
+- Automatically sources environment and executes build scripts
 
 ### Create a Custom Agent
 
@@ -615,166 +596,106 @@ Agent Skills are folders of instructions, scripts, and resources that Copilot ca
 
 ### Skill Structure
 
+Example from the ODrive toolchain skill:
+
 ```
-.github/skills/misra-compliance/
+.github/skills/odrive-toolchain/
 ├── SKILL.md                 # Skill definition
-├── rules.md                 # MISRA rules reference
-├── scripts/
-│   └── check-compliance.sh  # Helper scripts
-├── examples/
-│   ├── good-code.cpp
-│   └── bad-code.cpp
-└── templates/
-    └── review-report.md
+├── setup-env.ps1            # Environment setup script
+├── build_firmware.py        # Build automation
+├── search_symbol.py         # Symbol search tool
+├── list_errors.py           # Error code listing
+└── find_symbol.ps1          # Quick symbol search
 ```
 
-### SKILL.md Format
+### Example: ODrive Toolchain Skill
+
+**File:** `.github/skills/odrive-toolchain/SKILL.md`
 
 ```markdown
 ---
-name: misra-compliance
-description: Check code for MISRA C/C++ compliance. Use when reviewing 
-embedded code for safety-critical systems.
+name: 'ODrive Toolchain'
+description: 'Build, test, search, and error inspection for ODrive firmware'
+status: production
+version: 1.0.0
 ---
 
-# MISRA Compliance Checker
+# ODrive Toolchain Skill
 
-Validate embedded C/C++ code against MISRA guidelines.
+All build, test, search, and error inspection scripts in one place.
 
-## Validation Checklist
+## Scripts
 
-1. **Memory Management**
-   - No dynamic allocation (Rule 21.3)
-   - No pointer arithmetic (Rule 18.4)
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `setup-env.ps1` | Add tup + ARM GCC to PATH | `. .\setup-env.ps1` |
+| `build_firmware.py` | Build firmware for board | `python build_firmware.py board-v3.6-56V` |
+| `search_symbol.py` | Search for symbols | `python search_symbol.py Encoder --type class` |
+| `list_errors.py` | List error codes | `python list_errors.py --filter encoder` |
 
-2. **Control Flow**
-   - No goto statements (Rule 15.1)
-   - Single exit point (Rule 15.5)
+## Quick Usage
 
-3. **Type Safety**
-   - Explicit casts required (Rule 10.1)
-   - No implicit conversions (Rule 10.3)
-
-## Resources
-
-- [MISRA Rules Reference](./rules.md)
-- [Compliant Examples](./examples/good-code.cpp)
-- [Non-Compliant Examples](./examples/bad-code.cpp)
-
-## Output
-
-Generate a compliance report using [report template](./templates/review-report.md).
+### Build Firmware
+```powershell
+. .github\skills\odrive-toolchain\setup-env.ps1
+python .github\skills\odrive-toolchain\build_firmware.py board-v3.6-56V
 ```
 
-### Example: Web Application Testing Skill
+## Safety
+
+✅ **Safe**: All operations are read-only or local builds  
+⚠️ **Never auto-execute**: Flash firmware, HIL tests
+```
+
+### Example: FOC Tuning Skill (Stub)
+
+This shows how to create a skill that's in development.
+
+**File:** `.github/skills/foc-tuning/SKILL.md`
 
 ```markdown
 ---
-name: webapp-testing
-description: Generate and run tests for web applications using Jest and React Testing Library. Use when testing React components, API endpoints, or user workflows.
+name: foc-tuning
+description: 🚧 STUB - Automated FOC parameter tuning procedures and optimization
+status: in-development
 ---
 
-# Web Application Testing
+# FOC Tuning Skill (🚧 In Development)
 
-Generate comprehensive tests for web applications following these patterns:
+**Status:** Stub - Planned for future implementation  
+**Owner:** motor-control-engineer.agent
 
-## Test Structure
+## Purpose
 
-Use the template from [test-template.js](./test-template.js):
+This skill will provide automated tuning procedures for Field-Oriented Control (FOC) motor controllers.
 
-```javascript
-import { render, screen, fireEvent } from '@testing-library/react';
-import { ComponentName } from './ComponentName';
+## Planned Capabilities
 
-describe('ComponentName', () => {
-  it('should render correctly', () => {
-    // Test implementation
-  });
-});
+- Automated current loop bandwidth measurement
+- Velocity loop step response tuning
+- Position loop gain optimization
+- Anti-cogging calibration procedures
+- Stability margin analysis
+
+## Dependencies
+
+- Motor parameter identification
+- Hardware-in-the-loop testing infrastructure
+
+## Implementation Status
+
+- [ ] Current loop auto-tuning
+- [ ] Velocity loop auto-tuning
+- [ ] Position loop auto-tuning
+- [ ] Anti-cogging calibration
+
+## Related Skills
+
+- `control-algorithms` - Controller implementations
+- `sensorless-control` - Observer tuning
 ```
 
-## Testing Patterns
-
-1. **Component Tests**
-   - Render component with props
-   - Assert DOM structure
-   - Test user interactions
-   - Verify state changes
-
-2. **API Tests**
-   - Mock API calls
-   - Test success scenarios
-   - Test error handling
-   - Verify request parameters
-
-3. **Integration Tests**
-   - Test user workflows
-   - Verify multi-step interactions
-   - Test data persistence
-
-## Running Tests
-
-Use [scripts/run-tests.sh](./scripts/run-tests.sh) to execute tests:
-
-```bash
-./scripts/run-tests.sh --coverage --watch
-```
-
-## Examples
-
-See [examples/](./examples/) for complete test examples:
-- [Unit Test Example](./examples/unit-test.js)
-- [Integration Test Example](./examples/integration-test.js)
-```
-
-### Example: GitHub Actions Debugging Skill
-
-```markdown
----
-name: github-actions-debug
-description: Debug GitHub Actions workflow failures by analyzing logs, identifying issues, and suggesting fixes. Use when CI/CD pipelines fail or need optimization.
----
-
-# GitHub Actions Debugging
-
-Debug GitHub Actions workflows systematically:
-
-## Debugging Process
-
-1. **Analyze Workflow File**
-   - Review .github/workflows/*.yml
-   - Check job dependencies
-   - Verify trigger conditions
-
-2. **Examine Logs**
-   - Identify failed steps
-   - Look for error messages
-   - Check environment variables
-
-3. **Common Issues**
-   - Missing secrets
-   - Incorrect paths
-   - Permission issues
-   - Dependency problems
-   - Timeout issues
-
-4. **Generate Fixes**
-   - Provide corrected workflow YAML
-   - Explain what changed and why
-   - Suggest best practices
-
-## Workflow Template
-
-See [workflow-template.yml](./workflow-template.yml) for a production-ready template with:
-- Proper caching
-- Matrix builds
-- Error handling
-- Notifications
-
-## Debugging Scripts
-
-Use [scripts/analyze-logs.sh](./scripts/analyze-logs.sh) to parse workflow logs and identify common patterns.
-```
+**Note:** Stub skills document planned functionality before implementation.
 
 ### Create an Agent Skill
 
