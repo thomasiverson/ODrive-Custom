@@ -329,13 +329,48 @@ Chat participants handle domain-specific requests. VS Code provides built-in par
 **@workspace Examples:**
 ```
 @workspace Trace where ERROR_PHASE_RESISTANCE_OUT_OF_RANGE is defined 
-and find all occurrences where it is raised.
+in #file:Firmware/odrive-interface.yaml and find all occurrences where 
+it is raised in the C++ firmware files.
+```
+
+```
+@workspace Explain the odrive_firmware_pkg definition in 
+#file:Firmware/Tupfile.lua. How does it gather the source files from 
+MotorControl/ and communication/?
+```
+
+```
+@workspace how is authentication implemented?
 ```
 
 **@terminal Examples:**
 ```
 @terminal What is the specific tup command to build only the firmware 
-for the v3.6 board variant?
+for the v3.6 board variant? Explain the flags.
+```
+
+```
+@terminal scan tools/setup.py and generate the pip command to install 
+all development dependencies for the Python tools.
+```
+
+```
+@terminal list the 5 largest files in this workspace
+```
+
+**@vscode Examples:**
+```
+@vscode How do I configure launch.json to attach the Cortex-Debug 
+extension to an ST-Link OpenOCD server for this project?
+```
+
+```
+@vscode Create a tasks.json entry to run the tup build command 
+when I press Ctrl+Shift+B.
+```
+
+```
+@vscode how to enable word wrapping?
 ```
 
 ### Slash Commands (/-commands)
@@ -397,64 +432,60 @@ Agent Mode can make coordinated changes across multiple files:
 
 ## Speaker Instructions
 
-### 1. Demo: Copilot Chat Modes
+### 1. Demo: Copilot Chat Modes (10 min)
 
-- **Ask Mode:**
-  - Use the Chat panel to ask questions about the codebase, architecture, or debug issues.
-  - Example prompts:
-    1. "Explain this project in simple, layman's terms. What is the high-level functionality? Provide a tour of the folder structure and explain the key external dependencies."
-    2. "Explain the high-level architecture of `Firmware/MotorControl`. How do the `Axis`, `Motor`, and `Encoder` classes interact during the control loop?"
-    3. "How is the custom fibre protocol implemented in #file:fibre.cpp? Explain how an object method on the firmware side is exposed to the Python client."
-    4. "I am seeing `ERROR_OVERSPEED` in my logs. Look at #file:axis.cpp and #file:motor.cpp. What specific conditions trigger this error and how can I disable it safely?"
-    5. "What is the pin mapping for the SPI interface in #file:board.cpp? Can you list the GPIO pins used for the DRV8301?"
-    6. "How does the build system work in this repo? Detailed check of #file:Tupfile.lua and explain how the firmware binary is generated from the source files."
+**Demo Flow:**
+1. Open Chat view (`Ctrl+Alt+I`)
+2. Show model selector and mode dropdown
+3. Demonstrate each mode with one example from the prompts above
 
-- **Edit Mode:**
-  - Use Inline Chat (Ctrl+I) to generate/refactor code, add documentation, or create scripts/tests.
-  - Example prompts:
-    1. "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in `controller.cpp` to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
-    2. "Create a new test case using the `doctest` framework that verifies the `SVM` utility function in #file:utils.cpp handles all six sextants correctly with edge-case inputs."
-    3. "Add Doxygen-style comments to the `on_measurement` function in #file:foc.cpp, explaining the Clarke transform and the current measurement processing."
-    4. "Write a Python script using `odrive.enums` that connects to a generic ODrive, configures the plotter, and graphs `axis0.motor.current_control.Iq_measured` and `axis0.motor.current_control.Iq_setpoint` in real-time."
-    5. "Optimize the `SVM` function in #file:utils.cpp using SIMD intrinsics or faster math approximations if possible, while maintaining readability and accuracy."
+**Ask Mode Demo:**
+- Use the Chat panel to ask a question about the codebase
+- Recommended prompt: "Explain this project in simple, layman's terms..."
+- Point out: Copilot reads files but doesn't modify them
 
-- **Agent Mode:**
-  - Use for multi-step, cross-file, or research tasks. Copilot can plan, research, and execute complex changes.
-  - Example prompts:
-    1. "Build the ODrive firmware by running the `tup` build command in the terminal. If there are compilation errors, analyze the error output, identify which files are causing issues, examine the problematic code, suggest fixes, apply them, and then rebuild to verify the fixes work."
-    2. "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
-    3. "Create a new test plan in `tools/integration_tests/` that uses the `odrivetool` library. It should sequence a full calibration, enter closed loop control, perform a sinusoidal position move, and verify the final position error is within tolerance."
-    4. "I want to port the `Arduino/ArduinoI2C` library to work with an STM32-based Arduino core. Analyze #file:ArduinoI2C.ino and identify which hardware-specific AVR registers or libraries need to be abstracted."
-    5. "Find all instances of raw `printf` debug statements across the `Firmware/` directory. Replace them with a new macro `ODRIVE_LOG()` that respects a compile-time log level defined in #file:freertos_vars.h."
-    6. "Read #file:docs/error-codes.rst and compare it against the actual error enums defined in #file:odrive-interface.yaml. List any discrepancies where the documentation is missing new error codes added to the code."
+**Edit Mode Demo:**
+- Open a source file (e.g., `controller.cpp`)
+- Select a function and press `Ctrl+I`
+- Use a prompt from the Edit Mode examples above
+- Point out: Changes are proposed inline for review
 
-### 2. Demo: Chat Participants & Slash Commands
+**Agent Mode Demo:**
+- Switch to Agent mode in the Chat view
+- Use a multi-step prompt (e.g., build and fix errors)
+- Point out: Agent can run commands, read multiple files, and make coordinated changes
 
-#### Chat Participants (@-mentions)
-Chat participants are prefixed with `@` and handle domain-specific requests. VS Code provides built-in participants like `@workspace`, `@terminal`, `@vscode`, and `@github`.
+> **Tip:** Pick one prompt from each mode in Section 2 to demo live. The full prompt list is for participant reference.
 
-- **@workspace (Project-Wide Context):**
-  - Use this to let Copilot scan the entire directory structure
-  - "@workspace Trace where `ERROR_PHASE_RESISTANCE_OUT_OF_RANGE` is defined in #file:Firmware/odrive-interface.yaml and find all occurrences where it is raised in the C++ firmware files."
-  - "@workspace Explain the `odrive_firmware_pkg` definition in #file:Firmware/Tupfile.lua. How does it gather the source files from `MotorControl/` and `communication/`?"
-  - "@workspace how is authentication implemented?"
+### 2. Demo: Chat Participants & Slash Commands (10 min)
 
-- **@terminal (Shell Integration):**
-  - Ask questions about the integrated terminal or shell commands
-  - "@terminal What is the specific `tup` command to build only the firmware for the v3.6 board variant? Explain the flags."
-  - "@terminal scan `tools/setup.py` and generate the pip command to install all development dependencies for the Python tools."
-  - "@terminal list the 5 largest files in this workspace"
+**Demo Flow:**
+1. Show how `@` triggers participant suggestions
+2. Demonstrate each participant with one example
 
-- **@vscode (IDE Control):**
-  - Ask about VS Code features, settings, and extension APIs
-  - "@vscode How do I configure `launch.json` to attach the Cortex-Debug extension to an ST-Link OpenOCD server for this project?"
-  - "@vscode Create a `tasks.json` entry to run the `tup` build command when I press Ctrl+Shift+B."
-  - "@vscode how to enable word wrapping?"
+**@workspace Demo:**
+- "@workspace Trace where `ERROR_PHASE_RESISTANCE_OUT_OF_RANGE` is defined..."
+- Point out: Scans entire directory structure
 
-- **@github (GitHub Integration):**
-  - Ask about GitHub repositories, issues, and pull requests
-  - "@github What are all of the open PRs assigned to me?"
-  - "@github Show me the recent merged PRs from @dancing-mona"
+**@terminal Demo:**
+- "@terminal What is the specific `tup` command to build..."
+- Point out: Understands shell context
+
+**@vscode Demo:**
+- "@vscode How do I configure `launch.json`..."
+- Point out: Knows VS Code settings and extensions
+
+**@github Demo:**
+- "@github What are all of the open PRs assigned to me?"
+- Point out: Requires GitHub authentication
+
+**Slash Commands Demo:**
+1. Select a function in the editor
+2. Press `Ctrl+I` and show `/` command suggestions
+3. Demo `/doc` to generate documentation
+4. Demo `/fix` on code with a warning
+
+> **Tip:** The full prompt examples are in Section 3. Focus demo time on showing the interaction pattern.
 
 ---
 

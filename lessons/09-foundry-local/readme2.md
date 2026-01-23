@@ -1,10 +1,9 @@
 # Lesson 9: Foundry Local Demo
 
-**Session Duration:** 35 minutes  
+**Session Duration:** 15 minutes  
 **Audience:** Embedded/C++ Developers (Intermediate to Advanced)  
-**Environment:** Windows, VS Code, WSL (optional)  
-**Extensions:** GitHub Copilot  
-**Source Control:** GitHub/Bitbucket
+**Environment:** Windows + VS Code (demo); optional WSL/macOS setup  
+**Focus:** Show Foundry Local CLI capabilities and local AI inference
 
 ---
 
@@ -33,19 +32,13 @@ This lesson demonstrates Microsoft's Foundry Local—an on-device AI runtime tha
 
 ---
 
-## Agenda
+## Agenda (15 min)
 
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
-| What is Foundry Local? | Local runtime, privacy, hardware acceleration | 5 min |
-| Live Demo | CLI installation, model operations, interactive chat | 12 min |
-| Installation | Install steps, verification | 8 min |
-| CLI Commands | Model management and inference | 7 min |
-| Execution Providers | CPU vs GPU options | 5 min |
-| SDK Integration | Python, C#, REST API | 10 min |
-| WSL Integration | Linux environment setup | 5 min |
-
-**Total Time:** 35 minutes
+| What is Foundry Local? | Local runtime, privacy, hardware acceleration | 3 min |
+| Live Demo | CLI installation, model operations, interactive chat | 10 min |
+| Self-Setup Guide | Install steps, WSL/macOS, SDK integration | 2 min |
 
 ---
 
@@ -170,39 +163,6 @@ foundry --help
 foundry service status
 ```
 
-**Step 2: Initialize Foundry**
-
-```powershell
-# Initialize with default settings
-foundry init
-
-# This creates:
-# - Config file at %USERPROFILE%\.foundry\config.json
-# - Model cache at %USERPROFILE%\.foundry\models\
-```
-
-**Step 3: Verify Installation**
-
-```powershell
-# Check foundry status
-foundry status
-
-# List available commands
-foundry --help
-```
-
-### Configure Model Cache Location (Optional)
-
-If you need to use a different drive for model storage:
-
-```powershell
-# Set custom cache location
-foundry config set cache.path "D:\foundry-models"
-
-# Verify setting
-foundry config get cache.path
-```
-
 ### macOS Installation
 
 **Using Homebrew:**
@@ -245,46 +205,35 @@ foundry model info <model-name>
 
 ```powershell
 # Download a model (example: small code model)
-foundry model pull phi-3-mini
+foundry model download phi-3.5-mini
 
-# Check download progress
-foundry model status
-
-# List downloaded models
-foundry model list --local
+# List cached models
+foundry cache list
 ```
 
 ### Running Inference
 
 **Interactive Chat:**
 ```powershell
-# Start interactive chat with model
-foundry chat phi-3-mini
+# Download (if needed) and run a model interactively
+foundry model run phi-3.5-mini
 ```
 
-**Single Query:**
-```powershell
-# Run single inference
-foundry run phi-3-mini --prompt "Explain what volatile does in C++"
-```
-
-**From File:**
-```powershell
-# Process file content
-foundry run phi-3-mini --file code.cpp --prompt "Review this code for embedded best practices"
-```
+- **First run**: Downloads model and starts interactive chat
+- **Subsequent runs**: Instant launch from cache
+- Show the interactive prompt that appears
 
 ### Model Management
 
 ```powershell
-# Remove downloaded model
-foundry model remove phi-3-mini
+# Remove a model from cache
+foundry cache remove phi-3.5-mini
 
-# Clear entire cache
-foundry cache clear
+# List cached models
+foundry cache list
 
-# Check disk usage
-foundry cache info
+# Show cache directory path
+foundry cache location
 ```
 
 ### Complete CLI Command Reference
@@ -345,29 +294,6 @@ foundry model list --filter alias=phi*
 | **CPU** | Any x64/ARM64 | Baseline | System RAM |
 | **DirectML** | DirectX 12 GPU | 2-5x faster | GPU VRAM |
 | **CUDA** | NVIDIA GPU | 3-10x faster | GPU VRAM |
-
-### Checking Available Providers
-
-```powershell
-# List available execution providers
-foundry providers list
-
-# Show provider capabilities
-foundry providers info directml
-```
-
-### Selecting a Provider
-
-```powershell
-# Use specific provider for inference
-foundry run phi-3-mini --provider directml --prompt "Hello"
-
-# Set default provider
-foundry config set inference.provider "directml"
-
-# Verify provider is being used
-foundry run phi-3-mini --verbose --prompt "Test"
-```
 
 ### Provider Recommendations
 
@@ -544,37 +470,6 @@ for await (const chunk of stream) {
 }
 ```
 
-### REST API (Local Server)
-
-**Start Local Server:**
-```powershell
-# Start Foundry server on localhost:8080
-foundry serve --port 8080
-
-# Server runs until Ctrl+C
-```
-
-**Send Request (PowerShell):**
-```powershell
-$body = @{
-    model = "phi-3-mini"
-    prompt = "What is RAII?"
-    max_tokens = 200
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/v1/completions" `
-    -Method Post `
-    -ContentType "application/json" `
-    -Body $body
-```
-
-**Send Request (curl):**
-```bash
-curl -X POST http://localhost:8080/v1/completions \
-  -H "Content-Type: application/json" \
-  -d '{"model": "phi-3-mini", "prompt": "What is RAII?", "max_tokens": 200}'
-```
-
 ---
 
 ## 5. WSL Integration (5 min)
@@ -607,12 +502,12 @@ foundry --version
 ln -s /mnt/c/Users/$USER/.foundry/models ~/.foundry/models
 ```
 
-**Option 2: Use Network Mount:**
+**Option 2: Call Windows Foundry Service from WSL:**
 ```bash
-# Access Windows Foundry server from WSL
-curl http://$(hostname).local:8080/v1/completions \
+# Access Windows Foundry service from WSL (WSL shares localhost with Windows)
+curl http://localhost:11434/v1/completions \
   -H "Content-Type: application/json" \
-  -d '{"model": "phi-3-mini", "prompt": "Hello"}'
+  -d '{"model": "phi-3.5-mini", "prompt": "Hello"}'
 ```
 
 ### GPU Passthrough in WSL
@@ -621,12 +516,6 @@ For CUDA support in WSL2:
 1. Install latest NVIDIA Windows driver
 2. CUDA support is automatic in WSL2
 3. Verify: `nvidia-smi` in WSL
-
-```bash
-# Check CUDA availability in WSL
-foundry providers list
-# Should show: cuda (if NVIDIA driver supports WSL2)
-```
 
 ### Calling Windows-Hosted Foundry Local from WSL
 
@@ -750,6 +639,7 @@ PY
 - Keep the demo offline to prove local capability
 - Show hardware acceleration in action (check execution provider in model info)
 - Use practical prompts that demonstrate quality and latency
+- Encourage attendees to try WSL flow if their toolchain lives there
 - Point out the comprehensive CLI help system (`foundry --help`)
 
 ### What to Emphasize
@@ -852,110 +742,126 @@ PY
 <summary>📋 Instructions</summary>
 
 1. Install Foundry CLI using winget
-2. Initialize Foundry configuration
-3. Download a small model (phi-3-mini)
-4. Run a simple inference query
+2. Verify installation
+3. Download a small model (phi-3.5-mini)
+4. Run an interactive inference session
 
 **Commands:**
 ```powershell
 winget install Microsoft.FoundryLocal
-foundry init
-foundry model pull phi-3-mini
-foundry run phi-3-mini --prompt "What is a state machine?"
+foundry --help
+foundry model download phi-3.5-mini
+foundry model run phi-3.5-mini
 ```
 
 **Success Criteria:**
-- ✅ Foundry CLI responds to `--version`
+- ✅ Foundry CLI responds to `--help`
 - ✅ Model downloads successfully
-- ✅ Inference returns a response
+- ✅ Interactive chat starts
 </details>
 
 ---
 
-### Exercise 2: Compare Execution Providers
-**Goal:** Understand performance differences
+### Exercise 2: Explore Model Variants
+**Goal:** Understand hardware-specific model variants
 
 <details>
 <summary>📋 Instructions</summary>
 
-1. List available providers on your system
-2. Run the same prompt with CPU provider
-3. Run the same prompt with GPU provider (if available)
-4. Compare response times
+1. List all available models
+2. Filter by device type (GPU vs CPU)
+3. Compare model details
 
 **Commands:**
 ```powershell
-# List providers
-foundry providers list
+# List all models
+foundry model list
 
-# Time CPU inference
-Measure-Command { foundry run phi-3-mini --provider cpu --prompt "Hello" }
+# Filter for GPU models
+foundry model list --filter device=GPU
 
-# Time GPU inference (if available)
-Measure-Command { foundry run phi-3-mini --provider directml --prompt "Hello" }
+# Filter for CPU models
+foundry model list --filter device=!GPU
+
+# Show model details
+foundry model info phi-3.5-mini
 ```
 
 **Success Criteria:**
-- ✅ Identified available providers
-- ✅ Both inferences complete successfully
-- ✅ Noted time difference
+- ✅ Listed available models
+- ✅ Identified GPU vs CPU variants
+- ✅ Understood model requirements
 </details>
 
 ---
 
-### Exercise 3: Local Code Review
-**Goal:** Use Foundry for local code analysis
+### Exercise 3: Interactive Code Exploration
+**Goal:** Use Foundry for exploring code questions
 
 <details>
 <summary>📋 Instructions</summary>
 
-1. Select a small C++ file from ODrive
-2. Use Foundry to review it for embedded best practices
-3. Evaluate the quality of suggestions
+1. Start an interactive session with a model
+2. Ask questions about embedded C++ concepts
+3. Explore the model's knowledge
 
 **Commands:**
 ```powershell
-# Review a file
-foundry run phi-3-mini --file src-ODrive/Firmware/MotorControl/encoder.hpp `
-    --prompt "Review this embedded C++ code for best practices. Check for: 1) Const correctness 2) RAII patterns 3) Error handling"
+# Start interactive session
+foundry model run phi-3.5-mini
 ```
 
+**Try these prompts in the interactive session:**
+- "What is RAII in embedded C++?"
+- "Explain volatile keyword for hardware registers"
+- "List best practices for ISR handlers"
+
 **Success Criteria:**
-- ✅ Foundry processes the file
-- ✅ Returns relevant suggestions
-- ✅ Suggestions are actionable
+- ✅ Interactive session starts
+- ✅ Model responds to prompts
+- ✅ Responses are relevant
 </details>
 
 ---
 
-### Exercise 4: REST API Integration
+### Exercise 4: SDK Integration (Python)
 **Goal:** Access Foundry programmatically
 
 <details>
 <summary>📋 Instructions</summary>
 
-1. Start Foundry local server
-2. Send a request using PowerShell/curl
+1. Install Python SDK
+2. Write a simple script to query Foundry
 3. Parse the response
 
-**Terminal 1 - Start Server:**
+**Setup:**
 ```powershell
-foundry serve --port 8080
+pip install foundry-local-sdk openai
 ```
 
-**Terminal 2 - Send Request:**
-```powershell
-$response = Invoke-RestMethod -Uri "http://localhost:8080/v1/completions" `
-    -Method Post `
-    -ContentType "application/json" `
-    -Body '{"model": "phi-3-mini", "prompt": "What is volatile in C++?", "max_tokens": 100}'
+**Script:**
+```python
+from foundry_local import FoundryLocalManager
+import openai
 
-$response.choices[0].text
+manager = FoundryLocalManager("phi-3.5-mini")
+
+client = openai.OpenAI(
+    base_url=manager.endpoint,
+    api_key=manager.api_key
+)
+
+response = client.chat.completions.create(
+    model=manager.get_model_info("phi-3.5-mini").id,
+    messages=[{"role": "user", "content": "What is volatile in C++?"}]
+)
+
+print(response.choices[0].message.content)
 ```
 
 **Success Criteria:**
-- ✅ Server starts successfully
-- ✅ Request returns valid JSON
+- ✅ SDK installs successfully
+- ✅ Script connects to Foundry
 - ✅ Response contains expected text
 </details>
 
@@ -967,31 +873,25 @@ $response.choices[0].text
 
 | Command | Purpose |
 |---------|---------|
-| `foundry init` | Initialize configuration |
+| `foundry --help` | List available commands |
 | `foundry model list` | Show available models |
-| `foundry model pull <name>` | Download model |
-| `foundry model list --local` | Show downloaded models |
-| `foundry run <model> --prompt "..."` | Single inference |
-| `foundry chat <model>` | Interactive chat |
-| `foundry serve --port 8080` | Start REST API server |
-| `foundry providers list` | Show available providers |
+| `foundry model list --filter <key>=<value>` | Filter models by device, task, alias |
+| `foundry model download <model>` | Download a model without running |
+| `foundry model run <model>` | Download (if needed) and run interactively |
+| `foundry model info <model>` | Display model information |
+| `foundry service status` | Show service status and endpoint |
+| `foundry service ps` | List currently loaded models |
+| `foundry cache list` | List cached models |
+| `foundry cache location` | Show cache directory path |
 
-### Configuration Commands
+### Cache Commands
 
 | Command | Purpose |
 |---------|---------|
-| `foundry config get <key>` | Get config value |
-| `foundry config set <key> <value>` | Set config value |
-| `foundry cache info` | Show cache usage |
-| `foundry cache clear` | Clear model cache |
-
-### Execution Provider Flags
-
-| Flag | Provider |
-|------|----------|
-| `--provider cpu` | CPU inference |
-| `--provider directml` | DirectX 12 GPU |
-| `--provider cuda` | NVIDIA CUDA |
+| `foundry cache location` | Show cache directory path |
+| `foundry cache list` | List cached models |
+| `foundry cache cd <path>` | Change cache directory |
+| `foundry cache remove <model>` | Remove model from cache |
 
 ---
 
@@ -1002,8 +902,7 @@ $response.choices[0].text
 | `foundry: command not found` | Not in PATH | Run `winget install Microsoft.FoundryLocal` again |
 | Model download fails | Network/space issue | Check internet connection and disk space |
 | CUDA provider unavailable | Missing driver | Update NVIDIA driver |
-| DirectML slow | Wrong GPU selected | Check `foundry providers info directml` |
-| Out of memory | Model too large | Use smaller model or CPU provider |
+| Out of memory | Model too large | Use smaller model |
 | WSL can't find models | Path mismatch | Create symlink to Windows cache |
 
 ### Check System Requirements
@@ -1022,9 +921,8 @@ dxdiag
 ### Reset Foundry Configuration
 
 ```powershell
-# Remove config and start fresh
+# Remove cache and start fresh
 Remove-Item -Recurse -Force "$env:USERPROFILE\.foundry"
-foundry init
 ```
 
 ---
@@ -1100,38 +998,27 @@ Use Copilot for primary development; Foundry for offline/privacy scenarios.
 
 ### Q: Can I use my own models with Foundry?
 
-**Short Answer:** Yes, Foundry supports ONNX format models.
+**Short Answer:** Foundry Local works with models from its curated catalog.
 
 **Detailed Explanation:**
-```powershell
-# Import custom ONNX model
-foundry model import --path ./my-model.onnx --name my-custom-model
+Foundry Local provides a curated catalog of models optimized for local execution. Use `foundry model list` to see available models.
 
-# Use imported model
-foundry run my-custom-model --prompt "Test"
-```
-
-Requirements:
-- Model must be in ONNX format
-- Tokenizer config must be provided
-- Model architecture must be supported
+For custom model requirements:
+- Check if your model variant exists in the catalog
+- Use model aliases to auto-select the best variant for your hardware
+- Refer to official documentation for advanced customization options
 
 ---
 
 ### Q: How do I reduce model load time?
 
-**Short Answer:** Use SSD storage and keep models warm in memory.
+**Short Answer:** Use SSD storage and load models into the service.
 
 **Detailed Explanation:**
-1. **SSD Storage:** Move cache to fast SSD
-2. **Warm Start:** Use `foundry serve` to keep model in memory
+1. **SSD Storage:** Move cache to fast SSD using `foundry cache cd <path>`
+2. **Pre-load Models:** Use `foundry model load <model>` to keep models ready
 3. **Smaller Models:** Use quantized versions (4-bit, 8-bit)
-4. **GPU:** Models load faster with GPU provider
-
-```powershell
-# Start persistent server (keeps model warm)
-foundry serve --model phi-3-mini --port 8080
-```
+4. **GPU:** Models load faster with GPU execution provider
 
 ---
 
@@ -1139,8 +1026,8 @@ foundry serve --model phi-3-mini --port 8080
 
 ### 1. Installation
 - Install via `winget install Microsoft.FoundryLocal`
-- Initialize with `foundry init`
-- Download models with `foundry model pull`
+- Verify with `foundry --help` and `foundry service status`
+- Download models with `foundry model download`
 
 ### 2. Execution Providers
 - **CPU:** Universal, baseline performance
@@ -1148,14 +1035,14 @@ foundry serve --model phi-3-mini --port 8080
 - **CUDA:** NVIDIA GPUs, best performance
 
 ### 3. CLI Usage
-- `foundry run` for single queries
-- `foundry chat` for interactive sessions
-- `foundry serve` for REST API access
+- `foundry model run` for interactive sessions
+- `foundry model list` to explore available models
+- `foundry cache list` to see downloaded models
 
 ### 4. Integration Options
 - Python SDK for scripting
 - C# SDK for .NET applications
-- REST API for any language
+- JavaScript SDK for Node.js
 
 ### 5. When to Use Foundry Local
 - Offline development environments

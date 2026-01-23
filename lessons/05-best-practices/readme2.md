@@ -150,7 +150,7 @@ Provide specific recommendations with code examples.
 
 **🤖 Agent Mode Prompt (Implementation):**
 ```
-@ODrive-Engineer Implement RAII improvements for GPIO class
+@workspace Implement RAII improvements for GPIO class
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
          #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp
@@ -193,7 +193,7 @@ Focus on:
 
 **🤖 Agent Mode Prompt (Convert to Generic):**
 ```
-@ODrive-Engineer Make buffer class generic using templates
+@workspace Make buffer class generic using templates
 
 Context: #file:src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp
 
@@ -292,7 +292,7 @@ For each issue, suggest static allocation alternatives:
 
 **🤖 Agent Mode Prompt (Refactor to Static):**
 ```
-@ODrive-Engineer Refactor SPI arbiter to use static allocation only
+@workspace Refactor SPI arbiter to use static allocation only
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.cpp
          #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
@@ -342,7 +342,7 @@ Output: Complete error code enum with documentation
 
 **🤖 Agent Mode Prompt (Convert Function):**
 ```
-@ODrive-Engineer Convert calibration function to use error codes
+@workspace Convert calibration function to use error codes
 
 Context: #file:src-ODrive/Firmware/MotorControl/encoder.cpp:run_offset_calibration
 
@@ -460,7 +460,7 @@ Then create a state transition diagram in Mermaid format showing:
 
 **🤖 Agent Mode Prompt (Generate State Machine):**
 ```
-@ODrive-Engineer Create LED controller with state machine pattern
+@workspace Create LED controller with state machine pattern
 
 Reference: #file:src-ODrive/Firmware/MotorControl/axis.cpp
            #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
@@ -519,7 +519,7 @@ Create a HAL Design Checklist for new abstractions based on these patterns.
 
 **🤖 Agent Mode Prompt (Create New HAL):**
 ```
-@ODrive-Engineer Create UART HAL abstraction following ODrive patterns
+@workspace Create UART HAL abstraction following ODrive patterns
 
 References: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
             #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
@@ -618,7 +618,7 @@ Provide design recommendations based on ODrive patterns:
 
 **Step 2 - 🤖 Agent Mode (Implementation):**
 ```
-@ODrive-Engineer Create LED driver with state machine
+@workspace Create LED driver with state machine
 
 Design validated. Now implement:
 
@@ -697,7 +697,7 @@ Provide SPI transaction pseudocode for:
 
 **Step 2 - 🤖 Agent Mode (Implement Driver):**
 ```
-@ODrive-Engineer Create ADXL345 accelerometer driver using SPI arbiter
+@workspace Create ADXL345 accelerometer driver using SPI arbiter
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
          #file:src-ODrive/Firmware/MotorControl/encoder.cpp (error handling pattern)
@@ -791,7 +791,7 @@ Provide recommendations based on:
 
 **Step 2 - 🤖 Agent Mode (Implementation):**
 ```
-@ODrive-Engineer Create lock-free ring buffer for ISR-to-task communication
+@workspace Create lock-free ring buffer for ISR-to-task communication
 
 Context: #file:src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp
 
@@ -1299,14 +1299,12 @@ private:
 ## Code Review Checklist
 - [ ] Implementation details hidden (private/pimpl)
 - [ ] RAII for resource lifetime
-- [ ] Error codes, not exceptions
+- [ ] Error codes, no exceptions
 - [ ] Const correctness
 - [ ] Move-only for exclusive resources
 - [ ] Doxygen documentation
 - [ ] Example usage in comments
-- [ ] Register access wrapped (not exposed)
-- [ ] Initialization sequence documented
-- [ ] De-initialization sequence documented
+- [ ] Thread-safety documented
 
 ## Reference Implementations
 Study these ODrive HAL patterns:
@@ -1858,7 +1856,7 @@ By the end of this lesson, participants should be able to:
 
 **Prompt to use:**
 ```
-@ODrive-Engineer Create RAII wrapper for TIM peripheral
+@workspace Create RAII wrapper for TIM peripheral
 
 Reference patterns: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
 
@@ -2199,7 +2197,7 @@ Requirements:
 1. Create `.github/copilot-instructions.md` with embedded constraints
 2. Include "no heap, no exceptions, static allocation" in every prompt
 3. Reference existing ODrive patterns with `#file:`
-4. Use the `@ODrive-Engineer` agent which has embedded context
+4. Use `@workspace` for multi-file operations
 
 ---
 

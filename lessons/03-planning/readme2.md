@@ -86,7 +86,7 @@ Before starting this session, ensure you have:
 
 ## Why Planning Matters
 
-Front-loading context improves output quality dramatically. Instead of repeatedly providing the same context in every prompt, planning documents enable consistent, high-quality AI output.
+Front-loading context improves output quality dramatically. Instead of repeatedly providing the same context in every chat prompt, planning documents enable you to:
 
 ### Benefits of Planning Documents
 
@@ -98,7 +98,7 @@ Front-loading context improves output quality dramatically. Instead of repeatedl
 2. **Reduced Repetition**
    - Stop copy-pasting the same instructions
    - Eliminate redundant context in prompts
-   - Save time on every interaction
+   - Save time and effort on every interaction
 
 3. **Improved AI Output Quality**
    - More accurate code generation
@@ -151,11 +151,10 @@ This lesson covers six key areas. Work through them sequentially for the best le
 
 | Customization | Location | When Loaded | Purpose |
 |---------------|----------|-------------|---------|
-| **Instructions** | `.github/copilot-instructions.md` | Always (every request) | Global coding standards |
-| **Conditional Instructions** | `.github/instructions/*.instructions.md` | Via glob patterns | File-type specific rules |
-| **Prompt Files** | `.github/prompts/*.prompt.md` | When invoked with `/prompt-name` | Reusable task templates |
-| **Custom Agents** | `.github/agents/*.agent.md` | When selected from dropdown | Specialized personas |
-| **Agent Skills** | `.github/skills/*/SKILL.md` | Auto-discovered from prompt | Task workflows with resources |
+| **Instructions** | `.github/copilot-instructions.md` or `*.instructions.md` | Always (every request) or conditionally via glob patterns | Global coding standards, style guides |
+| **Prompt Files** | `.github/prompts/*.prompt.md` | When user invokes with `/prompt-name` | Reusable task templates |
+| **Custom Agents** | `.github/agents/*.agent.md` | When selected from agents dropdown | Specialized assistant personas with tool configs |
+| **Agent Skills** | `.github/skills/*/SKILL.md` or `~/.copilot/skills/*/SKILL.md` | Auto-discovered from prompt | Task workflows with bundled scripts/references/templates |
 
 ### Visual Hierarchy
 
@@ -182,14 +181,16 @@ This lesson covers six key areas. Work through them sequentially for the best le
 
 ## 2. Custom Instructions (copilot-instructions.md)
 
-### Global Instructions File
+Custom instructions enable you to define common guidelines and rules that automatically influence how AI generates code and handles other development tasks.
+
+### Types of Instructions Files
+
+#### 1. Global Instructions File
 **Location:** `.github/copilot-instructions.md`
 
 - Automatically applies to **all chat requests** in the workspace
 - Stored within the workspace for team sharing
 - Works in VS Code, Visual Studio, and GitHub.com
-
-Custom instructions define common guidelines that automatically influence how AI generates code and handles development tasks.
 
 **Example for Embedded C++ Project:**
 
@@ -219,10 +220,10 @@ Custom instructions define common guidelines that automatically influence how AI
 - Aim for 80% code coverage
 ```
 
-### Conditional Instructions Files
+#### 2. Conditional Instructions Files
 **Location:** `.github/instructions/*.instructions.md`
 
-Apply to specific file types using glob patterns:
+- Apply to specific file types using glob patterns
 - Multiple files for different contexts
 - Stored in workspace or user profile
 
@@ -261,9 +262,9 @@ description: Embedded C/C++ coding standards
 
 ## 3. Prompt Files (.prompt.md)
 
-### Prompt File Structure
+Prompt files are Markdown files that define reusable prompts for common development tasks. They are standalone prompts that you can run directly in chat.
 
-Prompt files define reusable prompts for common development tasks:
+### Prompt File Structure
 
 ```markdown
 ---
@@ -410,6 +411,8 @@ Provide specific findings with code locations and remediation steps.
 ---
 
 ## 4. Custom Agents (.agent.md)
+
+Custom agents enable you to configure the AI to adopt different personas tailored to specific development roles and tasks.
 
 ### Custom Agent Structure
 
@@ -598,14 +601,16 @@ For each issue found:
 
 ## 5. Agent Skills (SKILL.md folders)
 
+Agent Skills are folders of instructions, scripts, and resources that Copilot can load when relevant to perform specialized tasks.
+
 ### Skill vs Instructions Comparison
 
 | Feature | Agent Skills | Custom Instructions |
 |---------|-------------|---------------------|
 | **Purpose** | Specialized capabilities & workflows | Coding standards & guidelines |
 | **Portability** | Works across VS Code, CLI, GitHub.com | VS Code and GitHub.com only |
-| **Content** | Instructions + scripts + examples | Instructions only |
-| **Loading** | On-demand when relevant | Always applied |
+| **Content** | Instructions + scripts + examples + resources | Instructions only |
+| **Loading** | On-demand when relevant | Always applied or via glob patterns |
 | **Standard** | Open standard (agentskills.io) | VS Code-specific |
 
 ### Skill Structure
