@@ -8,20 +8,41 @@
 
 ---
 
+## Overview
+
+Debugging is where developers spend 30-50% of their time. This lesson teaches you how to leverage GitHub Copilot to dramatically reduce debugging overhead—from cryptic compiler errors to subtle race conditions.
+
+**What You'll Learn:**
+- Using `@terminal` to interpret and fix build/compiler errors instantly
+- Using `/fix` to resolve logic bugs, race conditions, and memory issues
+- Debugging the 5 most common embedded C++ bugs
+- When to use agents (`@ODrive-Engineer`, `@ODrive-QA`) for complex debugging
+
+**Key Tools:**
+- **`@terminal`** - Build and compile error diagnosis
+- **`/fix`** - Logic bug correction on selected code
+- **`/explain`** - Understanding suspicious code
+- **`@ODrive-Engineer`** - Complex multi-file debugging
+- **`@ODrive-QA`** - Build verification and test generation
+
+---
+
 ## Table of Contents
 
+- [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Why Debugging with Copilot Matters](#why-debugging-with-copilot-matters)
-- [Agenda](#agenda-debugging-with-copilot-45-min)
+- [Learning Path](#learning-path)
 - [@terminal for Build Errors](#1-terminal-for-build-errors-10-min)
 - [/fix for Bug Resolution](#2-fix-for-bug-resolution-10-min)
 - [Common C++ Debugging](#3-common-c-debugging-10-min)
-- [Hands-On: Debug Session](#4-hands-on-debug-session-15-min)
-- [Speaker Instructions](#speaker-instructions)
-- [Participant Instructions](#participant-instructions)
+- [Guided Debug Session](#4-guided-debug-session-15-min)
+- [Practice Exercises](#practice-exercises)
 - [Quick Reference](#quick-reference-debugging-tools)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [Summary: Key Takeaways](#summary-key-takeaways)
 
 ---
 
@@ -82,14 +103,16 @@ Debugging is where developers spend 30-50% of their time. AI-assisted debugging 
 
 ---
 
-## Agenda: Debugging with Copilot (45 min)
+## Learning Path
 
-| Sub-Topic | Focus | Time |
-|-----------|-------|------|
+This lesson covers four key debugging techniques. Work through them sequentially or jump to specific topics as needed.
+
+| Topic | What You'll Learn | Estimated Time |
+|-------|-------------------|----------------|
 | @terminal for Build Errors | Compiler/linker error interpretation | 10 min |
 | /fix for Bug Resolution | Logic bugs, race conditions, memory issues | 10 min |
 | Common C++ Debugging | 5 most common embedded C++ bugs | 10 min |
-| **Hands-On:** Debug Session | Fix 3 bugs in motor control code | 15 min |
+| Guided Debug Session | Fix 3 bugs in motor control code | 15 min |
 
 ---
 
@@ -549,6 +572,8 @@ AI will provide fixes that respect these constraints!
 ### The 5 Most Common C++ Bugs
 **🎯 Copilot Modes: Chat + Agent**
 
+> **Note:** For these common bugs, standard `/fix` and `@terminal` usually suffice. Use `@ODrive-Engineer` when you need deeper codebase analysis or when the bug spans multiple files.
+
 **Files to demonstrate:**
 - [src-ODrive/Firmware/MotorControl/encoder.cpp](../../src-ODrive/Firmware/MotorControl/encoder.cpp) - Variable initialization
 - [src-ODrive/Firmware/Board/v3/board.cpp](../../src-ODrive/Firmware/Board/v3/board.cpp) - Volatile usage
@@ -700,6 +725,8 @@ while (dma1->SR & DMA_BUSY) {
 ### Debugging Strategy with Copilot
 **🎯 Copilot Modes: Chat + Agent**
 
+> **Tip:** For complex debugging involving multiple files or domain expertise, use `@ODrive-Engineer` for firmware issues or `@ODrive-QA` for test-related debugging. The agents can invoke specialized skills like `odrive-qa-assistant` to build and verify fixes.
+
 **Step 1: Reproduce the Bug**
 - Can you trigger it consistently?
 - What are the preconditions?
@@ -709,6 +736,11 @@ while (dma1->SR & DMA_BUSY) {
 **🤖 Agent Mode Prompt:**
 ```
 @workspace find all places where motor_current_limit is written
+```
+
+Or for more context-aware search:
+```
+@ODrive-Engineer Find all writes to motor_current_limit and explain the data flow
 ```
 
 **Step 3: Examine Suspicious Code**
@@ -734,7 +766,9 @@ Select code → "/fix the race condition"
 
 ---
 
-## 4. Hands-On: Debug Session (15 min)
+## 4. Guided Debug Session (15 min)
+
+This guided session walks through debugging three real-world embedded bugs. Follow along to see the debugging techniques in action.
 
 ### Exercise: Fix Bugs in ODrive Motor Control
 **🎯 Copilot Modes: Chat + Inline**
@@ -916,96 +950,233 @@ float Encoder::calculate_rpm() {
 
 ---
 
-## Speaker Instructions
+## Practice Exercises
 
-### Session Setup (Before Class)
+These exercises help you build debugging skills with Copilot. Try them on your own with the ODrive codebase.
 
-1. **Prepare demonstration errors:**
-   - Have pre-made buggy code snippets ready
-   - Test that @terminal works with your terminal output
-   - Verify /fix command is responsive
+### Exercise 1: @terminal for Build Errors
 
-2. **Environment check:**
-   - Build environment configured (tup/make)
-   - Sample compiler errors ready to show
-   - ODrive workspace open with motor control files
+**Goal:** Use @terminal to diagnose and fix compiler errors.
 
-### Demonstration Flow
+**Scenario:** You've introduced a typo in motor.cpp and need to fix it.
 
-1. **@terminal demo (5 min):**
-   - Trigger a real compile error in motor.cpp
-   - Show @terminal interpreting the error
-   - Apply the suggested fix
+**Steps:**
 
-2. **/fix demo (5 min):**
-   - Select buggy circular buffer code
-   - Use /fix to get correction
-   - Explain why the fix works
+1. **Introduce an error** in `src-ODrive/Firmware/MotorControl/motor.cpp`:
+   ```cpp
+   // Change this:
+   motor_.config_.current_lim
+   // To this (typo):
+   motor_.config_.current_limit  // Wrong name!
+   ```
 
-3. **Common bugs walkthrough (5 min):**
-   - Show each bug pattern briefly
-   - Highlight embedded-specific concerns
-   - Point out ISR safety issues
+2. **Build the project:**
+   ```powershell
+   tup
+   # Or: make
+   ```
 
-### Key Teaching Points
+3. **Copy the error to Copilot Chat:**
+   ```
+   @terminal shows: motor.cpp:234:error: 'current_limit' is not a member of 'MotorConfig'
+   
+   I'm trying to access the motor current limit. What's the correct variable name?
+   ```
 
-- **Context matters:** Show good vs bad prompts side-by-side
-- **Iterate:** First fix might not be perfect - show refinement
-- **Always review:** Never accept fixes blindly
-- **Test fixes:** Rebuild and verify after applying changes
+4. **Apply the fix** suggested by Copilot.
+
+5. **Rebuild to verify** the error is resolved.
+
+**Expected Outcome:**
+Copilot identifies that the correct member is `current_lim`, not `current_limit`, and suggests the fix.
+
+**Key Learning:** Always include context about what you were trying to do, not just the error message.
 
 ---
 
-## Participant Instructions
+### Exercise 2: /fix for Off-By-One Bug
 
-### Exercise 1: @terminal for Build Errors (5 min)
+**Goal:** Use /fix to correct a common circular buffer bug.
 
-**Goal:** Use @terminal to diagnose and fix a compiler error
-
-**Steps:**
-1. Open `src-ODrive/Firmware/MotorControl/motor.cpp`
-2. Introduce an intentional error (e.g., typo in variable name)
-3. Build the project: `tup` or `make`
-4. Copy the error to Copilot Chat with @terminal
-5. Apply the suggested fix
-6. Rebuild to verify
-
-**Success Criteria:**
-- [ ] Error correctly diagnosed by @terminal
-- [ ] Fix applied successfully
-- [ ] Project builds without errors
-
-### Exercise 2: /fix for Logic Bugs (5 min)
-
-**Goal:** Use /fix to correct off-by-one and null pointer bugs
+**Buggy Code:**
+```cpp
+void Motor::log_fault(Error error) {
+    fault_history_[fault_index_] = error;
+    fault_index_++;
+    if (fault_index_ > FAULT_HISTORY_SIZE) {  // BUG!
+        fault_index_ = 0;
+    }
+}
+```
 
 **Steps:**
-1. Find or create a circular buffer with off-by-one error
-2. Select the buggy code
-3. Type `/fix this circular buffer logic` in chat
-4. Review and apply the suggested fix
-5. Explain why >= is correct instead of >
 
-**Success Criteria:**
-- [ ] Off-by-one error identified
-- [ ] Correct fix applied
-- [ ] Can explain the reasoning
+1. **Select the buggy code** in your editor.
 
-### Exercise 3: Race Condition Detection (5 min)
+2. **Ask Copilot to fix it:**
+   ```
+   /fix this circular buffer logic - check the bounds condition
+   ```
 
-**Goal:** Identify and fix ISR/main loop race conditions
+3. **Review the explanation:**
+   - Why is `>` wrong?
+   - Why is `>=` correct?
+
+4. **Ask for deeper understanding:**
+   ```
+   "If FAULT_HISTORY_SIZE is 10, what indices are valid? Why does > 10 cause problems?"
+   ```
+
+**Expected Fix:**
+```cpp
+if (fault_index_ >= FAULT_HISTORY_SIZE) {
+    fault_index_ = 0;
+}
+```
+
+**Explanation:** With `FAULT_HISTORY_SIZE = 10`, valid indices are 0-9. Using `> 10` means the buffer wraps at index 11, causing a buffer overflow. Using `>= 10` correctly wraps at index 10.
+
+---
+
+### Exercise 3: /fix for Race Condition
+
+**Goal:** Identify and fix ISR/main loop race conditions.
+
+**Buggy Code:**
+```cpp
+// Called from 8 kHz interrupt
+void Encoder::update() {
+    position_estimate_ = (float)count_ / (float)cpr_;
+}
+
+// Called from main loop (1 kHz)
+float Axis::get_position() {
+    return encoder_.position_estimate_;  // RACE!
+}
+```
 
 **Steps:**
-1. Review the encoder position race condition example
-2. Select both ISR and main loop functions
-3. Ask Copilot: `/fix thread safety between ISR and main loop`
-4. Evaluate the proposed solutions
-5. Choose the best fix for embedded (interrupt disable)
 
-**Success Criteria:**
-- [ ] Race condition understood
-- [ ] Multiple fix options evaluated
-- [ ] Embedded-appropriate solution selected
+1. **Select both functions** in your editor.
+
+2. **Ask Copilot to fix thread safety:**
+   ```
+   /fix thread safety issue between ISR and main loop
+   
+   Context:
+   - ARM Cortex-M4 target
+   - Lowest overhead solution preferred
+   - Cannot use mutexes in ISR
+   ```
+
+3. **Evaluate the proposed solutions:**
+   Copilot might suggest:
+   - Atomic operations
+   - Interrupt disabling
+   - Double buffering
+   - (volatile alone is NOT sufficient!)
+
+4. **Choose the best for embedded:**
+   ```
+   "Which solution has lowest overhead for ARM Cortex-M4?"
+   ```
+
+**Expected Fix (interrupt disable):**
+```cpp
+float Axis::get_position() {
+    __disable_irq();
+    float pos = encoder_.position_estimate_;
+    __enable_irq();
+    return pos;
+}
+```
+
+**Why This Works:** On ARM Cortex-M4, disabling interrupts briefly (a few cycles) is cheaper than atomics or mutexes, and guarantees consistent reads.
+
+---
+
+### Exercise 4: /fix for Integer Overflow
+
+**Goal:** Detect and fix integer overflow in calculations.
+
+**Buggy Code:**
+```cpp
+float Encoder::calculate_rpm() {
+    int32_t delta_count = count_ - last_count_;
+    int32_t delta_time_us = 125;  // 8 kHz = 125 μs
+    
+    // BUG: Intermediate overflow!
+    int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
+    return (float)rpm;
+}
+```
+
+**Steps:**
+
+1. **Select the function** and ask Copilot:
+   ```
+   /fix potential integer overflow in RPM calculation
+   ```
+
+2. **Understand the math:**
+   ```
+   "Show me when delta_count * 60 * 1000000 overflows int32_t"
+   ```
+   
+   Answer: `INT32_MAX / 60000000 = ~35`, so any delta > 35 counts causes overflow!
+
+3. **Apply the fix:**
+
+**Expected Fix:**
+```cpp
+float Encoder::calculate_rpm() {
+    int32_t delta_count = count_ - last_count_;
+    float delta_time_s = 125e-6f;  // 125 μs in seconds
+    
+    // Convert to float EARLY to avoid overflow
+    float revolutions = static_cast<float>(delta_count) / static_cast<float>(cpr_);
+    float rps = revolutions / delta_time_s;
+    return rps * 60.0f;
+}
+```
+
+**Key Learning:** Always cast to float BEFORE multiplication when dealing with large intermediate values.
+
+---
+
+### Exercise 5: Multi-File Debugging with @ODrive-Engineer
+
+**Goal:** Use the agent for bugs that span multiple files.
+
+**Scenario:** Motor oscillates at startup but you're not sure which file contains the bug.
+
+**Steps:**
+
+1. **Describe the symptom to the agent:**
+   ```
+   @ODrive-Engineer The motor oscillates during startup calibration.
+   
+   Symptoms:
+   - Oscillation frequency ~50Hz
+   - Happens only during encoder calibration
+   - Motor runs fine after calibration completes
+   
+   Files that might be involved:
+   - src-ODrive/Firmware/MotorControl/encoder.cpp
+   - src-ODrive/Firmware/MotorControl/axis.cpp
+   - src-ODrive/Firmware/MotorControl/motor.cpp
+   
+   Can you analyze the calibration sequence and identify potential causes?
+   ```
+
+2. **Follow the agent's analysis** - it will search across files.
+
+3. **Ask for verification:**
+   ```
+   @ODrive-QA After I apply this fix, how can I verify it worked?
+   ```
+
+**Key Learning:** Use `@ODrive-Engineer` when bugs span multiple files or require codebase-wide understanding. Use `@ODrive-QA` to verify fixes and generate tests.
 
 ---
 
@@ -1019,6 +1190,8 @@ float Encoder::calculate_rpm() {
 | `/fix` | Logic bugs | Selected code | Code correction |
 | `/explain` | Understanding code | Selected code | Explanation |
 | `@workspace` | Finding code | Search query | File locations |
+| `@ODrive-Engineer` | Complex multi-file bugs | Description + context | Analysis + orchestrated fix |
+| `@ODrive-QA` | Test failures, build issues | Test output + context | Diagnosis + test suggestions |
 
 ### @terminal Prompts
 
@@ -1045,16 +1218,18 @@ float Encoder::calculate_rpm() {
 1. Reproduce the bug
    ↓
 2. @workspace: Find related code
+   (or @ODrive-Engineer for deeper analysis)
    ↓
 3. /explain: Understand the logic
    ↓
 4. /fix: Get suggested fix
    ↓
 5. @terminal: If build fails
+   (or @ODrive-QA to invoke build skill)
    ↓
 6. Test the fix
    ↓
-7. Generate regression test
+7. @ODrive-QA: Generate regression test
 ```
 
 ---
@@ -1069,6 +1244,8 @@ float Encoder::calculate_rpm() {
 | Race condition fix too slow | Used mutex in ISR | Ask for "lowest overhead fix for Cortex-M4" |
 | Overflow fix changes behavior | Float precision differs | Specify precision requirements in prompt |
 | AI suggests heap allocation | Didn't specify embedded | Add "static allocation only, no new/malloc" |
+| Need multi-file analysis | Bug spans multiple modules | Use `@ODrive-Engineer` for orchestrated debugging |
+| Build verification needed | Want to test fix compiles | Use `@ODrive-QA` to invoke build skill |
 
 ### Common Mistakes to Avoid
 
@@ -1102,43 +1279,154 @@ float Encoder::calculate_rpm() {
 
 ---
 
-## Q&A
+## Frequently Asked Questions
 
-### Common Questions
+### When should I use @terminal vs /fix?
 
-**"Does /fix work for all bugs?"**
-- No - /fix is best for clear logical errors
-- Complex architectural issues need human insight
-- Runtime bugs need more context
+| Use `@terminal` for: | Use `/fix` for: |
+|---------------------|-----------------|
+| Build/compile errors | Logic bugs in code |
+| Linker errors | Runtime behavior issues |
+| Tool chain problems | Algorithm mistakes |
+| Warning messages | Code improvement |
+| **Input: Terminal output** | **Input: Selected code** |
 
-**"Can Copilot debug hardware issues?"**
-- Yes, if you describe the symptoms
-- "Motor stutters at high speed" → AI suggests control loop timing
-- But can't debug physical hardware faults
+**Rule of thumb:** If the error came from the terminal, use `@terminal`. If the bug is in the code logic, use `/fix`.
 
-**"What if the fix doesn't work?"**
-- Iterate! Provide more context
-- Try different approaches: "What other ways to fix this?"
-- Sometimes you need multiple iterations
+### When should I use @ODrive-Engineer vs /fix?
 
-**"Should I trust AI fixes blindly?"**
-- NO! Always review and understand the fix
-- Test thoroughly
-- AI can miss edge cases or constraints
+| Use `/fix` when: | Use `@ODrive-Engineer` when: |
+|------------------|------------------------------|
+| Bug is in one file | Bug spans multiple files |
+| Clear, localized issue | Need codebase-wide search |
+| Quick fix needed | Need deep analysis |
+| Simple logic error | Complex architectural issue |
+
+**Example:** Off-by-one in a loop → `/fix`. Motor oscillation involving encoder + axis + motor files → `@ODrive-Engineer`.
+
+### Does /fix work for all bugs?
+
+No. `/fix` is best for:
+- ✅ Clear logical errors (off-by-one, null checks)
+- ✅ Type mismatches
+- ✅ Simple race conditions
+- ✅ Memory issues with obvious patterns
+
+Less effective for:
+- ❌ Complex architectural problems
+- ❌ Bugs requiring runtime context
+- ❌ Issues requiring domain expertise
+- ❌ Performance problems
+
+For complex issues, use `@ODrive-Engineer` to get deeper analysis.
+
+### Can Copilot debug hardware issues?
+
+**Partially.** Copilot can help if you describe the symptoms:
+
+```
+"Motor stutters at high speed" 
+→ AI suggests checking control loop timing, PWM frequency
+
+"ADC readings are noisy"
+→ AI suggests checking sampling rate, filtering, grounding
+
+"CAN bus errors under load"
+→ AI suggests checking termination, baud rate, buffer sizes
+```
+
+**But** Copilot cannot debug physical hardware faults (blown components, wiring issues, etc.).
+
+### What if the fix doesn't work?
+
+1. **Iterate with more context:**
+   ```
+   "That fix didn't work. The error now is: [new error].
+   Additional context: [what you learned]"
+   ```
+
+2. **Ask for alternatives:**
+   ```
+   "What other ways could I fix this race condition?"
+   ```
+
+3. **Add constraints:**
+   ```
+   "Fix this but the solution must be interrupt-safe and use no heap"
+   ```
+
+4. **Break it down:**
+   ```
+   "Let's debug this step by step. First, explain what this function does."
+   ```
+
+### Should I trust AI fixes blindly?
+
+**NO!** Always:
+1. ✅ **Review** - Read and understand the fix
+2. ✅ **Test** - Rebuild and verify behavior
+3. ✅ **Verify constraints** - Check it respects your requirements (no heap, ISR-safe, etc.)
+4. ✅ **Consider edge cases** - AI might miss unusual scenarios
+5. ✅ **Ask for explanation** - "Why does this fix work?"
+
+**Remember:** You're responsible for the code, not the AI.
+
+### How do I add embedded constraints to prompts?
+
+Always include constraints relevant to your environment:
+
+```
+/fix this function
+
+Constraints:
+- ARM Cortex-M4 target
+- No heap allocation (static only)
+- Must complete in < 50μs
+- MISRA C++ compliant
+- ISR-safe (no blocking)
+```
+
+This helps Copilot generate appropriate fixes for embedded systems.
+
+### Can I use Copilot for debugging without custom agents?
+
+Yes! The core tools work without custom agents:
+- `@terminal` - Works with any terminal output
+- `/fix` - Works on any code selection
+- `/explain` - Works on any code selection
+- `@workspace` - Works on any workspace
+
+Custom agents (`@ODrive-Engineer`, `@ODrive-QA`) add domain expertise and can invoke specialized skills, but aren't required for basic debugging.
 
 ---
 
-## Key Takeaways
+## Summary: Key Takeaways
 
-✅ **@terminal** interprets build errors in context  
-✅ **/fix** suggests code fixes for logic bugs  
-✅ **Context is crucial** - tell AI what you're trying to do  
-✅ **Iterate** - first fix might not be perfect  
-✅ **Always review** - understand before accepting  
-✅ **Test** - verify the fix works  
-✅ **Learn** - ask AI to explain WHY the bug occurred  
+1. **`@terminal`** - Interprets build errors in context; give it the full error message
+2. **`/fix`** - Fixes logic bugs; select the code first
+3. **`@ODrive-Engineer`** - For complex, multi-file debugging
+4. **`@ODrive-QA`** - For build verification and test generation
+5. **Context is crucial** - Tell AI what you're trying to do, not just the error
+6. **Add constraints** - Specify embedded requirements (no heap, ISR-safe, etc.)
+7. **Iterate** - First fix might not be perfect; provide more context
+8. **Always review** - Understand the fix before accepting
+9. **Test thoroughly** - Rebuild and verify after every fix
+10. **Learn from it** - Ask AI to explain WHY the bug occurred
 
-**Remember:** Copilot is a debugging assistant, not a replacement for thinking. Use it to accelerate your debugging, not to avoid understanding your code!
+**The Debugging Workflow:**
+```
+1. @terminal for build errors
+   ↓
+2. /fix for logic bugs  
+   ↓
+3. @ODrive-Engineer for complex issues
+   ↓
+4. @ODrive-QA to verify fixes
+   ↓
+5. Test and iterate
+```
+
+**Remember:** Copilot is a debugging accelerator, not a replacement for understanding your code!
 
 ---
 

@@ -8,21 +8,40 @@
 
 ---
 
+## Overview
+
+This lesson teaches you how to become an **agentic developer**—someone who orchestrates AI agents to accomplish complex development tasks efficiently. Instead of writing every line of code manually, you'll learn to direct specialized agents with rich context to produce production-quality embedded code.
+
+**What You'll Learn:**
+- The agentic mindset: from "how do I code this?" to "how do I describe this?"
+- Context engineering: providing AI with the right information for accurate output
+- Task decomposition: breaking complex features into agent-assignable subtasks
+- Iterative refinement: polishing AI output into production-ready code
+
+**Key Concepts:**
+- **2 Orchestrator Agents:** `@ODrive-Engineer` (development) and `@ODrive-QA` (testing)
+- **Skills:** Specialized capabilities agents invoke automatically (e.g., `odrive-qa-assistant`)
+- **Context Layering:** Building prompts with constitution → agent → files → constraints → acceptance criteria
+
+---
+
 ## Table of Contents
 
+- [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Why Agentic Development Matters](#why-agentic-development-matters)
-- [Agenda](#agenda-agentic-development--context-engineering-45-min)
+- [Learning Path](#learning-path)
 - [What is an Agentic Developer?](#1-what-is-an-agentic-developer-8-min)
 - [Context Engineering Best Practices](#2-context-engineering-best-practices-12-min)
 - [Decomposition Strategies](#3-decomposition-strategies-8-min)
 - [Iterative Refinement Workflow](#4-iterative-refinement-workflow-5-min)
-- [Hands-On: Agentic Refactoring](#5-hands-on-agentic-refactoring-12-min)
-- [Speaker Instructions](#speaker-instructions)
-- [Participant Instructions](#participant-instructions)
+- [Guided Example: Agentic Refactoring](#5-guided-example-agentic-refactoring-12-min)
+- [Practice Exercises](#practice-exercises)
 - [Quick Reference](#quick-reference-agentic-patterns)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [Summary: Key Takeaways](#summary-key-takeaways)
 
 ---
 
@@ -40,17 +59,18 @@ Before starting this session, ensure you have:
 
 1. **Check custom agents are available:**
    - Open Chat view (Ctrl+Alt+I)
-   - Click agents dropdown (should see @firmware-engineer, @motor-control-engineer, etc.)
-   - If missing, verify `.github/agents/*.agent.md` files exist
+   - Click agents dropdown (should see @ODrive-Engineer, @ODrive-QA)
+   - If missing, verify `src-ODrive/.github/agents/*.agent.md` files exist
 
 2. **Test agent selection:**
-   - Select `@firmware-engineer` from dropdown
+   - Select `@ODrive-Engineer` from dropdown
    - Send a test message: "What's your specialty?"
-   - Confirm specialized response
+   - Confirm specialized response mentioning firmware, motor control, or hardware
 
 3. **Verify workspace context:**
-   - Ensure `Firmware/MotorControl/` folder is accessible
-   - Check `.github/copilot-instructions.md` exists
+   - Ensure `src-ODrive/Firmware/MotorControl/` folder is accessible
+   - Check `src-ODrive/.github/copilot-instructions.md` exists
+   - Verify skills folder: `src-ODrive/.github/skills/`
 
 ---
 
@@ -82,26 +102,29 @@ The shift from traditional development to agentic development represents a funda
 
 ---
 
-## Agenda: Agentic Development & Context Engineering (45 min)
+## Learning Path
 
-| Sub-Topic | Focus | Time |
-|-----------|-------|------|
+This lesson covers five key areas. Work through them sequentially or jump to specific topics as needed.
+
+| Topic | What You'll Learn | Estimated Time |
+|-------|-------------------|----------------|
 | What is an Agentic Developer? | Mindset shift, agent orchestration | 8 min |
 | Context Engineering Best Practices | 5 W's, layering strategy, techniques | 12 min |
 | Decomposition Strategies | Top-down, bottom-up, horizontal slices | 8 min |
 | Iterative Refinement Workflow | Generate, review, refine loop | 5 min |
-| **Hands-On:** Agentic Refactoring | Motor diagnostics implementation | 12 min |
+| Guided Example | Motor diagnostics implementation | 12 min |
 
 ---
 
 ## 1. What is an Agentic Developer? (8 min)
 
 ### The Agentic Mindset
-**🎯 Copilot Modes: Agent**
+**🎯 Copilot Mode: Agent**
 
-**Files to demonstrate:**
-- [.github/agents/firmware-engineer.agent.md](../../.github/agents/firmware-engineer.agent.md) - Firmware specialist agent
-- [.github/agents/motor-control-engineer.agent.md](../../.github/agents/motor-control-engineer.agent.md) - Control theory agent
+**Key Files:**
+- [src-ODrive/.github/agents/ODrive-Engineer.agent.md](../../src-ODrive/.github/agents/ODrive-Engineer.agent.md) - Primary development orchestrator
+- [src-ODrive/.github/agents/ODrive-QA.agent.md](../../src-ODrive/.github/agents/ODrive-QA.agent.md) - Testing & DevOps orchestrator
+- [src-ODrive/.github/skills/](../../src-ODrive/.github/skills/) - Specialized skills invoked by agents
 
 ### Key Concepts
 
@@ -126,7 +149,7 @@ Developer thinks: "I need to add temperature monitoring to the motor"
 
 **🤖 Agent Mode Prompt (Agentic Approach):**
 ```
-@firmware-engineer Add temperature monitoring with NTC thermistor support
+@ODrive-Engineer Add temperature monitoring with NTC thermistor support
 
 Context: #file:src-ODrive/Firmware/MotorControl/motor.hpp
          #file:src-ODrive/Firmware/MotorControl/thermistor.cpp
@@ -144,18 +167,37 @@ Acceptance Criteria:
 ```
 Result: **15 minutes with review** (vs 2-4 hours manual)
 
-### Custom Agents in ODrive
+> **Note:** The ODrive-Engineer agent will automatically invoke the appropriate **skill** (e.g., `odrive-qa-assistant` for building) based on your request.
 
-We have 4 specialized agents available:
+### Custom Agents & Skills in ODrive
 
-| Agent | Specialty | Use When |
-|-------|-----------|----------|
-| `@firmware-engineer` | STM32, interrupts, DMA, FreeRTOS | Low-level firmware tasks |
-| `@hardware-engineer` | PCB design, pinouts, electrical specs | Hardware interface questions |
-| `@motor-control-engineer` | FOC algorithms, PID tuning, control theory | Control loop design |
-| `@qa-engineer` | Test generation, bug verification | Testing and validation |
+We have **2 orchestrator agents** that invoke **specialized skills**:
 
-**Key Point:** Each agent has domain expertise encoded in their instructions. Use them!
+| Agent | Role | Invokes Skills |
+|-------|------|----------------|
+| `@ODrive-Engineer` | Primary development orchestrator | odrive-qa-assistant, devops-engineer, control-algorithms*, foc-tuning*, sensorless-control*, pcb-review*, signal-integrity* |
+| `@ODrive-QA` | Testing & DevOps orchestrator | odrive-qa-assistant, test-automation*, devops-engineer |
+
+*Skills marked with * are planned (🚧)
+
+#### Available Skills (Production ✅)
+
+| Skill | Capabilities |
+|-------|-------------|
+| `odrive-qa-assistant` | Build firmware, run tests, symbol search, interface inspection |
+| `devops-engineer` | CI/CD workflows, releases, GitHub Actions, deployments |
+
+#### Planned Skills (🚧)
+
+| Skill | Capabilities |
+|-------|-------------|
+| `control-algorithms` | PID controllers, observers, control transformations |
+| `foc-tuning` | Automated FOC parameter tuning, bandwidth measurement |
+| `sensorless-control` | Sliding mode observers, PLL, back-EMF estimation |
+| `pcb-review` | PCB schematic/layout review, design rule checking |
+| `signal-integrity` | Impedance calculation, EMI analysis, crosstalk |
+
+**Key Point:** Agents orchestrate skills. Ask `@ODrive-Engineer` for any development task—it routes to the right skill automatically!
 
 ---
 
@@ -178,8 +220,10 @@ Result: Generic suggestions, may not match ODrive architecture
 
 **🤖 Agent Mode Prompt (Good Context - Specific):**
 ```
-@motor-control-engineer The current control loop in foc.cpp is causing 
+@ODrive-Engineer The current control loop in foc.cpp is causing 
 oscillations at 50Hz when running at 3000 RPM.
+
+Task Context: Control algorithm debugging
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/foc.cpp
@@ -206,7 +250,7 @@ Result: Targeted analysis with architecture-aware recommendations
 | **WHERE** | Which files/modules are relevant? | "#file:motor.cpp, #file:foc.cpp" |
 | **WHY** | What is the business/technical reason? | "Prevent motor damage from shorts" |
 | **WHEN** | What are timing constraints or conditions? | "Must work in 8kHz ISR context" |
-| **WHO** | Which agent has the right expertise? | "@firmware-engineer" |
+| **WHO** | Which agent has the right expertise? | "@ODrive-Engineer" or "@ODrive-QA" |
 
 ---
 
@@ -224,7 +268,7 @@ the current control loop. Focus on reducing CPU cycles in the hot path.
 **🤖 Agent Mode Prompt:**
 ```
 @workspace Find all uses of thermistor calibration
-@firmware-engineer Refactor this into a reusable class following ODrive patterns
+@ODrive-Engineer Refactor this into a reusable class following ODrive patterns
 ```
 
 #### Technique 3: Code Selection + Inline Chat
@@ -248,7 +292,7 @@ Looking at these files, refactor the state machine to use a cleaner design patte
 @terminal shows this linker error: 
 undefined reference to `Motor::apply_pwm_timings'
 
-@firmware-engineer Fix the missing symbol. Check motor.hpp and motor.cpp for declaration/definition mismatch.
+@ODrive-Engineer Fix the missing symbol. Check motor.hpp and motor.cpp for declaration/definition mismatch.
 ```
 
 ---
@@ -257,10 +301,11 @@ undefined reference to `Motor::apply_pwm_timings'
 
 | Layer | Source | Content |
 |-------|--------|---------|
-| **Layer 1** | `.github/copilot-instructions.md` | Coding standards, naming conventions (always loaded) |
-| **Layer 2** | Agent Selection | Domain expertise (`@firmware-engineer` for embedded) |
-| **Layer 3** | Specific Files | Exact files and line numbers referenced |
+| **Layer 1** | `src-ODrive/.github/copilot-instructions.md` | Constitution - coding standards, safety rules (always loaded) |
+| **Layer 2** | Agent Selection | Orchestrator expertise (`@ODrive-Engineer` for dev, `@ODrive-QA` for testing) |
+| **Layer 3** | Specific Files | Exact files and line numbers referenced with `src-ODrive/` prefix |
 | **Layer 4** | Requirements | Constraints like "static allocation only", "MISRA compliant" |
+| **Layer 5** | Skills (Auto) | Agent automatically invokes appropriate skill based on task |
 
 ---
 
@@ -277,7 +322,7 @@ Result: Generic code, might not match ODrive architecture
 
 **🤖 Agent Mode Prompt (Rich Context):**
 ```
-@firmware-engineer Add overcurrent protection to the motor driver.
+@ODrive-Engineer Add overcurrent protection to the motor driver.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/motor.cpp
@@ -307,6 +352,8 @@ Acceptance Criteria:
 
 Result: Production-ready code that fits the architecture!
 
+> The agent will invoke the `odrive-qa-assistant` skill to verify the build after implementation.
+
 ---
 
 ## 3. Decomposition Strategies (8 min)
@@ -331,17 +378,18 @@ Result: Production-ready code that fits the architecture!
 **🤖 Agent Mode Prompts (Sequential):**
 
 ```
-Step 1: "@motor-control-engineer Design the API for sensorless estimator"
+Step 1: "@ODrive-Engineer Design the API for sensorless estimator"
         → Define interfaces and data structures
+        → Agent uses control-algorithms skill internally
 
-Step 2: "@motor-control-engineer Implement Luenberger observer"
+Step 2: "@ODrive-Engineer Implement Luenberger observer"
         → Core algorithm implementation
 
-Step 3: "@firmware-engineer Integrate estimator with axis.cpp"
+Step 3: "@ODrive-Engineer Integrate estimator with axis.cpp"
         → Connect to existing control loop
 
-Step 4: "@qa-engineer Create integration tests"
-        → Verification and validation
+Step 4: "@ODrive-QA Create integration tests and verify build"
+        → Verification and validation via odrive-qa-assistant skill
 ```
 
 #### Pattern 2: Bottom-Up (Build Components)
@@ -414,10 +462,10 @@ graph TD
 
 **🤖 Agent Mode Execution Plan:**
 ```
-1. @hardware-engineer - Define CAN message format and electrical specs
-2. @firmware-engineer - Implement CAN driver and handlers
-3. Regular Copilot    - Update Python tools
-4. @qa-engineer       - Create comprehensive tests
+1. @ODrive-Engineer  - Define CAN message format (invokes pcb-review skill for electrical specs)
+2. @ODrive-Engineer  - Implement CAN driver and handlers
+3. Regular Copilot   - Update Python tools
+4. @ODrive-QA        - Create comprehensive tests (invokes odrive-qa-assistant skill)
 ```
 
 ---
@@ -457,7 +505,7 @@ graph TD
 
 **🤖 Agent Mode Prompt:**
 ```
-@motor-control-engineer Create a PID controller for velocity control
+@ODrive-Engineer Create a PID controller for velocity control
 ```
 - **Result:** Basic PID with p, i, d gains
 - **Review:** Missing anti-windup, no derivative filtering
@@ -533,7 +581,9 @@ Before accepting generated code, verify:
 
 ---
 
-## 5. Hands-On: Agentic Refactoring (12 min)
+## 5. Guided Example: Agentic Refactoring (12 min)
+
+This guided example walks through a complete agentic workflow. Follow along to see all the techniques in action.
 
 ### Exercise: Add Enhanced Diagnostics to ODrive Motor
 **🎯 Copilot Modes: Chat → Agent**
@@ -567,7 +617,7 @@ Firmware/MotorControl/axis.hpp   - Error handling
 
 **🤖 Agent Mode Prompt:**
 ```
-@firmware-engineer I need to add comprehensive diagnostics to the Motor class.
+@ODrive-Engineer I need to add comprehensive diagnostics to the Motor class.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/motor.hpp
@@ -602,6 +652,8 @@ Acceptance Criteria:
 Start by showing me the struct definition for the diagnostics data.
 ```
 
+> The ODrive-Engineer will orchestrate the implementation and can invoke `odrive-qa-assistant` to verify the build.
+
 #### Step 3: Review & Refine (3 min)
 
 **💬 Chat Mode Prompts (Follow-up):**
@@ -617,7 +669,7 @@ Start by showing me the struct definition for the diagnostics data.
 
 **🤖 Agent Mode Prompt (QA Validation):**
 ```
-@qa-engineer Review the motor diagnostics implementation.
+@ODrive-QA Review the motor diagnostics implementation.
 
 Check for:
 - Potential race conditions between ISR and main loop
@@ -628,11 +680,13 @@ Check for:
 Suggest unit tests for the diagnostics module.
 ```
 
+> The QA agent will invoke `odrive-qa-assistant` skill to run builds and tests.
+
 #### Step 5: Documentation (2 min)
 
 **🤖 Agent Mode Prompt:**
 ```
-@firmware-engineer Add comprehensive documentation comments to the 
+@ODrive-Engineer Add comprehensive documentation comments to the 
 diagnostics struct and methods following Doxygen style.
 
 Include:
@@ -657,162 +711,211 @@ By the end of this exercise, you should have:
 ### Key Takeaways
 
 1. **Start with context** - Reference relevant files and constraints
-2. **Choose the right agent** - Firmware Engineer for embedded code
+2. **Choose the right agent** - `@ODrive-Engineer` for development, `@ODrive-QA` for testing
 3. **Be iterative** - Get the interface right first, then implementation
 4. **Verify safety** - Always check interrupt and thread safety
-5. **Cross-validate** - Use QA Engineer to review
+5. **Cross-validate** - Use `@ODrive-QA` to review and run tests
+6. **Agents invoke skills** - The orchestrator agents automatically route to specialized skills
 
 ---
 
-## Speaker Instructions
+## Practice Exercises
 
-### 1. Demo: What is an Agentic Developer? (8 min)
+These exercises help you build agentic development skills. Try them on your own or with the ODrive codebase.
 
-**Show the contrast:**
-1. Open Chat without selecting an agent
-2. Ask: "Add temperature monitoring to the motor"
-3. Show generic result that may not fit ODrive
+### Exercise 1: Agent Selection Practice
 
-**Show agentic approach:**
-1. Select `@firmware-engineer` from agents dropdown
-2. Use the rich context prompt from section 1
-3. Highlight how the agent follows ODrive patterns
-4. Show it uses static allocation, no exceptions
+**Task:** For each scenario, identify the best agent and why:
 
-**Key points to emphasize:**
-- Agents have domain expertise
-- Context is key to quality
-- Describe "what" not "how"
-- Focus on requirements, not implementation
+| Scenario | Best Agent | Reason |
+|----------|------------|--------|
+| Add DMA-based ADC sampling | `@ODrive-Engineer` | Firmware/driver development |
+| Tune velocity control loop gains | `@ODrive-Engineer` | Control algorithm work (add "control focus" to prompt) |
+| Generate motor position unit tests | `@ODrive-QA` | Testing work (invokes `odrive-qa-assistant` skill) |
+| Check CI pipeline status | `@ODrive-QA` | DevOps work (invokes `devops-engineer` skill) |
+| Debug race condition in ISR | `@ODrive-Engineer` | Low-level firmware debugging |
+| Review hardware interface timing | `@ODrive-Engineer` | Hardware focus (add constraints in prompt) |
 
-### 2. Demo: Context Engineering (12 min)
-
-**Show bad vs good context:**
-1. First: "Fix the motor control bug" (vague)
-2. Then: Full rich context prompt from demonstration
-3. Compare outputs side-by-side
-
-**Demonstrate layering:**
-1. Show `.github/copilot-instructions.md` (Layer 1)
-2. Show agent selection effect (Layer 2)
-3. Add specific file references (Layer 3)
-4. Add requirements constraints (Layer 4)
-
-**Practice the 5 W's:**
-- Walk through each question with ODrive example
-- Show how answers inform prompt structure
-
-### 3. Demo: Decomposition Strategies (8 min)
-
-**Walk through CAN protocol example:**
-1. Show the complex task
-2. Draw decomposition diagram
-3. Map subtasks to agents
-4. Demonstrate one subtask execution
-
-**Key points:**
-- Complex tasks need breakdown
-- Match agents to domains
-- Sequential execution, not parallel
-- Each subtask has clear acceptance criteria
-
-### 4. Demo: Iterative Refinement (5 min)
-
-**Live refinement example:**
-1. Generate initial PID controller
-2. Point out missing features
-3. Add constraints iteratively
-4. Show final production-ready result
-
-**Show review checklist:**
-- Walk through each item
-- Explain why each matters for embedded
-- Share stories of common issues
-
-### 5. Demo: Hands-On Exercise (12 min)
-
-**Guide participants through steps:**
-1. Ensure everyone has files open
-2. Walk through Step 2 prompt together
-3. Let them refine independently
-4. Circulate to help with issues
-5. Share good examples at the end
+**Key Insight:** The same agent (`@ODrive-Engineer`) handles different domains based on your prompt context. Add phrases like "hardware constraints", "control theory", or "firmware implementation" to guide the response.
 
 ---
 
-## Participant Instructions
+### Exercise 2: Context Engineering Practice
 
-### Exercise 1: Agent Selection Practice (3 min)
+**Task:** Transform this vague prompt into a rich context prompt.
 
-**Task:** For each scenario, identify the best agent to use:
+**Vague Prompt:** "Make the encoder work better"
 
-| Scenario | Your Answer |
-|----------|-------------|
-| Add DMA-based ADC sampling | |
-| Tune velocity control loop gains | |
-| Generate motor position unit tests | |
-| Define CAN message format for new sensor | |
+**Your Solution Template:**
+```
+@ODrive-Engineer [Specific problem with encoder]
 
-**Answers:** firmware-engineer, motor-control-engineer, qa-engineer, hardware-engineer
+Context:
+#file:src-ODrive/Firmware/MotorControl/encoder.cpp
+#file:src-ODrive/Firmware/MotorControl/encoder.hpp
 
-### Exercise 2: Context Engineering (5 min)
+Current Behavior:
+- [What's happening now]
+- [Symptoms observed]
 
-**Task:** Transform this vague prompt into a rich context prompt:
+Desired Behavior:
+- [What should happen]
+- [Performance targets]
 
-**Vague:** "Make the encoder work better"
+Constraints:
+- Static allocation only (no heap)
+- Must work in 8kHz interrupt context
+- Preserve backwards compatibility
 
-**Your rich prompt should include:**
-- [ ] Agent selection (@firmware-engineer)
-- [ ] File references (#file:encoder.cpp)
-- [ ] Specific problem description
-- [ ] Constraints (no heap, interrupt-safe)
-- [ ] Acceptance criteria
+Acceptance Criteria:
+- [Measurable success criteria]
+- Compiles without warnings
+- [Test to verify fix]
+```
 
-### Exercise 3: Task Decomposition (5 min)
+**Example Rich Prompt:**
+```
+@ODrive-Engineer The encoder position has jitter of ±3 counts at standstill.
 
-**Task:** Decompose this complex task into agent-assignable subtasks:
+Context:
+#file:src-ODrive/Firmware/MotorControl/encoder.cpp
+#file:src-ODrive/Firmware/MotorControl/encoder.hpp
+
+Current Behavior:
+- Position oscillates ±3 counts when motor is stationary
+- Jitter increases with higher CPR encoders
+- Velocity estimate is noisy as a result
+
+Desired Behavior:
+- Stable position reading at standstill (±0 counts)
+- Clean velocity estimate
+- No impact on position accuracy during motion
+
+Constraints:
+- Static allocation only
+- Must work in 8kHz interrupt context  
+- Cannot add latency to position reading
+
+Acceptance Criteria:
+- Position stable at standstill (verify with scope)
+- Velocity noise < 0.1 counts/ms at standstill
+- Compiles without warnings
+```
+
+---
+
+### Exercise 3: Task Decomposition Practice
+
+**Task:** Decompose this complex feature into agent-assignable subtasks.
 
 **Complex Task:** "Add support for absolute encoder (SSI protocol)"
 
-Fill in the decomposition:
+**Decomposition Solution:**
 
-| Step | Agent | Subtask |
-|------|-------|---------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
+| Step | Agent | Subtask | Output |
+|------|-------|---------|--------|
+| 1 | `@ODrive-Engineer` | Design SSI protocol interface and timing requirements | Interface spec, timing diagram |
+| 2 | `@ODrive-Engineer` | Implement SPI-based SSI bit-banging driver | `ssi_encoder.cpp`, `ssi_encoder.hpp` |
+| 3 | `@ODrive-Engineer` | Integrate SSI encoder with existing encoder abstraction | Updates to `encoder.cpp` |
+| 4 | `@ODrive-QA` | Create test plan and hardware test rig config | Test cases, `test-rig-ssi.yaml` |
 
-### Exercise 4: Motor Diagnostics Implementation (12 min)
+**Why This Decomposition Works:**
+- Each step has a clear, focused output
+- Steps build on each other sequentially
+- Uses the same agent with different task contexts
+- QA agent handles testing at the end
 
-**Task:** Complete the hands-on exercise from Section 5
+---
 
-Follow the step-by-step guide and verify:
-- [ ] Struct definition generated
-- [ ] No dynamic allocation
-- [ ] Thread-safe design
-- [ ] Documentation added
-- [ ] Tests suggested
+### Exercise 4: Motor Diagnostics Challenge
+
+**Challenge:** Add comprehensive diagnostics to the Motor class.
+
+**Requirements:**
+- Track runtime hours (float)
+- Track total revolutions (uint64_t)
+- Track average power consumption (watts)
+- Track peak temperature reached
+- Maintain fault history (circular buffer, last 10 faults)
+
+**Constraints:**
+- Static memory allocation only
+- Must work in 8kHz interrupt context
+- Thread-safe access to diagnostics
+- Accessible via USB/CAN protocols
+
+**Step-by-Step Approach:**
+
+**Step 1: Design the data structure**
+```
+@ODrive-Engineer Design a diagnostics struct for the Motor class.
+
+Context:
+#file:src-ODrive/Firmware/MotorControl/motor.hpp
+
+Requirements:
+- Track: runtime_hours, total_revolutions, avg_power_watts, peak_temp, fault_history
+- Fault history: circular buffer, last 10 entries with timestamps
+- Static allocation only
+- Must be thread-safe for ISR access
+
+Show me the struct definition with size calculation.
+```
+
+**Step 2: Implement tracking logic**
+```
+@ODrive-Engineer Implement runtime tracking in the motor control loop.
+
+Context:
+#file:src-ODrive/Firmware/MotorControl/motor.cpp
+
+Details:
+- Control loop runs at 8kHz
+- Motor is "running" when current > 0.1A
+- Count revolutions using encoder position delta
+
+Where should this code go? Show implementation.
+```
+
+**Step 3: Verify with QA agent**
+```
+@ODrive-QA Review the motor diagnostics implementation for:
+1. Race conditions between ISR and main loop
+2. Integer overflow in counters
+3. Memory safety in circular buffer
+
+Suggest unit tests for the diagnostics module.
+```
+
+**Success Criteria:**
+- ✅ Struct compiles without warnings
+- ✅ No dynamic memory allocation
+- ✅ Interrupt-safe implementation
+- ✅ Circular buffer handles overflow correctly
+- ✅ Test approach defined
 
 ---
 
 ## Quick Reference: Agentic Patterns
 
-### Agent Selection Guide
+### Agent & Skill Selection Guide
 
-| Task Type | Agent | Key Expertise |
+| Task Type | Agent | Skill Invoked |
 |-----------|-------|---------------|
-| Low-level firmware | `@firmware-engineer` | STM32, DMA, interrupts, FreeRTOS |
-| Control algorithms | `@motor-control-engineer` | FOC, PID, observers, tuning |
-| Hardware interfaces | `@hardware-engineer` | Pinouts, electrical specs, PCB |
-| Testing & validation | `@qa-engineer` | Unit tests, coverage, test rigs |
+| Low-level firmware | `@ODrive-Engineer` | (direct) + odrive-qa-assistant for builds |
+| Control algorithms | `@ODrive-Engineer` | control-algorithms (🚧), foc-tuning (🚧) |
+| Hardware interfaces | `@ODrive-Engineer` | pcb-review (🚧), signal-integrity (🚧) |
+| Testing & validation | `@ODrive-QA` | odrive-qa-assistant, test-automation (🚧) |
+| CI/CD & releases | `@ODrive-QA` | devops-engineer |
+
+> **Legend:** 🚧 = Planned skill (not yet implemented)
 
 ### Context Engineering Checklist
 
 | Element | Example |
 |---------|---------|
-| Agent selection | `@firmware-engineer` |
-| File references | `#file:motor.cpp`, `#file:axis.hpp` |
+| Agent selection | `@ODrive-Engineer` or `@ODrive-QA` |
+| File references | `#file:src-ODrive/Firmware/MotorControl/motor.cpp` |
 | Problem description | "Current oscillation at 50Hz" |
 | Technical details | "PID gains: p=0.5, i=10, d=0.001" |
 | Constraints | "Static allocation only, 8kHz ISR" |
@@ -823,10 +926,10 @@ Follow the step-by-step guide and verify:
 ```
 Is the task complex? (>30 min manual work)
 ├── YES → Decompose
-│   ├── Multiple domains? → Assign agents per domain
-│   ├── Multiple files? → Break by module
-│   └── Uncertain design? → Top-down approach
-└── NO → Execute directly
+│   ├── Development work? → @ODrive-Engineer (routes to skills)
+│   ├── Testing/CI work? → @ODrive-QA (routes to qa/devops skills)
+│   └── Multiple files? → Break by module, iterate
+└── NO → Execute directly with appropriate agent
 ```
 
 ### Refinement Strategies
@@ -844,24 +947,25 @@ Is the task complex? (>30 min manual work)
 
 | Issue | Solution |
 |-------|----------|
-| Agent not responding to domain questions | Verify agent file exists in `.github/agents/` |
-| Context seems ignored | Check file paths are correct, use #file: syntax |
+| Agent not responding to domain questions | Verify agent file exists in `src-ODrive/.github/agents/` |
+| Context seems ignored | Check file paths are correct, use #file: syntax with `src-ODrive/` prefix |
 | Output doesn't match coding style | Add reference to existing code: "match style in motor.cpp lines 45-89" |
 | Agent makes heap allocations | Add explicit constraint: "static allocation only, no new/malloc" |
 | Generated code has race conditions | Add: "must be thread-safe, consider ISR context" |
 | Too much output to review | Decompose into smaller subtasks |
 | Agent suggests wrong patterns | Reference specific ODrive patterns to follow |
 | Refinement loop not converging | Start over with more specific initial prompt |
+| Skill not invoked | The agent decides when to invoke skills - be explicit about needing builds/tests |
 
 ### Debug Tips
 
 1. **Agent selection issues:**
-   - Check agents dropdown for available agents
+   - Check agents dropdown for available agents (`@ODrive-Engineer`, `@ODrive-QA`)
    - Verify `.agent.md` file format is correct
-   - Look at agent source in Configure Custom Agents
+   - Look at agent source in `src-ODrive/.github/agents/`
 
 2. **Context not being used:**
-   - Ensure `#file:` paths are workspace-relative
+   - Ensure `#file:` paths include `src-ODrive/` prefix
    - Verify files exist at specified paths
    - Check for typos in file names
 
@@ -870,23 +974,100 @@ Is the task complex? (>30 min manual work)
    - Reference specific code examples
    - Break task into smaller pieces
 
+4. **Skills not working:**
+   - Check `src-ODrive/.github/skills/` for available skills
+   - Some skills are planned (🚧) and not yet implemented
+
 ---
 
 ## Additional Resources
 
 ### Prompt Templates
 
-See [demo-script.md](demo-script.md) for copy-paste prompts you can use
+Here are ready-to-use prompt templates for common embedded development tasks:
+
+**Template 1: Add New Feature**
+```
+@ODrive-Engineer Add [feature name] to [module name].
+
+Context:
+#file:src-ODrive/Firmware/[path/to/file.cpp]
+#file:src-ODrive/Firmware/[path/to/header.hpp]
+
+Details:
+- [Current state of the system]
+- [Related components and their interfaces]
+- [Any existing patterns to follow]
+
+Requirements:
+- [Constraint 1: e.g., static allocation only]
+- [Constraint 2: e.g., must work in ISR context]
+- [Constraint 3: e.g., MISRA compliant]
+
+Acceptance Criteria:
+- [Criterion 1: e.g., compiles without warnings]
+- [Criterion 2: e.g., specific behavior verified]
+```
+
+**Template 2: Debug Issue**
+```
+@ODrive-Engineer Debug [symptom] in [module].
+
+Context:
+#file:src-ODrive/Firmware/[path/to/file.cpp]
+
+Observed Behavior:
+- [What's happening]
+- [When it happens]
+- [How to reproduce]
+
+Expected Behavior:
+- [What should happen]
+
+Constraints:
+- [Timing requirements]
+- [Memory constraints]
+
+Analyze the root cause and suggest a fix.
+```
+
+**Template 3: Generate Tests**
+```
+@ODrive-QA Create test plan for [feature/module].
+
+Context:
+#file:src-ODrive/Firmware/[path/to/implementation.cpp]
+
+Feature Description:
+- [What the feature does]
+- [Key behaviors to verify]
+
+Test Coverage Needed:
+1. [Happy path scenarios]
+2. [Error conditions]
+3. [Edge cases]
+4. [Performance requirements]
+
+Provide test cases with acceptance criteria.
+```
 
 ### Reference Files
 
-- `Firmware/MotorControl/motor.hpp` - Motor class structure
-- `Firmware/MotorControl/axis.hpp` - Error handling patterns
-- `.github/agents/firmware-engineer.agent.md` - Agent capabilities
+- `src-ODrive/Firmware/MotorControl/motor.hpp` - Motor class structure
+- `src-ODrive/Firmware/MotorControl/axis.hpp` - Error handling patterns
+- `src-ODrive/.github/agents/ODrive-Engineer.agent.md` - Primary development agent
+- `src-ODrive/.github/agents/ODrive-QA.agent.md` - Testing & DevOps agent
+- `src-ODrive/.github/skills/` - Available skills directory
+- `src-ODrive/.github/README.md` - Full agent system documentation
 
 ### Practice Scenarios
 
-See [hands-on-exercises.md](hands-on-exercises.md) for more practice problems
+Try these scenarios to build your agentic development skills:
+
+1. **Motor Diagnostics** - Add telemetry tracking (runtime hours, fault history)
+2. **Safety Watchdog** - Implement fault detection for overcurrent, overtemp, encoder errors
+3. **Configuration Manager** - Create validated config system with NVM persistence
+4. **CAN Protocol Extension** - Add 64-bit timestamps to CAN messages
 
 ### Official Documentation
 
@@ -895,14 +1076,101 @@ See [hands-on-exercises.md](hands-on-exercises.md) for more practice problems
 
 ---
 
-## Q&A Topics
+## Frequently Asked Questions
 
-Be prepared to answer:
-- "When should I use an agent vs regular Copilot?"
-- "How do I know if I've provided enough context?"
-- "What if the generated code doesn't compile?"
-- "Can agents modify multiple files at once?"
-- "How do I handle complex refactoring across many files?"
+### When should I use @ODrive-Engineer vs @ODrive-QA?
+
+| Use `@ODrive-Engineer` for: | Use `@ODrive-QA` for: |
+|----------------------------|----------------------|
+| Writing firmware code | Running builds and tests |
+| Implementing control algorithms | Generating test plans |
+| Debugging hardware interfaces | Reviewing code for issues |
+| Designing data structures | CI/CD and deployment tasks |
+| Refactoring existing code | Performance validation |
+
+**Rule of thumb:** Development work → `@ODrive-Engineer`. Verification work → `@ODrive-QA`.
+
+### How do I know if I've provided enough context?
+
+Your prompt has enough context when it includes:
+- ✅ Specific file references (`#file:src-ODrive/Firmware/...`)
+- ✅ Clear problem statement (what, not how)
+- ✅ Technical constraints (memory, timing, standards)
+- ✅ Acceptance criteria (how to verify success)
+- ✅ Examples of patterns to follow (if applicable)
+
+**Signs of insufficient context:** Generic output, wrong patterns, doesn't compile, ignores constraints.
+
+### What if the generated code doesn't compile?
+
+1. **Use `/fix`** - Paste the error and ask Copilot to fix it
+2. **Add more context** - Reference the file with the error
+3. **Ask `@ODrive-QA`** - It can invoke build skills to diagnose
+4. **Check constraints** - You may have conflicting requirements
+
+### Can agents modify multiple files at once?
+
+Yes! Agents in "Agent Mode" can:
+- Edit multiple files in a single operation
+- Create new files
+- Run terminal commands
+- Invoke skills for builds and tests
+
+**Tip:** For large refactoring, decompose into smaller tasks and iterate.
+
+### What's the difference between agents and skills?
+
+| Agents | Skills |
+|--------|--------|
+| **Orchestrators** - Direct the conversation | **Capabilities** - Specific actions |
+| You select them (`@ODrive-Engineer`) | Agents invoke them automatically |
+| Defined in `.github/agents/` | Defined in `.github/skills/` |
+| 2 in ODrive system | Multiple per agent |
+
+**Example:** When you ask `@ODrive-QA` to run tests, it automatically invokes the `odrive-qa-assistant` skill.
+
+### Which skills are implemented vs planned?
+
+**Implemented (✅):**
+- `odrive-qa-assistant` - Build firmware, run tests, symbol search
+- `devops-engineer` - CI/CD workflows, releases, GitHub Actions
+
+**Planned (🚧):**
+- `control-algorithms` - PID, observers, control theory
+- `foc-tuning` - FOC parameter tuning
+- `sensorless-control` - Back-EMF estimation, PLL
+- `pcb-review` - Schematic/layout review
+- `signal-integrity` - EMI analysis, impedance
+
+### How do I handle complex refactoring across many files?
+
+1. **Decompose** - Break into file-by-file or module-by-module tasks
+2. **Define interfaces first** - Get the API right before implementation
+3. **Iterate** - Small changes, frequent verification
+4. **Use Agent Mode** - It handles multi-file edits better than Chat
+5. **Verify with `@ODrive-QA`** - Run builds after each major change
+
+### Can I use this approach without custom agents?
+
+Yes! The techniques work with regular Copilot too:
+- Context engineering applies to all prompts
+- Decomposition helps any complex task
+- Iterative refinement improves any output
+
+Custom agents add domain expertise and consistency, but aren't required.
+
+---
+
+## Summary: Key Takeaways
+
+1. **You are the architect** - Direct agents, don't write every line
+2. **Context is currency** - Better context = better output
+3. **The 5 W's** - What, Where, Why, When, Who for every prompt
+4. **Decompose complexity** - Break big tasks into agent-sized pieces
+5. **Iterate to quality** - First output is rarely perfect
+6. **Two agents, many skills** - `@ODrive-Engineer` (dev) + `@ODrive-QA` (test)
+7. **Skills are automatic** - Agents invoke them based on your request
+8. **Always verify** - Check safety, memory, interrupts for embedded code
 
 ---
 

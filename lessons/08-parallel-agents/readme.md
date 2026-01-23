@@ -8,19 +8,44 @@
 
 ---
 
+## Overview
+
+This lesson teaches you to multiply your productivity by running multiple Copilot agents simultaneously. You'll learn to coordinate parallel workflows, leverage cloud/background agents for asynchronous tasks, and orchestrate complex multi-domain features using the 2-agent + skills architecture.
+
+### What You'll Learn
+
+- **Parallel Agent Patterns** - Run multiple agent instances with different task contexts
+- **Cloud/Background Agents** - Offload work to GitHub infrastructure for async processing
+- **Coordination Strategies** - Plan, launch, review, and integrate parallel outputs
+- **Multi-Domain Development** - Tackle hardware, firmware, control, and testing simultaneously
+
+### Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Parallel Agents** | Multiple chat windows running agents with different task contexts |
+| **Domain Separation** | Assign specialized tasks to same agent with different prompts |
+| **Cloud Agents** | Asynchronous agents that work in background on GitHub infrastructure |
+| **Coordination Phases** | Design → Review → Implement → Integrate workflow |
+| **Skill Routing** | Agents automatically invoke appropriate skills based on task context |
+
+---
+
 ## Table of Contents
 
+- [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Why Parallel Agents Matter](#why-parallel-agents-matter)
-- [Agenda](#agenda-parallel-agents--cloud-agents-20-min)
+- [Learning Path](#learning-path)
 - [Running Multiple Agents](#1-running-multiple-agents-8-min)
 - [Cloud/Background Agents](#2-cloudbackground-agents-7-min)
-- [Hands-On: Multi-Agent Demo](#3-hands-on-multi-agent-demo-5-min)
-- [Speaker Instructions](#speaker-instructions)
-- [Participant Instructions](#participant-instructions)
+- [Guided Demo: Multi-Agent Workflow](#3-guided-demo-multi-agent-workflow-5-min)
+- [Practice Exercises](#practice-exercises)
 - [Quick Reference](#quick-reference-parallel-agent-patterns)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [Summary: Key Takeaways](#summary-key-takeaways)
 
 ---
 
@@ -43,15 +68,15 @@ Before starting this session, ensure you have:
 
 2. **Verify agent availability:**
    - In each chat window, confirm agents dropdown shows:
-     - `@firmware-engineer`
-     - `@motor-control-engineer`
-     - `@hardware-engineer`
-     - `@qa-engineer`
+     - `@ODrive-Engineer` (primary development orchestrator)
+     - `@ODrive-QA` (testing & DevOps orchestrator)
 
 3. **Test agent selection in parallel:**
-   - Window 1: Select `@firmware-engineer`
-   - Window 2: Select `@qa-engineer`
+   - Window 1: Select `@ODrive-Engineer`
+   - Window 2: Select `@ODrive-QA`
    - Send a test message in each simultaneously
+
+> **Note:** The ODrive system uses 2 orchestrator agents that invoke specialized **skills** (e.g., `odrive-qa-assistant`, `devops-engineer`). Parallel workflows involve running multiple instances with different task contexts.
 
 ---
 
@@ -83,13 +108,15 @@ Parallel agent workflows represent a significant productivity multiplier for com
 
 ---
 
-## Agenda: Parallel Agents & Cloud Agents (20 min)
+## Learning Path
 
-| Sub-Topic | Focus | Time |
-|-----------|-------|------|
+This lesson covers three main topics in sequence:
+
+| Topic | Focus | Time |
+|-------|-------|------|
 | Running Multiple Agents | Patterns, coordination, launching | 8 min |
 | Cloud/Background Agents | Async workflows, GitHub integration | 7 min |
-| **Hands-On:** Multi-Agent Demo | Encoder calibration with 4 agents | 5 min |
+| Guided Demo: Multi-Agent Workflow | Encoder calibration with parallel agents | 5 min |
 
 ---
 
@@ -99,19 +126,23 @@ Parallel agent workflows represent a significant productivity multiplier for com
 **🎯 Copilot Modes: Agent (Multiple Instances)**
 
 **Files to demonstrate:**
-- [.github/agents/firmware-engineer.agent.md](../../.github/agents/firmware-engineer.agent.md) - Firmware specialist
-- [.github/agents/motor-control-engineer.agent.md](../../.github/agents/motor-control-engineer.agent.md) - Control theory specialist
-- [.github/agents/qa-engineer.agent.md](../../.github/agents/qa-engineer.agent.md) - Testing specialist
+- [src-ODrive/.github/agents/ODrive-Engineer.agent.md](../../src-ODrive/.github/agents/ODrive-Engineer.agent.md) - Primary development orchestrator
+- [src-ODrive/.github/agents/ODrive-QA.agent.md](../../src-ODrive/.github/agents/ODrive-QA.agent.md) - Testing & DevOps orchestrator
+- [src-ODrive/.github/skills/](../../src-ODrive/.github/skills/) - Specialized skills invoked by agents
+
+> **Architecture Note:** The ODrive system uses 2 orchestrator agents that can each invoke specialized skills. For parallel workflows, you run multiple instances of the same or different agents with separate task contexts.
 
 ### Sequential vs Parallel Comparison
 
 | Sequential Development | Parallel Agent Development |
 |------------------------|---------------------------|
-| Task 1: Design API → wait | Task 1: @firmware-engineer design API |
-| Task 2: Implement firmware → wait | Task 2: @motor-control-engineer design algorithm |
-| Task 3: Write tests → wait | Task 3: @qa-engineer plan tests |
+| Task 1: Design API → wait | Task 1: @ODrive-Engineer design API (firmware focus) |
+| Task 2: Implement firmware → wait | Task 2: @ODrive-Engineer design algorithm (control focus) |
+| Task 3: Write tests → wait | Task 3: @ODrive-QA plan tests and validation |
 | Task 4: Update docs → wait | Task 4: Regular Copilot draft docs |
 | **Total: 4 × wait time** | **Total: 1 × wait time** |
+
+> **Key Insight:** You can run multiple instances of `@ODrive-Engineer` with different task contexts, or split work between `@ODrive-Engineer` (development) and `@ODrive-QA` (testing).
 
 ---
 
@@ -135,12 +166,14 @@ Parallel agent workflows represent a significant productivity multiplier for com
 
 **🤖 Agent Mode Prompts (Parallel):**
 
-| Agent | Task | Focus |
-|-------|------|-------|
-| `@motor-control-engineer` | Design the control algorithm | Math/theory |
-| `@firmware-engineer` | Design embedded implementation | Interrupts/DMA |
-| `@hardware-engineer` | Validate electrical constraints | PWM frequency, current sensing |
-| `@qa-engineer` | Create test plan and fixtures | Validation strategy |
+| Window | Agent | Task Focus |
+|--------|-------|------------|
+| 1 | `@ODrive-Engineer` | Design the control algorithm (control-algorithms skill) |
+| 2 | `@ODrive-Engineer` | Design embedded implementation (firmware focus) |
+| 3 | `@ODrive-Engineer` | Validate electrical constraints (pcb-review skill) |
+| 4 | `@ODrive-QA` | Create test plan and fixtures (qa-assistant skill) |
+
+> **Note:** The same agent can be used in multiple windows with different task contexts. The agent will invoke the appropriate skill based on your request.
 
 #### Pattern 2: Multi-Module Feature
 
@@ -148,16 +181,16 @@ Parallel agent workflows represent a significant productivity multiplier for com
 
 **🤖 Agent Mode Prompts (Parallel):**
 ```
-Window 1 - @firmware-engineer (Bootloader):
+Window 1 - @ODrive-Engineer (Bootloader):
   "Design bootloader protocol for secure firmware updates"
 
-Window 2 - @firmware-engineer (Application):
+Window 2 - @ODrive-Engineer (Application):
   "Add firmware update state machine to axis.cpp"
 
 Window 3 - Regular Copilot (Python Tools):
   "Create upload utility in tools/firmware_update.py"
 
-Window 4 - @qa-engineer (Testing):
+Window 4 - @ODrive-QA (Testing):
   "Design test strategy and test rig configuration"
 ```
 
@@ -215,13 +248,13 @@ gh copilot agent list-jobs
 ```
 Phase 1 - Launch in parallel:
 
-Agent A: @motor-control-engineer
+Agent A: @ODrive-Engineer (Control Focus)
   "Design optimized Park transform using SIMD instructions"
 
-Agent B: @firmware-engineer
+Agent B: @ODrive-Engineer (Firmware Focus)
   "Research STM32 DSP library for fast trigonometry"
 
-Agent C: @qa-engineer
+Agent C: @ODrive-QA (Testing Focus)
   "Create performance benchmarking harness"
 ```
 
@@ -259,7 +292,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Copilot Review
         run: |
-          gh copilot agent @qa-engineer \
+          gh copilot agent @ODrive-QA \
             "Review this PR for:
              - MISRA C++ compliance
              - Interrupt safety
@@ -267,7 +300,7 @@ jobs:
              - Test coverage"
 ```
 
-**Result:** Agent comments on PR with findings
+**Result:** Agent invokes `odrive-qa-assistant` skill to analyze the PR
 
 #### Use Case 2: Continuous Refactoring
 
@@ -283,7 +316,7 @@ Agents work overnight, create draft PRs for review
 
 **🤖 Agent Mode Prompt (Background):**
 ```
-Background Task: @firmware-engineer
+Background Task: @ODrive-Engineer
   "Generate API reference documentation for all classes 
    in Firmware/MotorControl/*.hpp and create markdown 
    files in docs/api/"
@@ -340,7 +373,7 @@ graph LR
 
 **🤖 Agent Mode Prompt (GitHub Issue):**
 ```
-@copilot @firmware-engineer 
+@copilot @ODrive-Engineer 
 Please implement temperature monitoring with NTC thermistor 
 support in Firmware/MotorControl/motor.cpp
 
@@ -360,10 +393,10 @@ Requirements:
 
 ---
 
-## 3. Hands-On: Multi-Agent Demo (5 min)
+## 3. Guided Demo: Multi-Agent Workflow (5 min)
 
-### Exercise: Implement Encoder Calibration Feature
-**🎯 Copilot Modes: Agent (4 Parallel Instances)**
+### Example: Implement Encoder Calibration Feature
+**🎯 Copilot Modes: Agent (Multiple Parallel Instances)**
 
 **Scenario:** Implement automatic encoder calibration
 
@@ -372,6 +405,8 @@ This feature requires:
 - **Firmware implementation** - Calibration routine
 - **Control theory** - How calibration affects control
 - **Testing** - Validation strategy
+
+> **Approach:** Use multiple instances of `@ODrive-Engineer` with different task focuses, plus `@ODrive-QA` for testing. The agents will invoke appropriate skills based on the task context.
 
 **Files to work with:**
 - [src-ODrive/Firmware/MotorControl/encoder.hpp](../../src-ODrive/Firmware/MotorControl/encoder.hpp) - Encoder class definition
@@ -390,20 +425,22 @@ This feature requires:
 
 **Open 4 separate Chat windows** (or tabs)
 
-**🤖 Agent Mode Prompt - Window 1 (Hardware):**
+**🤖 Agent Mode Prompt - Window 1 (Hardware Focus):**
 ```
-@hardware-engineer What are the electrical requirements for 
+@ODrive-Engineer What are the electrical requirements for 
 encoder calibration on ODrive v3.6?
 
 - Encoder type: Incremental with index
 - Calibration involves rotating motor one full revolution
 - Need to measure electrical angle vs mechanical angle
 - Any constraints on rotation speed or current?
+
+(This task will use the pcb-review skill internally)
 ```
 
-**🤖 Agent Mode Prompt - Window 2 (Firmware):**
+**🤖 Agent Mode Prompt - Window 2 (Firmware Focus):**
 ```
-@firmware-engineer Design the calibration routine for encoder.cpp
+@ODrive-Engineer Design the calibration routine for encoder.cpp
 
 Requirements:
 - Rotate motor at constant velocity (e.g., 1 rev/sec)
@@ -416,20 +453,22 @@ Requirements:
 Show me the function signature and high-level algorithm.
 ```
 
-**🤖 Agent Mode Prompt - Window 3 (Control):**
+**🤖 Agent Mode Prompt - Window 3 (Control Focus):**
 ```
-@motor-control-engineer What's the optimal motor control 
+@ODrive-Engineer What's the optimal motor control 
 strategy during encoder calibration?
 
 - Need smooth, constant velocity
 - Minimize torque ripple
 - Open loop or closed loop?
 - What if there's load on the motor?
+
+(This task will use control-algorithms skill internally)
 ```
 
 **🤖 Agent Mode Prompt - Window 4 (Testing):**
 ```
-@qa-engineer Create a test plan for encoder calibration feature.
+@ODrive-QA Create a test plan for encoder calibration feature.
 
 What to test:
 - Calibration accuracy
@@ -437,25 +476,27 @@ What to test:
 - Behavior with load on motor
 - Error cases (stall, overvoltage, etc.)
 - Calibration data persistence (survives reboot)
+
+(This invokes the odrive-qa-assistant skill)
 ```
 
 #### Step 3: Review Outputs (1.5 min)
 
 Review each agent's output:
-- **Hardware Engineer** → Voltage/current limits and encoder specs
-- **Firmware Engineer** → Calibration algorithm structure
-- **Motor Control Engineer** → Open-loop constant current recommendation
-- **QA Engineer** → Comprehensive test cases
+- **ODrive-Engineer (Hardware)** → Voltage/current limits and encoder specs
+- **ODrive-Engineer (Firmware)** → Calibration algorithm structure
+- **ODrive-Engineer (Control)** → Open-loop constant current recommendation
+- **ODrive-QA (Testing)** → Comprehensive test cases
 
-**Key Insight:** Each agent's output informs the others!
+**Key Insight:** Each window's output informs the others, even though they use the same agents with different task contexts!
 
 #### Step 4: Integration (1 min)
 
 **🤖 Agent Mode Prompt - Integration Window:**
 ```
-@firmware-engineer Now implement the full calibration routine.
+@ODrive-Engineer Now implement the full calibration routine.
 
-Context from parallel agents:
+Context from parallel windows:
 - Hardware: Max calibration current 10A, speed < 2 rev/sec
 - Control: Use open-loop with constant Iq current
 - Testing: Need to log calibration data for validation
@@ -473,166 +514,408 @@ Acceptance Criteria:
 - Doxygen documentation
 ```
 
+> The agent will synthesize outputs from all windows into a cohesive implementation.
+
 ---
 
 ### Success Criteria
 
 By the end of this exercise, you should have:
-- ✅ **4 agents** worked simultaneously on different aspects
-- ✅ **Each agent** contributed domain-specific expertise
+- ✅ **4 windows** worked simultaneously on different aspects
+- ✅ **Each window** contributed domain-specific expertise via the same agents with different contexts
 - ✅ **Total time** ~3-4 minutes vs. 15-20 minutes sequential
-- ✅ **Better quality** - Each domain properly addressed
+- ✅ **Better quality** - Each domain properly addressed through skill invocation
 
 ### Key Takeaways
 
 1. **Parallel = faster** - Multiple perspectives simultaneously
-2. **Domain separation** - Right agent for each aspect
-3. **Integration phase** - You synthesize the outputs
-4. **Coordination matters** - Pre-define interfaces when possible
+2. **Task context matters** - Same agent can handle different domains based on prompt
+3. **Skills are invoked automatically** - Agents route to appropriate skills
+4. **Integration phase** - You synthesize the outputs
+5. **Coordination matters** - Pre-define interfaces when possible
 
 ---
 
-## Speaker Instructions
+## Practice Exercises
 
-### 1. Demo: Running Multiple Agents (8 min)
+These exercises help you master parallel agent workflows. Complete them to build confidence with multi-agent coordination.
 
-**Setup before demo:**
-1. Open 4 chat windows/panels in VS Code
-2. Pre-select different agents in each window
-3. Have encoder.cpp and motor.cpp open in editor
+### Exercise 1: Parallel Agent Setup
 
-**Show sequential vs parallel:**
-1. Explain the time savings visually
-2. Show the comparison table on screen
-3. Emphasize: "Same quality, fraction of the time"
+**Objective:** Configure your environment for parallel agent workflows
 
-**Demo parallel patterns:**
-1. Walk through Pattern 1: Domain Separation
-2. Show how to assign agents to windows
-3. Launch all 4 prompts "simultaneously"
-4. Highlight independent execution
+**Steps:**
 
-**Coordination demonstration:**
-1. Show coordination phases diagram
-2. Explain interface agreement
-3. Demonstrate review process
-4. Show integration prompt
+1. **Open Copilot Chat** (Ctrl+Alt+I)
+2. **Create multiple windows:**
+   - Right-click on the Chat tab → "Move to New Window" or drag to split
+   - Repeat until you have 4 chat windows/panels
+3. **Configure each window for a different task focus:**
+   - Window 1: `@ODrive-Engineer` (firmware focus)
+   - Window 2: `@ODrive-Engineer` (control focus)
+   - Window 3: `@ODrive-Engineer` (hardware focus)
+   - Window 4: `@ODrive-QA` (testing focus)
 
-### 2. Demo: Cloud/Background Agents (7 min)
+**Verification Checklist:**
+- [ ] 4 chat windows open and visible
+- [ ] Each window has the appropriate agent selected from dropdown
+- [ ] You can send messages independently in each window
 
-**Explain the concept:**
-1. Local vs Cloud comparison table
-2. Use cases for async work
-3. Benefits for team workflows
+<details>
+<summary><strong>Solution & Tips</strong></summary>
 
-**Show GitHub Actions integration:**
-1. Display the YAML workflow example
-2. Explain trigger on PR
-3. Show how agent comments on PR
+**Window Layout Options:**
+- **Split horizontally:** View → Editor Layout → Split Down (Ctrl+K Ctrl+\\)
+- **Split vertically:** View → Editor Layout → Split Right (Ctrl+\\)
+- **Floating windows:** Drag tab outside VS Code to create new window
+- **Grid layout:** Combine splits for 2x2 grid
 
-**Live demo (if available):**
-1. Navigate to GitHub.com
-2. Open an issue
-3. Tag @copilot in comment
-4. Show async response (or explain if in beta)
+**Verification Test:**
+Send a simple message to each window simultaneously:
+```
+Window 1: "@ODrive-Engineer What files define the motor controller?"
+Window 2: "@ODrive-Engineer What control modes does ODrive support?"
+Window 3: "@ODrive-Engineer What voltage ratings does ODrive v3.6 support?"
+Window 4: "@ODrive-QA What testing frameworks are used in ODrive?"
+```
 
-**Key points:**
-- Not blocking your development
-- Results visible to team
-- Always requires human review
+All four should respond independently without blocking each other.
 
-### 3. Demo: Hands-On Multi-Agent Demo (5 min)
+**Pro Tip:** Save this layout with View → Editor Layout → Save Layout for quick access.
 
-**Guide participants:**
-1. Have everyone open 4 chat windows
-2. Walk through each agent prompt together
-3. Launch all simultaneously
-4. Give 1-2 minutes for responses
-5. Review outputs as a group
-6. Show integration step
-
-**Wrap-up:**
-- Summarize time savings
-- Emphasize coordination importance
-- Preview Day 2 applications
+</details>
 
 ---
 
-## Participant Instructions
+### Exercise 2: Parallel Feature Design - CAN Heartbeat
 
-### Exercise 1: Parallel Agent Setup (2 min)
+**Objective:** Use parallel agents to design a multi-domain feature
 
-**Task:** Configure your environment for parallel agents
+**Feature:** Add CAN bus heartbeat monitoring to detect communication failures
 
-1. Open Copilot Chat (Ctrl+Alt+I)
-2. Right-click tab → "Move to New Window" or split panel
-3. Repeat until you have 4 chat windows
-4. In each window, select a different agent:
-   - Window 1: `@firmware-engineer`
-   - Window 2: `@motor-control-engineer`
-   - Window 3: `@hardware-engineer`
-   - Window 4: `@qa-engineer`
+**Steps:**
 
-**Verification:**
-- [ ] 4 chat windows open
-- [ ] Each has a different agent selected
-- [ ] Can send messages independently
-
-### Exercise 2: Parallel Feature Design (3 min)
-
-**Task:** Use parallel agents to design a new feature
-
-**Feature:** Add CAN bus heartbeat monitoring
-
-Launch these prompts in parallel:
+1. **Launch these prompts in parallel** (one per window):
 
 | Window | Agent | Prompt |
 |--------|-------|--------|
-| 1 | @firmware-engineer | "Design heartbeat packet structure for CAN bus" |
-| 2 | @hardware-engineer | "What are CAN bus timing constraints for heartbeat?" |
-| 3 | @motor-control-engineer | "How should heartbeat failure affect motor state?" |
-| 4 | @qa-engineer | "Create test cases for heartbeat monitoring" |
+| 1 | @ODrive-Engineer | "Design heartbeat packet structure for CAN bus on ODrive" |
+| 2 | @ODrive-Engineer | "What are CAN bus timing constraints for heartbeat monitoring?" |
+| 3 | @ODrive-Engineer | "How should heartbeat failure affect motor state machine?" |
+| 4 | @ODrive-QA | "Create test cases for CAN heartbeat monitoring feature" |
 
-**Review checklist:**
-- [ ] All 4 agents responded
-- [ ] Outputs are domain-specific
-- [ ] Can identify integration points
+2. **Review each output** and note key information
+3. **Identify integration points** between the outputs
 
-### Exercise 3: Integration Practice (2 min)
+**Review Checklist:**
+- [ ] All 4 windows responded with domain-specific information
+- [ ] Outputs address different aspects without contradiction
+- [ ] You can identify how outputs connect together
 
-**Task:** Synthesize parallel outputs into implementation
+<details>
+<summary><strong>Solution: Expected Outputs</strong></summary>
 
-After reviewing all 4 agent outputs, create an integration prompt:
-
-**🤖 Integration Prompt Template:**
+**Window 1 (Packet Structure) - Expected Response:**
 ```
-@firmware-engineer Implement CAN heartbeat monitoring.
+Heartbeat Packet Design:
+- CAN ID: 0x700 + node_id (NMT heartbeat standard)
+- Payload: 1 byte state + 2 byte error flags + timestamp
+- Rate: 100ms default, configurable
+- Boot message on startup
 
-Context from parallel agents:
-- Hardware: [timing constraints from @hardware-engineer]
-- Control: [state machine changes from @motor-control-engineer]
-- Testing: [key test cases from @qa-engineer]
+struct HeartbeatPacket {
+    uint8_t state;      // BOOT, PREOP, OP, STOPPED
+    uint16_t errors;    // Error flags bitfield
+    uint32_t uptime_ms; // Optional: system uptime
+};
+```
+
+**Window 2 (Timing Constraints) - Expected Response:**
+```
+CAN Timing Constraints:
+- Bus load: Heartbeat at 10Hz = ~0.1% bus load at 1Mbps
+- Timeout detection: 3x heartbeat period (300ms default)
+- Jitter tolerance: ±10% acceptable
+- Priority: Lower than real-time control messages
+- Watchdog: Independent hardware timer recommended
+```
+
+**Window 3 (State Machine) - Expected Response:**
+```
+Heartbeat Failure Response:
+1. Detect timeout (3 missed heartbeats)
+2. Set axis.error = ERROR_HEARTBEAT_TIMEOUT
+3. Transition to IDLE state (configurable)
+4. Options:
+   - COAST: Free-spinning (safest)
+   - BRAKE: Active braking then coast
+   - HOLD: Maintain position (risky without commands)
+5. Require explicit clear before restart
+```
+
+**Window 4 (Test Cases) - Expected Response:**
+```
+Test Plan:
+1. Normal operation: Verify heartbeat sent at configured rate
+2. Timeout detection: Stop heartbeat, verify timeout after 3x period
+3. Recovery: Resume heartbeat, verify system recovers
+4. Bus-off: Test behavior during CAN bus errors
+5. Configuration: Verify period changes take effect
+6. Multi-node: Test with multiple devices on bus
+7. Boot sequence: Verify boot message sent on startup
+```
+
+**Integration Points:**
+- Packet structure defines what QA tests validate
+- Timing constraints inform test timing parameters
+- State machine behavior must match test expectations
+
+</details>
+
+---
+
+### Exercise 3: Integration Practice
+
+**Objective:** Synthesize parallel outputs into a cohesive implementation request
+
+**Steps:**
+
+1. **Review outputs** from Exercise 2 (or use the solution examples)
+2. **Create an integration prompt** that combines all domain knowledge:
+
+```
+@ODrive-Engineer Implement CAN heartbeat monitoring.
+
+Context from parallel analysis:
+- Packet: 0x700+node_id, 1 byte state + 2 byte errors, 100ms default
+- Timing: 3x period timeout, ±10% jitter tolerance, lower priority than control
+- State: On timeout set ERROR_HEARTBEAT_TIMEOUT, transition to IDLE (configurable)
+- Tests: Need boot message, timeout detection, recovery, multi-node support
+
+Files:
+#file:src-ODrive/Firmware/communication/can.cpp
+#file:src-ODrive/Firmware/MotorControl/axis.hpp
 
 Requirements:
 - Static allocation only
-- Interrupt-safe
-- Follow ODrive patterns
+- Interrupt-safe timeout check
+- Configurable via axis.config_
+- Error codes, no exceptions
 
-Implement in communication/can.cpp
+Implement the heartbeat sender and timeout detector.
 ```
+
+3. **Send the integration prompt** and review the synthesized implementation
+
+<details>
+<summary><strong>Solution: What to Look For</strong></summary>
+
+**Good Integration Output Should Include:**
+
+1. **Configuration structure:**
+```cpp
+struct HeartbeatConfig {
+    bool enable = true;
+    uint32_t period_ms = 100;
+    uint32_t timeout_ms = 300;  // 3x period
+    AxisState timeout_action = AXIS_STATE_IDLE;
+};
+```
+
+2. **Heartbeat sender (called from main loop):**
+```cpp
+void send_heartbeat() {
+    if (!config_.heartbeat.enable) return;
+    if (timer_ms_ - last_heartbeat_ms_ < config_.heartbeat.period_ms) return;
+    
+    HeartbeatPacket pkt = {
+        .state = static_cast<uint8_t>(current_state_),
+        .errors = static_cast<uint16_t>(error_)
+    };
+    can_send(0x700 + node_id_, &pkt, sizeof(pkt));
+    last_heartbeat_ms_ = timer_ms_;
+}
+```
+
+3. **Timeout detector:**
+```cpp
+void check_heartbeat_timeout() {
+    if (!config_.heartbeat.enable) return;
+    if (timer_ms_ - last_received_heartbeat_ms_ > config_.heartbeat.timeout_ms) {
+        error_ |= ERROR_HEARTBEAT_TIMEOUT;
+        requested_state_ = config_.heartbeat.timeout_action;
+    }
+}
+```
+
+**Key Validation:**
+- Static allocation ✅ (no `new` or `malloc`)
+- Interrupt-safe ✅ (simple comparisons, no blocking)
+- Configurable ✅ (via config struct)
+- Error codes ✅ (no exceptions)
+
+</details>
+
+---
+
+### Exercise 4: Cloud Agent Workflow Simulation
+
+**Objective:** Understand how to structure requests for background/cloud agents
+
+**Scenario:** You want to set up automated code review on PRs using cloud agents
+
+**Steps:**
+
+1. **Create a GitHub Actions workflow** that would trigger Copilot review:
+
+```yaml
+# .github/workflows/copilot-review.yml
+name: Copilot Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'Firmware/**/*.cpp'
+      - 'Firmware/**/*.hpp'
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Copilot Review
+        run: |
+          gh copilot agent @ODrive-QA \
+            "Review this PR for:
+             - MISRA C++ compliance
+             - Interrupt safety issues
+             - Memory leaks or unbounded allocations
+             - Missing error handling
+             - Test coverage gaps"
+```
+
+2. **Think about:** What makes this effective for async review?
+
+<details>
+<summary><strong>Solution: Cloud Agent Best Practices</strong></summary>
+
+**Why This Workflow Works:**
+
+1. **Scoped trigger:** Only runs on firmware changes (`.cpp`, `.hpp` files)
+2. **Clear agent selection:** `@ODrive-QA` is the right agent for code review
+3. **Specific criteria:** Bullet list tells agent exactly what to check
+4. **Async-friendly:** Results appear as PR comments, not blocking
+
+**Improvements to Consider:**
+
+```yaml
+# Enhanced version
+- name: Run Copilot Review
+  run: |
+    gh copilot agent @ODrive-QA \
+      "Review this PR for embedded firmware best practices.
+       
+       Check for:
+       - MISRA C++ 2023 compliance (focus on rules 0-1, 5-x, 6-x)
+       - ISR safety: no blocking calls, volatile for shared data
+       - Memory: static allocation only, no heap usage
+       - Error handling: all error paths covered
+       - Thread safety: proper mutex usage around shared resources
+       
+       For each issue found:
+       1. Cite the specific file and line
+       2. Explain why it's a problem
+       3. Suggest a fix
+       
+       Provide a summary at the end with pass/fail status."
+```
+
+**Key Principles for Cloud Agents:**
+- Be explicit about what "good" looks like
+- Request structured output (file, line, suggestion)
+- Ask for summary/verdict for quick triage
+- Scope to specific domains (don't ask for everything)
+
+</details>
+
+---
+
+### Exercise 5: Coordination Challenge
+
+**Objective:** Practice the full parallel workflow with a complex feature
+
+**Feature:** Add sensorless motor startup (no encoder, estimate position from back-EMF)
+
+**Steps:**
+
+1. **Plan your parallel tasks** (which windows, which agents, which focus areas)
+2. **Launch 4 parallel prompts** targeting different domains
+3. **Review and identify conflicts** or integration challenges
+4. **Create integration prompt** that resolves conflicts
+5. **Document what you learned** about coordination
+
+<details>
+<summary><strong>Solution: Recommended Approach</strong></summary>
+
+**Parallel Task Plan:**
+
+| Window | Agent | Focus | Prompt |
+|--------|-------|-------|--------|
+| 1 | @ODrive-Engineer | Control Theory | "Explain sensorless FOC startup: HFI vs I/F vs observer methods" |
+| 2 | @ODrive-Engineer | Firmware | "What changes to motor.cpp for sensorless startup?" |
+| 3 | @ODrive-Engineer | Tuning | "What parameters need tuning for sensorless operation?" |
+| 4 | @ODrive-QA | Testing | "How to test sensorless startup without encoder?" |
+
+**Expected Conflicts:**
+- Control may recommend HFI, firmware may not support it yet
+- Tuning parameters depend on method chosen
+- Testing needs to know which method to validate
+
+**Integration Strategy:**
+```
+@ODrive-Engineer Design sensorless startup for ODrive.
+
+Parallel analysis summary:
+- Control: Recommends I/F (inject current at angle) for simplicity
+- Firmware: Can add state AXIS_STATE_SENSORLESS_STARTUP
+- Tuning: Need ramp_current, ramp_time, transition_velocity
+- Testing: Use known load, compare to encoder-based as reference
+
+Decision: Use I/F method (simplest, most robust for initial implementation)
+
+Files:
+#file:src-ODrive/Firmware/MotorControl/motor.cpp
+#file:src-ODrive/Firmware/MotorControl/axis.hpp
+
+Implement sensorless startup state with I/F current injection.
+```
+
+**Coordination Lessons:**
+1. **Pre-decide method** when options exist (don't let agents conflict)
+2. **Integration prompt resolves** ambiguity by stating decisions
+3. **Human is architect** - you make the final design calls
+4. **Testing informs design** - QA constraints affect implementation
+
+</details>
 
 ---
 
 ## Quick Reference: Parallel Agent Patterns
 
-### Agent Assignment Guide
+### Agent & Skill Assignment Guide
 
-| Domain | Agent | Typical Tasks |
+| Domain | Agent | Skill Invoked |
 |--------|-------|---------------|
-| Low-level firmware | `@firmware-engineer` | Drivers, interrupts, DMA, memory |
-| Control algorithms | `@motor-control-engineer` | PID, FOC, observers, filters |
-| Hardware specs | `@hardware-engineer` | Pinouts, electrical, timing |
-| Testing | `@qa-engineer` | Test plans, coverage, validation |
+| Low-level firmware | `@ODrive-Engineer` | Direct implementation + odrive-qa-assistant for builds |
+| Control algorithms | `@ODrive-Engineer` | control-algorithms (🚧), foc-tuning (🚧) |
+| Hardware specs | `@ODrive-Engineer` | pcb-review (🚧), signal-integrity (🚧) |
+| Testing | `@ODrive-QA` | odrive-qa-assistant, test-automation (🚧) |
+| CI/CD & releases | `@ODrive-QA` | devops-engineer |
+
+> **Legend:** 🚧 = Planned skill (not yet implemented)
+>
+> **Note:** Use the same agent in multiple windows with different task contexts. The agent routes to appropriate skills automatically.
 
 ### Parallel Workflow Checklist
 
@@ -691,19 +974,25 @@ After completion:
 ### Debug Tips
 
 1. **Agent selection issues:**
-   - Verify agent file exists in `.github/agents/`
-   - Check agents dropdown in each window
+   - Verify agent files exist in `src-ODrive/.github/agents/`
+   - Check agents dropdown shows `@ODrive-Engineer` and `@ODrive-QA`
    - Ensure agent file has correct `.agent.md` extension
 
 2. **Coordination problems:**
-   - Start with 2 agents, then scale up
+   - Start with 2 windows, then scale up
    - Use explicit interface definitions
    - Review sequentially before integrating
+   - Same agent can handle multiple domains via different prompts
 
 3. **Integration failures:**
-   - Be explicit about context from each agent
+   - Be explicit about context from each window
    - Include file references in integration prompt
    - Ask for merge strategy if conflicts exist
+
+4. **Skills not invoked:**
+   - Check `src-ODrive/.github/skills/` for available skills
+   - Some skills are planned (🚧) and not yet implemented
+   - Agent decides skill invocation based on task context
 
 ---
 
@@ -725,33 +1014,311 @@ See [hands-on-exercise.md](hands-on-exercise.md) for more practice problems
 
 ---
 
-## Q&A Topics
+## Frequently Asked Questions
 
-Be prepared to answer:
+### How do I avoid merge conflicts with parallel agents?
 
-**"How do I avoid merge conflicts with parallel agents?"**
-- Keep agents working on different files when possible
-- If same file, assign non-overlapping sections
-- Review and integrate sequentially
+**Short Answer:** Assign non-overlapping files or functions to each agent window.
 
-**"What if agents give contradictory advice?"**
-- You're the architect - make the final call
-- Use another agent to arbitrate: "@motor-control-engineer which approach is better?"
-- This is why human review is essential
+**Detailed Explanation:**
+Parallel agents work independently and don't know what other windows are generating. If two agents modify the same file, you'll need to manually merge their outputs.
 
-**"Can I use parallel agents in an air-gapped environment?"**
-- Local agents (VS Code): Yes, if you have Foundry Local
-- Cloud agents: No, requires internet connectivity
+**Best Practices:**
+1. **Different files:** Window 1 works on `encoder.cpp`, Window 2 on `motor.cpp`
+2. **Different functions:** Window 1 implements `calibrate()`, Window 2 implements `validate()`
+3. **Interface-first:** All windows agree on function signatures before implementing
+4. **Review sequentially:** Even if launched in parallel, review outputs one at a time
+5. **Integration window:** Use a final prompt to merge context from all windows
 
-**"How many agents can I run in parallel?"**
-- Technically: As many as you want
-- Practically: 3-4 is manageable
-- Beyond that, coordination overhead increases
+**Example Partition:**
+```
+Window 1: "Implement encoder calibration in encoder.cpp"
+Window 2: "Implement calibration state machine in axis.cpp"
+Window 3: "Implement calibration tests in test_encoder.cpp"
+Window 4: "Document calibration in docs/calibration.md"
+```
+No overlapping files = no merge conflicts.
 
-**"Do parallel agents cost more API credits?"**
-- Yes, each agent counts as separate API usage
-- But you save time, so cost per feature is similar
-- Background agents may have different pricing (check GitHub)
+---
+
+### What if agents give contradictory advice?
+
+**Short Answer:** You're the architect - make the final call based on your requirements.
+
+**Why This Happens:**
+- Different prompts lead to different assumptions
+- Agents optimize for their specific task context
+- Some questions have multiple valid answers
+
+**Resolution Strategies:**
+
+1. **Arbitration Prompt:**
+   ```
+   @ODrive-Engineer I got two suggestions:
+   - Option A: Use open-loop control for calibration
+   - Option B: Use closed-loop with low gains
+   
+   Which is better for:
+   - Motors with high cogging torque
+   - Systems where encoder may have noise
+   ```
+
+2. **Requirements-Based Decision:**
+   - If safety is critical: Choose the more conservative approach
+   - If performance is critical: Choose the faster approach
+   - If simplicity is critical: Choose the simpler implementation
+
+3. **Ask for Trade-offs:**
+   ```
+   @ODrive-Engineer Compare these approaches for encoder calibration:
+   1. Open-loop at constant current
+   2. Closed-loop with observer
+   
+   What are the trade-offs in terms of accuracy, robustness, and complexity?
+   ```
+
+**Remember:** Conflicting advice often means there's no single "right" answer. Your domain knowledge decides.
+
+---
+
+### Can I use the same agent in multiple windows?
+
+**Short Answer:** Yes! This is the primary pattern for ODrive development.
+
+**How It Works:**
+The ODrive system has 2 orchestrator agents that invoke specialized skills:
+- `@ODrive-Engineer` - Primary development orchestrator
+- `@ODrive-QA` - Testing & DevOps orchestrator
+
+You run multiple instances of the same agent with different **task contexts**:
+
+| Window | Agent | Task Context |
+|--------|-------|--------------|
+| 1 | @ODrive-Engineer | "Focus on firmware implementation..." |
+| 2 | @ODrive-Engineer | "Focus on control algorithm design..." |
+| 3 | @ODrive-Engineer | "Focus on hardware constraints..." |
+| 4 | @ODrive-QA | "Focus on test strategy..." |
+
+**Why This Works:**
+- Each window maintains its own conversation context
+- The agent adapts based on your prompt, not window identity
+- Skills are invoked automatically based on task content
+- No special configuration needed per window
+
+---
+
+### Can I use parallel agents in an air-gapped environment?
+
+**Short Answer:** Local agents work with Foundry Local; cloud agents require internet.
+
+| Environment | Local Agents (VS Code) | Cloud Agents (GitHub) |
+|-------------|------------------------|----------------------|
+| Internet connected | ✅ Full functionality | ✅ Full functionality |
+| Air-gapped + Foundry Local | ✅ Works offline | ❌ Not available |
+| Air-gapped, no local model | ❌ Requires connection | ❌ Not available |
+
+**For Air-Gapped Development:**
+1. Set up **Azure AI Foundry Local** on an approved internal server
+2. Configure VS Code to use local endpoint
+3. Custom agents work because they're just prompt files
+4. Skills work if they don't require external services
+
+**Limitations:**
+- Model quality may differ from cloud
+- No automatic updates
+- May need IT approval for internal deployment
+
+---
+
+### How many windows can I run in parallel?
+
+**Short Answer:** Technically unlimited; practically 3-4 is optimal.
+
+**Scaling Analysis:**
+
+| Windows | Coordination Overhead | Typical Use Case |
+|---------|----------------------|------------------|
+| 2 | Low - Easy to track | Quick dual-domain task |
+| 3-4 | Medium - Manageable | Multi-domain feature |
+| 5-6 | High - Getting complex | Large refactoring |
+| 7+ | Very High - Diminishing returns | Probably too many |
+
+**Why 3-4 is the Sweet Spot:**
+- Most features touch 3-4 domains (firmware, control, testing, docs)
+- Human working memory handles ~4 contexts well
+- Review time scales linearly with window count
+- Integration complexity scales quadratically
+
+**When to Use More:**
+- Large-scale refactoring across many subsystems
+- Multi-repository updates
+- You're very experienced with coordination
+
+**Pro Tip:** Start with 2 windows. Add more only when you're comfortable.
+
+---
+
+### Do parallel agents cost more API credits?
+
+**Short Answer:** Yes, but you save time, so cost-per-feature is often similar.
+
+**Cost Analysis:**
+
+| Metric | Sequential | Parallel (4 windows) |
+|--------|------------|----------------------|
+| API calls | 4 calls (one at a time) | 4 calls (simultaneous) |
+| Total tokens | Similar | Similar |
+| Wall-clock time | 4x wait | 1x wait |
+| Your time | Higher (context switching) | Lower (batch review) |
+
+**Why Cost is Similar:**
+- You're asking the same questions either way
+- Parallel just changes the timing, not the content
+- Time saved has value too
+
+**Cost Optimization Tips:**
+1. Don't launch parallel for simple tasks
+2. Be specific in prompts (fewer follow-ups needed)
+3. Use integration prompts efficiently (combine context)
+4. Cloud/background agents may have different pricing (check GitHub docs)
+
+---
+
+### When should I use cloud agents instead of local?
+
+**Short Answer:** Use cloud for async, large-scale, or team-visible tasks.
+
+**Decision Matrix:**
+
+| Factor | Use Local Agents | Use Cloud Agents |
+|--------|------------------|------------------|
+| Iteration speed | ✅ Fast feedback loop | ❌ Async delay |
+| Task size | Small to medium | Large (full codebase) |
+| Team visibility | Just you | Results visible to team |
+| Scheduling | During work hours | Overnight/scheduled |
+| PR integration | Manual copy-paste | Automatic PR creation |
+| Audit trail | Local chat history | GitHub issue/PR history |
+
+**Ideal Cloud Agent Tasks:**
+- Overnight documentation generation
+- Scheduled code quality sweeps
+- PR review automation
+- Multi-repository updates
+
+**Stick with Local When:**
+- You need to iterate quickly
+- Task requires back-and-forth refinement
+- Working on experimental ideas
+- Learning a new codebase
+
+---
+
+### How do I coordinate if agents can't see each other?
+
+**Short Answer:** You're the coordination layer - use integration prompts.
+
+**The Coordination Pattern:**
+
+```
+┌─────────────────────────────────────────────────┐
+│                    YOU                          │
+│            (Human Coordinator)                  │
+├─────────────────────────────────────────────────┤
+│  Review  │  Identify  │  Resolve  │  Integrate  │
+│  outputs │  conflicts │  decisions│  via prompt │
+└─────────────────────────────────────────────────┘
+      ▲           ▲           ▲           ▲
+      │           │           │           │
+┌─────┴─────┬─────┴─────┬─────┴─────┬─────┴─────┐
+│ Window 1  │ Window 2  │ Window 3  │ Window 4  │
+│  Output   │  Output   │  Output   │  Output   │
+└───────────┴───────────┴───────────┴───────────┘
+```
+
+**Integration Prompt Template:**
+```
+@ODrive-Engineer Implement [feature].
+
+Context from parallel analysis:
+- Firmware (Window 1): [key findings]
+- Control (Window 2): [key findings]
+- Hardware (Window 3): [key findings]
+- Testing (Window 4): [key requirements]
+
+Decisions made:
+- [Conflict 1]: Chose approach A because [reason]
+- [Conflict 2]: Chose approach B because [reason]
+
+Requirements: [standard embedded constraints]
+
+Files: #file:path/to/file.cpp
+
+Implement the solution.
+```
+
+**Pro Tip:** Keep notes during review phase - you'll need them for integration.
+
+---
+
+## Summary: Key Takeaways
+
+### Core Concepts
+
+1. **Parallel = Faster**
+   - Multiple perspectives generated simultaneously
+   - 4 tasks in the time of 1
+   - Total time reduced from 4x to 1x
+
+2. **Same Agent, Different Context**
+   - Use `@ODrive-Engineer` in multiple windows with different prompts
+   - Task context determines behavior, not window identity
+   - Skills are invoked automatically based on prompt content
+
+3. **You Are the Architect**
+   - Agents provide domain expertise
+   - You make integration decisions
+   - Human review is always required
+
+### Workflow Summary
+
+```
+Plan → Launch → Review → Integrate
+  │       │        │         │
+  │       │        │         └── Create synthesis prompt
+  │       │        └── Identify conflicts, make decisions
+  │       └── Send prompts simultaneously (4 windows)
+  └── Define tasks, assign agents, partition files
+```
+
+### When to Use Parallel Agents
+
+| ✅ Good Fit | ❌ Poor Fit |
+|-------------|-------------|
+| Multi-domain features | Simple single-file changes |
+| Independent tasks | Sequential dependencies |
+| Research + implementation | Same-file modifications |
+| Complex refactoring | Trivial questions |
+
+### Quick Reference
+
+| Agent | Primary Use |
+|-------|-------------|
+| `@ODrive-Engineer` | Firmware, control, hardware (via different prompts) |
+| `@ODrive-QA` | Testing, CI/CD, quality assurance |
+
+| Pattern | Description |
+|---------|-------------|
+| Domain Separation | Different prompts for firmware, control, hardware, testing |
+| Multi-Module | Different files/subsystems in each window |
+| Refactoring Campaign | Parallel improvements across codebase |
+
+### Remember
+
+- **Start small:** 2 windows, then scale up
+- **Partition clearly:** Non-overlapping files/functions
+- **Review before merging:** Don't blindly combine outputs
+- **Coordination has cost:** 3-4 windows is usually optimal
+- **Integration is key:** Your synthesis prompt ties everything together
 
 ---
 
