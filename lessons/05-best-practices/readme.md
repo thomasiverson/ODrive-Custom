@@ -37,15 +37,19 @@ This lesson teaches you how to leverage GitHub Copilot for modern C++ developmen
 - [Prerequisites](#prerequisites)
 - [Why C++ Best Practices Matter](#why-c-best-practices-matter)
 - [Learning Path](#learning-path)
-- [1. Modern C++ Patterns](#1-modern-c-patterns-12-min)
-- [2. Embedded C++ Specifics](#2-embedded-c-specifics-12-min)
-- [3. RTOS & Hardware Patterns](#3-rtos--hardware-patterns-10-min)
-- [4. Hands-On: Generate Components](#4-hands-on-generate-components-16-min)
-- [5. Unit Testing with Copilot](#5-unit-testing-with-copilot-10-min)
-- [6. Additional Modern C++ Practices](#6-additional-modern-c-practices)
-- [7. C++ Style Guidelines](#7-c-style-guidelines)
+- [Modern C++ Patterns](#1-modern-c-patterns-12-min)
+- [Embedded C++ Specifics](#2-embedded-c-specifics-12-min)
+- [RTOS & Hardware Patterns](#3-rtos--hardware-patterns-10-min)
+- [Hands-On: Generate Components](#4-hands-on-generate-components-16-min)
+- [Unit Testing with /tests](#5-unit-testing-with-tests)
 - [Creating Embedded C++ Personas](#creating-embedded-c-personas)
-- [Quick Reference: Mode Selection Guide](#quick-reference-mode-selection-guide)
+- [Using Personas in Copilot](#using-personas-in-copilot)
+- [Practice Exercises](#practice-exercises)
+- [Quick Reference](#quick-reference-mode-selection-guide)
+- [Troubleshooting](#troubleshooting)
+- [Additional Resources](#additional-resources)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [Summary: Key Takeaways](#summary-key-takeaways)
 
 ---
 
@@ -91,25 +95,33 @@ Embedded C++ has unique constraints that distinguish it from desktop/server deve
 
 ### Benefits of Copilot for Embedded C++
 
-1. **Consistent Patterns** - Generates RAII wrappers automatically, follows project coding standards
-2. **Reduced Boilerplate** - HAL abstractions from templates, error handling patterns
-3. **Learning Accelerator** - Explains unfamiliar patterns, validates designs against constraints
+1. **Consistent Patterns**
+   - Generates RAII wrappers automatically
+   - Follows project coding standards
+   - Applies embedded constraints consistently
+
+2. **Reduced Boilerplate**
+   - HAL abstractions from templates
+   - State machine scaffolding
+   - Error handling patterns
+
+3. **Learning Accelerator**
+   - Explains unfamiliar patterns in codebase
+   - Suggests best practices for new features
+   - Validates designs against constraints
 
 ---
 
 ## Learning Path
 
-This lesson covers seven key areas. Work through them sequentially for the best learning experience.
+This lesson covers four key areas. Work through them sequentially for the best learning experience.
 
-| Section | Topic | What You'll Learn | Time |
-|---------|-------|-------------------|------|
-| 1 | Modern C++ Patterns | RAII, templates, const correctness | 12 min |
-| 2 | Embedded C++ Specifics | Static allocation, error codes, volatile | 12 min |
-| 3 | RTOS & Hardware Patterns | State machines, HAL, task sync | 10 min |
-| 4 | Hands-On Exercises | LED driver, SPI sensor, ring buffer | 16 min |
-| 5 | Unit Testing | doctest, mocking, TDD workflow | 10 min |
-| 6 | Additional Practices | `[[nodiscard]]`, `constexpr`, strong types | — |
-| 7 | Style Guidelines | Naming, headers, formatting | — |
+| Topic | What You'll Learn | Estimated Time |
+|-------|-------------------|----------------|
+| Modern C++ Patterns | RAII, templates, const correctness | 12 min |
+| Embedded C++ Specifics | Static allocation, error codes, volatile | 12 min |
+| RTOS & Hardware Patterns | State machines, HAL, task sync | 10 min |
+| Hands-On: Generate Components | LED driver, SPI sensor, ring buffer | 16 min |
 
 ---
 
@@ -160,8 +172,6 @@ Acceptance Criteria:
 - Maintains existing public API compatibility
 ```
 
----
-
 ### Templates & Type Traits
 **🎯 Copilot Modes: Chat + Agent**
 
@@ -201,8 +211,6 @@ Acceptance Criteria:
 - No runtime overhead vs original implementation
 - All existing usage patterns still work
 ```
-
----
 
 ### Const Correctness
 **🎯 Copilot Modes: Chat + Agent**
@@ -254,6 +262,8 @@ Acceptance Criteria:
 
 **Files to demonstrate:**
 - [src-ODrive/Firmware/fibre-cpp/fibre.cpp](../../src-ODrive/Firmware/fibre-cpp/fibre.cpp#L56-L75) - `TheInstance<T>` singleton
+
+**Pattern: TheInstance<T> Singleton**
 ```cpp
 template<typename T>
 struct TheInstance {
@@ -302,8 +312,6 @@ Acceptance Criteria:
 - Performance equal or better than original
 - All existing tests pass
 ```
-
----
 
 ### No Exceptions - Error Code Pattern
 **🎯 Copilot Modes: Chat + Agent**
@@ -356,8 +364,6 @@ Acceptance Criteria:
 - Errors are actionable (clear what went wrong)
 ```
 
----
-
 ### Volatile for Hardware Registers
 **🎯 Copilot Mode: Inline + Chat**
 
@@ -365,7 +371,7 @@ Acceptance Criteria:
 - [src-ODrive/Firmware/Board/v3/board.cpp](../../src-ODrive/Firmware/Board/v3/board.cpp#L463-L480) - `volatile` timestamps
 - [src-ODrive/Firmware/Board/v3/Src/stm32f4xx_it.c](../../src-ODrive/Firmware/Board/v3/Src/stm32f4xx_it.c#L114-L125) - Direct register access
 
-**Inline Completion:**
+**Inline Completion Example:**
 ```cpp
 // Define ADC register structure
 struct ADC_Regs {
@@ -383,8 +389,6 @@ Check:
 - No missing volatile qualifiers
 ```
 
----
-
 ### ISR Handlers
 **🎯 Copilot Mode: Inline + Edit**
 
@@ -396,7 +400,7 @@ Check:
 ```cpp
 // Generate TIM13 overflow ISR with critical section
 extern "C" void TIM13_IRQHandler(void) {
-    // Copilot completes handler
+    // Copilot completes handler with proper pattern
 ```
 
 **Edit Mode Example:**
@@ -490,8 +494,6 @@ Acceptance Criteria:
 - Doxygen documentation for all states
 ```
 
----
-
 ### HAL Abstractions
 **🎯 Copilot Modes: Chat + Agent**
 
@@ -554,8 +556,6 @@ Acceptance Criteria:
 - Comprehensive Doxygen docs
 - Example usage in comments
 ```
-
----
 
 ### Task Synchronization (FreeRTOS)
 **🎯 Copilot Mode: Inline + Chat**
@@ -669,8 +669,6 @@ Acceptance Criteria:
 - ✅ State transitions work correctly
 - ✅ RAII manages GPIO lifecycle
 
----
-
 ### Exercise 2: SPI Sensor Driver
 **🎯 Copilot Modes: Chat → Agent**
 
@@ -766,8 +764,6 @@ Acceptance Criteria:
 - ✅ SPI errors handled gracefully
 - ✅ Thread-safe register access
 - ✅ Self-test completes
-
----
 
 ### Exercise 3: Lock-Free Ring Buffer for ISR
 **🎯 Copilot Modes: Chat → Agent**
@@ -878,23 +874,8 @@ Acceptance Criteria:
 
 ---
 
-## 5. Unit Testing with Copilot (10 min)
+## 5. Unit Testing with `/tests`
 
-> **📌 Note:** This section addresses the agenda TODO: "Don't forget unit testing!"
-
-### Why Unit Testing Matters for Embedded
-
-| Benefit | Embedded-Specific Value |
-|---------|------------------------|
-| **Early bug detection** | Find logic errors without hardware |
-| **Regression prevention** | Catch broken motor control after refactors |
-| **Algorithm validation** | Verify PID, FOC, filters work correctly |
-| **Hardware independence** | Test on dev machine, deploy to target |
-| **Documentation** | Tests show how code should be used |
-
----
-
-### Using `/tests` Command
 **🎯 Copilot Mode: Chat with `/tests` command**
 
 **Example 1: State Machine Tests**
@@ -922,392 +903,6 @@ Include:
 - Test interrupt subscription
 - Test edge case handling
 - Test thread safety
-```
-
----
-
-### doctest Framework for Embedded
-**🎯 Copilot Modes: Chat + Agent**
-
-**Why doctest for Embedded:**
-- Header-only (easy integration)
-- Fast compilation
-- Zero heap allocations in test infrastructure
-- Works on host and target
-
-**Files to demonstrate:**
-- [src-ODrive/Firmware/doctest/doctest.h](../../src-ODrive/Firmware/doctest/doctest.h) - ODrive's test framework
-
-**💬 Chat Mode Prompt (Generate Tests):**
-```
-Generate doctest unit tests for this motor controller class:
-#file:src-ODrive/Firmware/MotorControl/motor.cpp
-
-Follow these embedded testing practices:
-1. Use TEST_CASE with descriptive names
-2. Use SUBCASE for related scenarios
-3. Mock hardware dependencies (don't touch real registers)
-4. Test boundary conditions (min/max current, zero velocity)
-5. Test error conditions (overcurrent, encoder fault)
-6. Use REQUIRE for critical checks, CHECK for non-fatal
-7. No heap allocation in tests
-8. Test should run in < 10ms each
-
-Structure:
-TEST_CASE("Motor phase current calculation") {
-    SUBCASE("positive current") { ... }
-    SUBCASE("zero current") { ... }
-    SUBCASE("negative current") { ... }
-    SUBCASE("overcurrent protection") { ... }
-}
-```
-
-**🤖 Agent Mode Prompt (Full Test Suite):**
-```
-@workspace Create comprehensive test suite for encoder module
-
-Context: #file:src-ODrive/Firmware/MotorControl/encoder.hpp
-         #file:src-ODrive/Firmware/MotorControl/encoder.cpp
-
-Test Categories:
-1. Initialization tests
-   - Valid config accepted
-   - Invalid config rejected
-   - Default values correct
-
-2. Position tracking tests
-   - Forward count
-   - Backward count
-   - Wraparound at limits
-   - Index pulse detection
-
-3. Error condition tests
-   - Encoder fault detection
-   - Missing index pulse
-   - Invalid state transitions
-
-4. Calibration tests
-   - Offset calibration completes
-   - Calibration timeout handled
-   - Direction detection works
-
-Files to create:
-- Tests/encoder_test.cpp
-
-Test Infrastructure:
-- Create MockEncoderHW class for hardware abstraction
-- Use static allocation for mock objects
-- Include timing tests (verify ISR timing assumptions)
-
-Acceptance Criteria:
-- >80% code coverage on encoder.cpp
-- All error paths tested
-- Tests run in < 1 second total
-- No flaky tests
-```
-
----
-
-### Mocking Hardware for Host Testing
-**🎯 Copilot Mode: Chat + Agent**
-
-**💬 Chat Mode Prompt (Design Mocks):**
-```
-Design a mocking strategy for testing STM32 drivers on host:
-#file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
-
-Requirements:
-1. Mock GPIO_TypeDef structure
-2. Simulate register reads/writes
-3. Capture callback invocations
-4. Inject errors (timeout, busy)
-
-Provide:
-- MockGpio class definition
-- Example usage in test
-- How to switch between mock and real HAL
-```
-
-**🤖 Agent Mode Prompt (Create Mock Framework):**
-```
-@workspace Create GPIO mock framework for unit testing
-
-Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
-
-MockGpio Requirements:
-```cpp
-class MockGpioPort {
-public:
-    // Simulated registers
-    uint32_t IDR{0};   // Input data register
-    uint32_t ODR{0};   // Output data register
-    
-    // Capture write operations
-    std::vector<uint16_t> write_history;
-    
-    // Control methods for tests
-    void simulate_input(uint16_t pin_mask, bool state);
-    void verify_output(uint16_t pin_mask, bool expected);
-    void clear_history();
-    
-    // Inject callback triggers
-    void trigger_interrupt(uint16_t pin_mask, bool rising);
-};
-
-class MockGpio : public Stm32Gpio {
-    // Override port_ to point to mock
-};
-```
-
-Files to create:
-- Tests/mocks/mock_gpio.hpp
-- Tests/mocks/mock_gpio.cpp
-
-Integration:
-- Compile with -DTESTING to use mocks
-- Maintain same API as real GPIO
-- Add assertion helpers for test verification
-```
-
----
-
-### Test-Driven Development Workflow
-**🎯 Copilot Mode: Agent Mode**
-
-**🤖 Agent Mode Prompt (TDD Cycle):**
-```
-@workspace Implement PID controller using TDD approach
-
-Step 1 - Write failing tests first:
-```cpp
-TEST_CASE("PID Controller") {
-    SUBCASE("proportional only") {
-        PidController pid(1.0f, 0.0f, 0.0f);
-        float output = pid.update(10.0f, 0.0f, 0.001f);
-        REQUIRE(output == doctest::Approx(10.0f));
-    }
-    
-    SUBCASE("integral accumulation") {
-        PidController pid(0.0f, 1.0f, 0.0f);
-        pid.update(1.0f, 0.0f, 1.0f);  // error=1 for 1 sec
-        float output = pid.update(1.0f, 0.0f, 1.0f);
-        REQUIRE(output == doctest::Approx(2.0f));  // accumulated
-    }
-    
-    SUBCASE("derivative response") {
-        PidController pid(0.0f, 0.0f, 1.0f);
-        float output = pid.update(10.0f, 0.0f, 0.01f);
-        REQUIRE(output == doctest::Approx(1000.0f)); // 10/0.01
-    }
-    
-    SUBCASE("output clamping") {
-        PidController pid(100.0f, 0.0f, 0.0f);
-        pid.set_output_limits(-10.0f, 10.0f);
-        float output = pid.update(1.0f, 0.0f, 0.001f);
-        REQUIRE(output == doctest::Approx(10.0f));  // clamped
-    }
-    
-    SUBCASE("anti-windup") {
-        PidController pid(0.0f, 1.0f, 0.0f);
-        pid.set_output_limits(-10.0f, 10.0f);
-        // Saturate integral
-        for (int i = 0; i < 100; i++) {
-            pid.update(100.0f, 0.0f, 0.1f);
-        }
-        // Error reverses - should recover quickly
-        float output = pid.update(-100.0f, 0.0f, 0.1f);
-        REQUIRE(output < 10.0f);  // Anti-windup prevents overshoot
-    }
-}
-```
-
-Step 2 - Implement minimal code to pass tests
-Step 3 - Refactor while keeping tests green
-
-Files to create:
-- Firmware/MotorControl/pid_controller.hpp
-- Firmware/MotorControl/pid_controller.cpp
-- Tests/pid_controller_test.cpp
-
-Constraints:
-- No dynamic allocation
-- Fixed-point option for targets without FPU
-- constexpr constructor if possible
-```
-
----
-
-## 6. Additional Modern C++ Practices
-
-### `[[nodiscard]]` for Error Codes
-**🎯 Copilot Mode: Inline + Chat**
-
-**Why It Matters:**
-```cpp
-// ❌ BAD: Ignoring error is silent
-gpio.config(GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-
-// ✅ GOOD: Compiler warns if return value ignored
-[[nodiscard]] bool config(uint32_t mode, uint32_t pull);
-
-// Now this produces warning:
-gpio.config(GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);  // Warning: ignoring return value
-```
-
-**💬 Chat Mode Prompt (Audit Codebase):**
-```
-Audit this file for missing [[nodiscard]] attributes:
-#file:src-ODrive/Firmware/MotorControl/encoder.hpp
-
-Add [[nodiscard]] to functions that:
-1. Return error codes or bool success
-2. Return computed values that shouldn't be ignored
-3. Return references to internal state
-
-Provide a diff showing where to add [[nodiscard]].
-```
-
----
-
-### `constexpr` for Compile-Time Computation
-**🎯 Copilot Mode: Chat + Agent**
-
-**Why It Matters for Embedded:**
-```cpp
-// ❌ BAD: Computed at runtime, wastes cycles
-float pi = 3.14159f;
-float tau = 2.0f * pi;
-
-// ✅ GOOD: Computed at compile time, zero runtime cost
-constexpr float kPi = 3.14159f;
-constexpr float kTau = 2.0f * kPi;
-
-// Even complex calculations can be constexpr
-constexpr uint32_t calculate_timer_reload(uint32_t freq_hz, uint32_t timer_clock) {
-    return timer_clock / freq_hz - 1;
-}
-constexpr uint32_t kPwmReload = calculate_timer_reload(20000, 168000000);  // Computed at compile time!
-```
-
-**💬 Chat Mode Prompt (Identify Opportunities):**
-```
-Identify constexpr opportunities in:
-#file:src-ODrive/Firmware/MotorControl/motor.hpp
-
-Find:
-1. Constants that could be constexpr
-2. Simple calculations done at runtime that could be compile-time
-3. Lookup tables that could be constexpr generated
-4. Configuration values that are known at compile time
-
-Show before/after for each improvement.
-```
-
----
-
-### Strong Types (Type Safety)
-**🎯 Copilot Mode: Chat + Agent**
-
-**The Problem:**
-```cpp
-// ❌ DANGEROUS: Easy to mix up parameters
-void set_motor_params(float current, float voltage, float velocity);
-
-set_motor_params(24.0f, 10.0f, 100.0f);  // Wait, is that volts or amps first?
-```
-
-**The Solution:**
-```cpp
-// ✅ SAFE: Units are part of the type
-struct Amps { float value; };
-struct Volts { float value; };
-struct RadPerSec { float value; };
-
-void set_motor_params(Amps current, Volts voltage, RadPerSec velocity);
-
-set_motor_params(Amps{10.0f}, Volts{24.0f}, RadPerSec{100.0f});  // Clear and safe!
-```
-
-**💬 Chat Mode Prompt (Design Strong Types):**
-```
-Design a strong type system for motor control units:
-
-Units needed:
-- Current (Amps, milliamps)
-- Voltage (Volts)  
-- Velocity (rad/s, RPM)
-- Position (radians, encoder counts)
-- Time (seconds, microseconds)
-- Temperature (Celsius, Kelvin)
-
-Requirements:
-1. Zero runtime overhead (constexpr, inline)
-2. Compile error if wrong unit used
-3. Explicit conversion between compatible units
-4. Arithmetic operators that make physical sense:
-   - Volts / Amps = Ohms (ok)
-   - Amps + Volts = ??? (compile error)
-5. Doxygen documentation
-
-Provide complete implementation following ODrive patterns.
-```
-
----
-
-### Fixed-Width Integers
-**🎯 Copilot Mode: Inline + Chat**
-
-**Why It Matters:**
-```cpp
-// ❌ BAD: 'int' size varies by platform (16, 32, or 64 bit)
-int counter;
-unsigned data;
-
-// ✅ GOOD: Explicit sizes, portable embedded code
-int32_t counter;
-uint32_t data;
-uint8_t register_value;
-int16_t adc_sample;
-```
-
-**💬 Chat Mode Prompt (Convert Codebase):**
-```
-Convert this file to use fixed-width integers:
-#file:src-ODrive/Firmware/MotorControl/trapTraj.cpp
-
-Rules:
-1. Use <cstdint> types: int8_t, int16_t, int32_t, int64_t, uint8_t, etc.
-2. Choose sizes based on actual range needed
-3. Document why each size was chosen
-4. Use size_t for array indices
-5. Keep float/double for calculations (unless fixed-point needed)
-
-Show the conversion with rationale for each change.
-```
-
----
-
-## 7. C++ Style Guidelines
-
-> 📖 **Reference:** See [cpp_coding_standards.instructions.md](../../src-ODrive/.github/instructions/cpp_coding_standards.instructions.md) for complete C++ coding standards.
-
-**Quick Reference - Naming Conventions:**
-
-| Entity | Style | Example |
-|--------|-------|---------|
-| Types | PascalCase | `MotorController` |
-| Functions | camelCase | `calculatePosition()` |
-| Variables | camelCase | `encoderPosition` |
-| Members | camelCase + `_` | `speed_` |
-| Constants | kPascalCase | `kMaxVoltage` |
-
-**💬 Chat Prompt - Apply Standards:**
-```
-Review this file against our C++ coding standards:
-#file:src-ODrive/.github/instructions/cpp_coding_standards.instructions.md
-#file:src-ODrive/Firmware/MotorControl/encoder.cpp
-
-Check for violations and suggest fixes.
 ```
 
 ---
@@ -1720,117 +1315,7 @@ Study these ODrive HAL patterns:
 
 ---
 
-## Using Personas in Copilot
-
-### Option 1: Workspace Instructions (Recommended)
-**Location:** `.github/copilot-instructions.md`
-
-Add at the top:
-```markdown
-# Active Personas
-- [Embedded C++ Safety Expert](copilot-persona-embedded.md)
-- [Real-Time System Architect](copilot-persona-rtos.md)
-- [Hardware Abstraction Layer Designer](copilot-persona-hal.md)
-
-When generating code, apply ALL persona constraints automatically.
-```
-
-### Option 2: Agent Skills
-**Location:** `.github/skills/SKILL-embedded-cpp.md`
-
-```markdown
-# Skill: Generate Embedded C++ Component
-
-## Description
-Generate embedded C++ components following ODrive architecture patterns.
-
-## Constraints (from Personas)
-@copilot-persona-embedded.md
-@copilot-persona-rtos.md
-@copilot-persona-hal.md
-
-## Usage
-In Copilot Chat:
-@workspace /skill Generate SPI driver for IMU sensor
-
-## Expected Inputs
-- Peripheral type (UART, SPI, I2C, GPIO, Timer)
-- Hardware details (baud rate, pins, DMA channels)
-- Usage context (ISR, task, blocking/async)
-
-## Output Format
-- .hpp file with class declaration
-- .cpp file with implementation
-- Unit test file (optional)
-- Example usage snippet
-```
-
-### Option 3: Direct Invocation in Chat
-```
-@copilot-persona-embedded.md Generate accelerometer driver
-
-Or:
-
-Load personas:
-#file:.github/copilot-persona-embedded.md
-#file:.github/copilot-persona-rtos.md
-#file:.github/copilot-persona-hal.md
-
-Then generate UART HAL following persona constraints.
-```
-
----
-
-## Success Criteria
-
-By the end of this lesson, participants should be able to:
-- ✅ Choose the appropriate Copilot mode for each task
-- ✅ Generate RAII wrappers with Inline completions
-- ✅ Refactor exception-based code using Edit mode
-- ✅ Build state machines using Agent mode with reference patterns
-- ✅ Create embedded-safe personas for their projects
-- ✅ Use `/tests` to generate unit tests for embedded code
-
----
-
-## Quick Reference: Mode Selection Guide
-
-```mermaid
-graph TD
-    A[What do you need?] --> B{Scope?}
-    B -->|Single line| C[Inline Mode]
-    B -->|Function/block| D{Task type?}
-    B -->|Multiple files| E[Agent Mode]
-    
-    D -->|Explain/review| F[Chat Mode]
-    D -->|Modify existing| G[Edit Mode]
-    D -->|Generate new| H[Inline + Chat]
-    
-    C --> I[Type comment + Tab]
-    F --> J[Ask in Chat panel]
-    G --> K[Select + Edit instruction]
-    E --> L[/workspace prompt]
-    H --> M[Comment + accept + Chat refine]
-```
-
----
-
-## Microsoft Learn Resources
-- [GitHub Copilot for Embedded Development](https://learn.microsoft.com/shows/learn-live/github-copilot-for-embedded-development)
-- [Write Better C++ with GitHub Copilot](https://learn.microsoft.com/training/modules/write-better-code-github-copilot/)
-- [Testing with GitHub Copilot](https://learn.microsoft.com/training/modules/test-github-copilot/)
-
----
-
-## Next Steps
-- Apply personas to your own embedded projects
-- Create team-specific coding standards as personas
-- Build a library of reusable agent skills
-- Integrate personas into CI/CD for automated review
-
----
-
-## Persona 4: C++ Best Practices Validator
+### Persona 4: C++ Best Practices Validator
 
 **File:** `.github/copilot-persona-validator.md`
 
@@ -2239,7 +1724,7 @@ This validator persona should:
 
 ---
 
-## Using the Validator Persona
+### Using the Validator Persona
 
 **After completing any exercise:**
 
@@ -2280,76 +1765,528 @@ Generate:
 
 ---
 
+## Using Personas in Copilot
+
+### Option 1: Workspace Instructions (Recommended)
+**Location:** `.github/copilot-instructions.md`
+
+Add at the top:
+```markdown
+# Active Personas
+- [Embedded C++ Safety Expert](copilot-persona-embedded.md)
+- [Real-Time System Architect](copilot-persona-rtos.md)
+- [Hardware Abstraction Layer Designer](copilot-persona-hal.md)
+
+When generating code, apply ALL persona constraints automatically.
+```
+
+### Option 2: Agent Skills
+**Location:** `.github/skills/SKILL-embedded-cpp.md`
+
+```markdown
+# Skill: Generate Embedded C++ Component
+
+## Description
+Generate embedded C++ components following ODrive architecture patterns.
+
+## Constraints (from Personas)
+@copilot-persona-embedded.md
+@copilot-persona-rtos.md
+@copilot-persona-hal.md
+
+## Usage
+In Copilot Chat:
+@workspace /skill Generate SPI driver for IMU sensor
+
+## Expected Inputs
+- Peripheral type (UART, SPI, I2C, GPIO, Timer)
+- Hardware details (baud rate, pins, DMA channels)
+- Usage context (ISR, task, blocking/async)
+
+## Output Format
+- .hpp file with class declaration
+- .cpp file with implementation
+- Unit test file (optional)
+- Example usage snippet
+```
+
+### Option 3: Direct Invocation in Chat
+```
+@copilot-persona-embedded.md Generate accelerometer driver
+
+Or:
+
+Load personas:
+#file:.github/copilot-persona-embedded.md
+#file:.github/copilot-persona-rtos.md
+#file:.github/copilot-persona-hal.md
+
+Then generate UART HAL following persona constraints.
+```
+
+---
+
+## Success Criteria
+
+By the end of this lesson, participants should be able to:
+- ✅ Choose the appropriate Copilot mode for each task
+- ✅ Generate RAII wrappers with Inline completions
+- ✅ Refactor exception-based code using Edit mode
+- ✅ Build state machines using Agent mode with reference patterns
+- ✅ Create embedded-safe personas for their projects
+- ✅ Use `/tests` to generate unit tests for embedded code
+
+---
+
+## Practice Exercises
+
+### Exercise 1: RAII Wrapper
+**Goal:** Create a RAII wrapper for a hardware resource
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Choose a resource: timer, DMA channel, or peripheral clock
+2. Ask Copilot to analyze existing HAL patterns
+3. Generate a RAII wrapper with:
+   - Constructor acquires resource
+   - Destructor releases resource
+   - Deleted copy, implemented move
+   - Static allocation
+
+**Prompt to use:**
+```
+@workspace Create RAII wrapper for TIM peripheral
+
+Reference patterns: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
+
+Requirements:
+- Constructor enables clock, configures timer
+- Destructor disables timer, releases clock
+- Delete copy semantics
+- Implement move semantics
+- No dynamic allocation
+```
+
+**Success Criteria:**
+- ✅ No manual cleanup needed
+- ✅ Safe in exception-free code
+- ✅ Moveable between containers
+</details>
+
+<details>
+<summary>💡 Solution Pattern</summary>
+
+```cpp
+class TimerGuard {
+public:
+    explicit TimerGuard(TIM_TypeDef* timer, const Config& cfg)
+        : timer_(timer), owns_(true) {
+        enable_clock(timer_);
+        configure(cfg);
+    }
+    
+    ~TimerGuard() {
+        if (owns_) {
+            disable_timer();
+            disable_clock();
+        }
+    }
+    
+    // No copy
+    TimerGuard(const TimerGuard&) = delete;
+    TimerGuard& operator=(const TimerGuard&) = delete;
+    
+    // Move OK
+    TimerGuard(TimerGuard&& other) noexcept
+        : timer_(other.timer_), owns_(other.owns_) {
+        other.owns_ = false;
+    }
+    
+private:
+    TIM_TypeDef* timer_;
+    bool owns_;
+};
+```
+</details>
+
+---
+
+### Exercise 2: Convert Exception to Error Code
+**Goal:** Refactor code that uses exceptions to use error codes
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Find or create code that might throw (or uses try/catch)
+2. Design an ErrorCode enum
+3. Ask Copilot to convert:
+
+**Prompt to use:**
+```
+Convert this function to use error codes instead of exceptions:
+
+```cpp
+void calibrate_sensor() {
+    auto reading = read_sensor();
+    if (reading < 0) throw std::runtime_error("Sensor error");
+    if (reading > MAX_VALUE) throw std::out_of_range("Value overflow");
+    store_calibration(reading);
+}
+```
+
+Requirements:
+- Define enum class ErrorCode
+- Return ErrorCode instead of void
+- Document all possible errors
+- Show caller example with error checking
+```
+
+**Success Criteria:**
+- ✅ No throw statements
+- ✅ All error paths covered
+- ✅ Caller example included
+</details>
+
+<details>
+<summary>💡 Solution Pattern</summary>
+
+```cpp
+enum class ErrorCode {
+    OK = 0,
+    SENSOR_ERROR,
+    VALUE_OVERFLOW,
+    STORAGE_FAILURE
+};
+
+/**
+ * @brief Calibrate sensor and store result
+ * @return ErrorCode::OK on success
+ * @retval SENSOR_ERROR if sensor read fails
+ * @retval VALUE_OVERFLOW if reading exceeds MAX_VALUE
+ * @retval STORAGE_FAILURE if storage write fails
+ */
+[[nodiscard]] ErrorCode calibrate_sensor() {
+    auto reading = read_sensor();
+    if (reading < 0) {
+        return ErrorCode::SENSOR_ERROR;
+    }
+    if (reading > MAX_VALUE) {
+        return ErrorCode::VALUE_OVERFLOW;
+    }
+    if (!store_calibration(reading)) {
+        return ErrorCode::STORAGE_FAILURE;
+    }
+    return ErrorCode::OK;
+}
+
+// Caller example:
+if (auto err = calibrate_sensor(); err != ErrorCode::OK) {
+    handle_error(err);
+    return;
+}
+```
+</details>
+
+---
+
+### Exercise 3: Ring Buffer Implementation
+**Goal:** Implement an ISR-safe ring buffer
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Use the prompt from Exercise 3 in Section 4
+2. Verify Copilot's implementation against requirements
+3. Write additional tests for edge cases
+
+**Additional tests to request:**
+```
+Add tests for:
+1. Write when full (should return false)
+2. Read when empty (should return false)
+3. Wrap-around at buffer boundary
+4. Rapid alternating write/read
+5. Stress test: 1000 writes, 1000 reads
+```
+
+**Success Criteria:**
+- ✅ ISR-safe write
+- ✅ Task-safe read
+- ✅ Correct full/empty detection
+- ✅ All tests pass
+</details>
+
+---
+
+### Exercise 4: Embedded C++ Persona
+**Goal:** Create a custom persona for embedded validation
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Create `.github/agents/Embedded-Validator.agent.md`
+2. Define validation checklist:
+   - No dynamic allocation
+   - No exceptions
+   - Volatile correctness
+   - Const correctness
+   - RAII compliance
+
+3. Test by asking it to review code
+
+**Agent template:**
+```markdown
+---
+description: Validate code for embedded C++ best practices
+name: Embedded-Validator
+tools: ['search', 'codebase']
+---
+
+# Embedded Code Validator
+
+Validate embedded C++ code against these rules:
+
+## Memory
+- [ ] No new/delete/malloc/free
+- [ ] No std::vector without custom allocator
+- [ ] Fixed-size buffers with bounds checking
+
+## Error Handling
+- [ ] No throw/try/catch
+- [ ] Error codes returned
+- [ ] All errors documented
+
+## Hardware
+- [ ] Volatile for ISR-shared variables
+- [ ] Volatile for hardware registers
+- [ ] Critical sections around shared data
+
+## Quality
+- [ ] Const correctness
+- [ ] RAII for resources
+- [ ] Move semantics for non-copyable
+
+For each violation, provide location and fix.
+```
+
+**Success Criteria:**
+- ✅ Agent validates code accurately
+- ✅ Catches common embedded violations
+- ✅ Provides actionable fixes
+</details>
+
+---
+
 ## Quick Reference: Mode Selection Guide
 
-Use this guide to choose the right Copilot mode for each task:
+```mermaid
+graph TD
+    A[What do you need?] --> B{Scope?}
+    B -->|Single line| C[Inline Mode]
+    B -->|Function/block| D{Task type?}
+    B -->|Multiple files| E[Agent Mode]
+    
+    D -->|Explain/review| F[Chat Mode]
+    D -->|Modify existing| G[Edit Mode]
+    D -->|Generate new| H[Inline + Chat]
+    
+    C --> I[Type comment + Tab]
+    F --> J[Ask in Chat panel]
+    G --> K[Select + Edit instruction]
+    E --> L[/workspace prompt]
+    H --> M[Comment + accept + Chat refine]
+```
+
+### When to Use Each Mode
 
 | Task | Mode | Why |
 |------|------|-----|
-| Understand existing code | 💬 Chat | Analysis, explanations |
-| Review for issues | 💬 Chat | Audit, find violations |
-| Generate new files | 🤖 Agent | Multi-file creation |
-| Refactor code | 🤖 Agent | Cross-file changes |
-| Complete patterns | ⌨️ Inline | Quick snippets |
-| Fix specific issues | ✏️ Edit | Targeted changes |
+| Explain existing code | Chat (Ask) | Read-only, exploratory |
+| Add documentation | Inline (Ctrl+I) | Targeted, in-place |
+| Refactor single function | Edit | Focused change |
+| Implement new feature | Agent | Multi-file, planning |
+| Review for best practices | Agent with custom agent | Specialized validation |
+| Generate tests | Chat with `/tests` | Uses test framework |
 
-### Common Prompt Patterns
+### Embedded-Specific Prompts
 
-**Analysis Prompt:**
+**Static Allocation Check:**
 ```
-Analyze [aspect] in:
-#file:path/to/file
-
-Check for:
-1. [Issue type 1]
-2. [Issue type 2]
-3. [Issue type 3]
-
-Provide prioritized recommendations.
+Audit this file for dynamic allocation and suggest static alternatives:
+#file:path/to/file.cpp
 ```
 
-**Generation Prompt:**
+**Error Code Conversion:**
 ```
-@workspace Create [component] following patterns from:
-#file:reference/file.hpp
+Convert this function to return ErrorCode instead of throwing:
+[select function]
+```
+
+**Volatile Audit:**
+```
+Check volatile usage in this ISR and shared variable access:
+#file:path/to/interrupts.cpp
+```
+
+**RAII Improvement:**
+```
+Add RAII wrapper for this resource to prevent leaks:
+[select class]
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Generated code uses `new` | Add "static allocation only, no heap" to prompt |
+| Generated code throws exceptions | Add "no exceptions, use error codes" to prompt |
+| Missing volatile on ISR variables | Explicitly mention "ISR-shared" in prompt |
+| Generic C++ patterns used | Reference specific ODrive files in prompt |
+| Missing const correctness | Ask "audit const correctness" separately |
+| Wrong HAL pattern | Include `#file:` reference to existing HAL |
+
+### Common Prompt Improvements
+
+**Too generic:**
+```
+Generate SPI driver
+```
+
+**Better (embedded-specific):**
+```
+Generate SPI driver following ODrive HAL patterns:
+#file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
 
 Requirements:
-- [Requirement 1]
-- [Requirement 2]
-
-Files to create:
-- path/to/new_file.hpp
-- path/to/new_file.cpp
-
-Acceptance Criteria:
-- [Criterion 1]
-- [Criterion 2]
+- Static allocation only
+- Error codes, no exceptions
+- Async completion callbacks
+- Thread-safe arbitration
 ```
+
+---
+
+## Additional Resources
+
+### Microsoft Learn
+- [GitHub Copilot for Embedded Development](https://learn.microsoft.com/shows/learn-live/github-copilot-for-embedded-development)
+- [Write Better C++ with GitHub Copilot](https://learn.microsoft.com/training/modules/write-better-code-github-copilot/)
+
+### C++ References
+- [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+- [MISRA C++ Guidelines](https://www.misra.org.uk/)
+- [Embedded Artistry](https://embeddedartistry.com/)
+
+### ODrive Patterns
+- State Machines: `src-ODrive/Firmware/MotorControl/axis.cpp`
+- HAL Abstraction: `src-ODrive/Firmware/Drivers/STM32/`
+- Error Handling: `src-ODrive/Firmware/MotorControl/encoder.cpp`
+
+---
+
+## Frequently Asked Questions
+
+### Q: How do I ensure Copilot generates embedded-safe code?
+
+**Short Answer:** Use custom instructions and explicit constraints in prompts.
+
+**Detailed Explanation:**
+1. Create `.github/copilot-instructions.md` with embedded constraints
+2. Include "no heap, no exceptions, static allocation" in every prompt
+3. Reference existing ODrive patterns with `#file:`
+4. Use `@workspace` for multi-file operations
+
+---
+
+### Q: How do I validate Copilot's code against embedded constraints?
+
+**Short Answer:** Use the Embedded-Validator agent or explicit audit prompts.
+
+**Detailed Explanation:**
+1. Create a custom validation agent (see Exercise 4)
+2. After generating code, ask: "Audit this for embedded constraints"
+3. Check: dynamic allocation, exceptions, volatile, const correctness
+4. Request fixes for any violations found
+
+---
+
+### Q: How do I get Copilot to use my project's HAL patterns?
+
+**Short Answer:** Reference existing HAL files in your prompts.
+
+**Detailed Explanation:**
+```
+Create UART driver following this project's HAL pattern:
+#file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
+#file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
+
+Match the style for:
+- RAII resource management
+- Error code returns
+- Callback mechanisms
+- Thread-safety approach
+```
+
+---
+
+### Q: How do I handle complex state machines?
+
+**Short Answer:** Use the task chain pattern from ODrive's Axis class.
+
+**Detailed Explanation:**
+1. Reference `axis.cpp` in your prompt
+2. Define states as enum class
+3. Use switch/case in a FreeRTOS task loop
+4. Add task chain array for automatic sequences
+5. Implement entry/exit actions per state
+
+---
+
+### Q: Should I use std::atomic or volatile for ISR-shared variables?
+
+**Short Answer:** For Cortex-M, volatile is usually sufficient; atomic adds overhead.
+
+**Detailed Explanation:**
+- **volatile:** Prevents compiler optimization, ensures memory reads
+- **std::atomic:** Adds memory barriers, ensures visibility across cores
+- **Cortex-M (single core):** volatile is typically sufficient
+- **Multi-core or complex ordering:** Use std::atomic
+- **ISR to task:** volatile + critical sections for non-atomic operations
 
 ---
 
 ## Summary: Key Takeaways
 
-After completing this lesson, you should be able to:
+### 1. Modern C++ Patterns
+- **RAII:** Acquire in constructor, release in destructor
+- **Templates:** Zero-cost abstractions for type safety
+- **Const correctness:** Mark everything const that should be
 
-| Skill | Description |
-|-------|-------------|
-| **Apply RAII** | Automatic resource management with destructors |
-| **Enforce Static Allocation** | Use `std::array`, avoid `new`/`malloc` |
-| **Use Error Codes** | Return `enum class` instead of exceptions |
-| **Mark Volatile** | Identify ISR-shared and hardware register variables |
-| **Implement State Machines** | Follow task chain pattern from Axis class |
-| **Create HAL Abstractions** | Hide vendor-specific code behind clean interfaces |
-| **Generate Tests** | Use `/tests` command with doctest framework |
-| **Apply Style Guidelines** | Reference [cpp_coding_standards.instructions.md](../../src-ODrive/.github/instructions/cpp_coding_standards.instructions.md) |
+### 2. Embedded Constraints
+- **No heap:** Use static allocation, std::array, fixed buffers
+- **No exceptions:** Return error codes, use [[nodiscard]]
+- **Volatile:** Required for hardware registers and ISR-shared data
 
-### Next Steps
+### 3. RTOS Patterns
+- **State machines:** Task chain pattern from ODrive Axis
+- **HAL abstractions:** Hide vendor details, RAII ownership
+- **Task sync:** Semaphores, queues, critical sections
 
-1. **Practice** - Complete the hands-on exercises with your own variations
-2. **Create Personas** - Build team-specific personas for your projects
-3. **Integrate** - Add validation to your CI/CD pipeline
-4. **Share** - Contribute prompts that work well for your team
+### 4. Effective Prompts
+- Reference existing code with `#file:`
+- State constraints explicitly (no heap, no exceptions)
+- Include acceptance criteria
+- Use specialized agents for embedded work
+
+### 5. Validation
+- Audit generated code for constraint violations
+- Create validation personas for consistent checking
+- Test edge cases: ISR safety, error handling, resource cleanup
 
 ---
 
-*This lesson is part of the GitHub Copilot for C++ Developers training curriculum.*
+*Lesson 5: C++ Best Practices with GitHub Copilot*  
+*Last Updated: January 2026*

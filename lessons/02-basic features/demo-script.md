@@ -94,6 +94,19 @@ Add a new configuration variable `float soft_stop_rate` to the ControllerConfig 
 **Presenter Says:**
 > "The `/doc` slash command generates documentation for the selected code. Inline chat is faster for quick edits right where you're working."
 
+**Alternative Demo - Cross-File Refactoring:**
+
+**Presenter Says:**
+> "Edit mode is also great for refactoring that spans multiple files. Let me show you a rename operation."
+
+**Type in Chat:**
+```
+Rename the function delay_us to delay_ust in #file:Firmware/MotorControl/utils.hpp and update all files that call this function to use the new name.
+```
+
+**Presenter Says:**
+> "Watch how Copilot finds all usages in drv8301.cpp and board.cpp and updates them together. This is much safer than find-and-replace!"
+
 ---
 
 ### Part C: Agent Mode (4 min)

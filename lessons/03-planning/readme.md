@@ -1,4 +1,4 @@
-# Planning & Steering Documents: GitHub Copilot Customization
+# Lesson 3: Planning & Steering Documents - GitHub Copilot Customization
 
 **Session Duration:** 60 minutes  
 **Audience:** Embedded/C++ Developers/Project Managers/QA Engineers/Firmware Engineers  
@@ -8,22 +8,53 @@
 
 ---
 
+## Overview
+
+This lesson teaches you how to customize GitHub Copilot's behavior through planning and steering documents. You'll learn to create persistent coding standards, reusable prompts, specialized agents, skill folders, and use **Plan Mode** to turn project ideas into structured issues. These tools ensure consistent, high-quality AI output across your team.
+
+**What You'll Learn:**
+- Creating `copilot-instructions.md` for repo-wide coding standards
+- Building reusable prompt files (`.prompt.md`) for common workflows
+- Designing custom agents (`.agent.md`) for specialized personas
+- Packaging skills with bundled resources for complex tasks
+- Using **Plan Mode** to turn ideas into structured epics and issues
+
+**Key Concepts:**
+
+| Concept | Description |
+|---------|-------------|
+| **Custom Instructions** | Always-on coding standards applied to every request |
+| **Prompt Files** | Reusable task templates invoked with `/prompt-name` |
+| **Custom Agents** | Specialized personas with specific tools and behaviors |
+| **Agent Skills** | Instruction folders with bundled scripts and resources |
+| **Plan Mode** 🆕 | Turn project ideas into structured epics, features, and tasks |
+| **Context Layering** | Building prompts with constitution → agent → files → constraints |
+
+---
+
 ## Table of Contents
 
+- [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Why Planning Matters](#why-planning-matters)
 - [Agenda](#agenda-planning--steering-documents-60-min)
-- [Copilot Customization Hierarchy](#copilot-customization-hierarchy)
-- [Custom Instructions](#custom-instructions-copilot-instructionsmd)
-- [Prompt Files](#prompt-files-promptmd)
-- [Custom Agents](#custom-agents-agentmd)
-- [Agent Skills](#agent-skills-skillmd-folders)
+- [Learning Path](#learning-path)
+- [Copilot Customization Hierarchy](#1-copilot-customization-hierarchy)
+- [Custom Instructions](#2-custom-instructions-copilot-instructionsmd)
+- [Prompt Files](#3-prompt-files-promptmd)
+- [Custom Agents](#4-custom-agents-agentmd)
+- [Agent Skills](#5-agent-skills-skillmd-folders)
+- [**Plan Mode (Preview)**](#6-plan-mode-preview) 🆕
 - [Speaker Instructions](#speaker-instructions)
 - [Participant Instructions](#participant-instructions)
+- [Practice Exercises](#practice-exercises)
 - [Quick Reference](#quick-reference-customization-options)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
+- [Frequently Asked Questions](#frequently-asked-questions)
+- [Summary: Key Takeaways](#summary-key-takeaways)
+- [Next Steps](#next-steps)
 
 ---
 
@@ -31,11 +62,11 @@
 
 Before starting this session, ensure you have:
 
-- **Completed Basic Feature Overview** - Understanding of Chat modes, participants, and slash commands
-- **Visual Studio Code** with GitHub Copilot extensions installed and enabled
-- **Active Copilot subscription** with access to all features
-- **Workspace access** - Ability to create folders and files in `.github/` directory
-- **Basic Markdown knowledge** - For authoring customization files
+- ✅ **Completed Basic Feature Overview** - Understanding of Chat modes, participants, and slash commands
+- ✅ **Visual Studio Code** with GitHub Copilot extensions installed and enabled
+- ✅ **Active Copilot subscription** with access to all features
+- ✅ **Workspace access** - Ability to create folders and files in `.github/` directory
+- ✅ **Basic Markdown knowledge** - For authoring customization files
 
 ### Verify Your Setup
 
@@ -45,7 +76,7 @@ Before starting this session, ensure you have:
 
 2. **Enable customization features:**
    - Open VS Code Settings (Ctrl+,)
-   - Make sure custom instructions is checked out
+   - Make sure custom instructions is enabled
    ![alt text](image.png)
    - Search for `chat.useAgentSkills` and enable it
 
@@ -93,16 +124,35 @@ Front-loading context improves output quality dramatically. Instead of repeatedl
 
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
-| Why Planning Matters | Front-loading context improves output quality | 10 min |
-| copilot-instructions.md | Repo-level coding standards, constraints, patterns | 10 min |
-| Prompt Files (.prompt.md) | Reusable task templates for common workflows | 10 min |
-| Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 12 min |
-| Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 10 min |
-| **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 8 min |
+| Why Planning Matters | Front-loading context improves output quality | 5 min |
+| copilot-instructions.md | Repo-level coding standards, constraints, patterns | 8 min |
+| Prompt Files (.prompt.md) | Reusable task templates for common workflows | 8 min |
+| Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 10 min |
+| Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 8 min |
+| **Plan Mode (Preview)** 🆕 | Turn project ideas into structured issues/epics | 8 min |
+| **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 13 min |
 
 ---
 
-## Copilot Customization Hierarchy
+## Learning Path
+
+This lesson covers seven key areas. Work through them sequentially for the best learning experience.
+
+| Topic | What You'll Learn | Estimated Time |
+|-------|-------------------|----------------|
+| Customization Hierarchy | Where files go and when they're loaded | 3 min |
+| Custom Instructions | Repo-level coding standards | 8 min |
+| Prompt Files | Reusable task templates | 8 min |
+| Custom Agents | Specialized personas | 10 min |
+| Agent Skills | Bundled instructions with resources | 8 min |
+| **Plan Mode (Preview)** 🆕 | Turn ideas into structured issues | 8 min |
+| Guided Hands-On | Build a complete customization setup | 15 min |
+
+---
+
+## 1. Copilot Customization Hierarchy
+
+### File Locations and Loading Behavior
 
 | Customization | Location | When Loaded | Purpose |
 |---------------|----------|-------------|---------|
@@ -111,9 +161,30 @@ Front-loading context improves output quality dramatically. Instead of repeatedl
 | **Custom Agents** | `.github/agents/*.agent.md` | When selected from agents dropdown | Specialized assistant personas with tool configs |
 | **Agent Skills** | `.github/skills/*/SKILL.md` or `~/.copilot/skills/*/SKILL.md` | Auto-discovered from prompt | Task workflows with bundled scripts/references/templates |
 
+### Visual Hierarchy
+
+```
+.github/
+├── copilot-instructions.md          # Always loaded
+├── instructions/
+│   ├── cpp.instructions.md          # Loaded for *.cpp, *.hpp files
+│   └── python.instructions.md       # Loaded for *.py files
+├── prompts/
+│   ├── generate-test.prompt.md      # Invoked with /generate-test
+│   └── review-code.prompt.md        # Invoked with /review-code
+├── agents/
+│   ├── ODrive-Engineer.agent.md     # Selected from dropdown
+│   └── ODrive-QA.agent.md           # Selected from dropdown
+└── skills/
+    └── misra-compliance/
+        ├── SKILL.md                 # Skill definition
+        ├── rules.md                 # Reference material
+        └── examples/                # Example code
+```
+
 ---
 
-## Custom Instructions (copilot-instructions.md)
+## 2. Custom Instructions (copilot-instructions.md)
 
 Custom instructions enable you to define common guidelines and rules that automatically influence how AI generates code and handles other development tasks.
 
@@ -126,7 +197,7 @@ Custom instructions enable you to define common guidelines and rules that automa
 - Stored within the workspace for team sharing
 - Works in VS Code, Visual Studio, and GitHub.com
 
-**Example Structure:**
+**Example for Embedded C++ Project:**
 
 ```markdown
 # Project Coding Standards
@@ -176,15 +247,15 @@ description: Python coding standards
 - Use pytest for testing
 ```
 
-**Example: Embedded C Instructions**
+**Example: Embedded C/C++ Instructions**
 
 ```markdown
 ---
-applyTo: "Firmware/**/*.{c,h}"
-description: Embedded C coding standards
+applyTo: "Firmware/**/*.{c,h,cpp,hpp}"
+description: Embedded C/C++ coding standards
 ---
 
-# Embedded C Standards
+# Embedded C/C++ Standards
 - No dynamic memory allocation
 - Use static allocation only
 - Document interrupt handlers
@@ -194,7 +265,7 @@ description: Embedded C coding standards
 
 ---
 
-## Prompt Files (.prompt.md)
+## 3. Prompt Files (.prompt.md)
 
 Prompt files are Markdown files that define reusable prompts for common development tasks. They are standalone prompts that you can run directly in chat.
 
@@ -222,69 +293,134 @@ Use variables:
 - ${input:variableName:placeholder text}
 ```
 
-### Example: Generate React Form Component
+### Example: Build Firmware Prompt
+
+This prompt builds ODrive firmware for specific board variants using the toolchain skill.
+
+**File:** `.github/prompts/build-firmware.prompt.md`
+
+```markdown
+# Build Firmware
+
+Build ODrive firmware for specific board variants and configurations.
+
+## Instructions
+
+Use the **odrive-toolchain** skill to build firmware with proper board configuration.
+
+### Workflow Hierarchy
+
+```
+copilot-instructions.md (Constitution)
+        ↓
+  ODrive-Toolchain.agent (Orchestrator)
+        ↓
+  odrive-toolchain skill
+        ↓
+  build_firmware.py + setup-env.ps1
+```
+
+### Commands
+
+```powershell
+# Step 1: Source environment (Windows PowerShell)
+. .github\skills\odrive-toolchain\setup-env.ps1
+
+# Step 2: Build using the skill script
+python .github\skills\odrive-toolchain\build_firmware.py board-v3.6-56V
+
+# List available configurations
+python .github\skills\odrive-toolchain\build_firmware.py --list-configs
+```
+
+### Available Board Variants
+
+| Board | Config String | Voltage | Notes |
+|-------|--------------|---------|-------|
+| **v3.6** | `board-v3.6-56V` | 56V | Current production |
+| **v3.5** | `board-v3.5-24V` | 24V | Legacy |
+
+### Output
+
+**On Success:**
+- ✅ Build completed successfully
+- 📦 Binary location: `Firmware/build/ODriveFirmware.elf`
+- 📊 Build statistics (size, warnings)
+
+### Example: Optimize Critical Path Prompt
+
+This prompt optimizes performance-critical code in real-time execution paths.
+
+**File:** `.github/prompts/optimize-critical.prompt.md`
 
 ```markdown
 ---
-description: Generate a React form component with validation
-name: create-react-form
-argument-hint: formName=MyForm
+name: optimize-critical
+description: 'Optimize critical path code for performance'
 agent: edit
-tools: ['edit_files', 'create_file']
 ---
 
-# Generate React Form Component
+Analyze the selected code block, which is part of a critical real-time execution path.
 
-Create a React form component with the following requirements:
+1. Identify any potential performance bottlenecks:
+   - Division operations
+   - Heavy trig functions
+   - Memory allocation
 
-1. Form name: ${input:formName:FormName}
-2. Include form validation using Formik
-3. Use Material-UI components
-4. Include TypeScript types
-5. Add unit tests using React Testing Library
+2. Suggest 2-3 specific optimizations to reduce cycle count or memory usage.
 
-The component should:
-- Handle form submission
-- Display validation errors
-- Support controlled inputs
-- Be accessible (ARIA labels)
+3. Apply the changes if they are safe and don't reduce readability significantly.
+
+4. **Strict rule**: No dynamic memory allocation (`new`, `malloc`, `std::vector` resizing) allowed.
+
+5. Avoid unnecessary object copies; pass heavy objects by `const` reference where possible.
 ```
 
-### Example: Security Review
+**Usage:**
+1. Select a code block in the editor
+2. Type `/optimize-critical` in Chat view
+3. Copilot analyzes and suggests optimizations
+
+### Example: Embedded Safety Check Prompt
+
+This prompt performs safety analysis on embedded firmware modules.
+
+**File:** `.github/prompts/check-safety.prompt.md`
 
 ```markdown
 ---
-description: Perform security review of REST API endpoints
-name: security-review
-agent: ask
-tools: ['search', 'codebase', 'usages']
+name: check-safety
+description: 'Perform a safety check on a specific module'
+agent: agent
 ---
 
-# REST API Security Review
+Perform a safety analysis on the specified module file.
 
-Analyze the selected REST API code for security vulnerabilities:
+Check for:
+1. **Race Conditions**: Shared variables accessed without locks/interrupt protection.
+2. **Null Dereferences**: Pointers used without checking.
+3. **Floating Point Safety**: Division by zero or likely NaN propagation.
+4. **Deadlocks**: Potential lock ordering issues.
 
-1. **Authentication & Authorization**
-   - Check for proper authentication on all endpoints
-   - Verify authorization logic
-   - Look for privilege escalation risks
-
-2. **Input Validation**
-   - Identify missing input validation
-   - Check for SQL injection risks
-   - Look for XSS vulnerabilities
-
-3. **Data Exposure**
-   - Check for sensitive data in responses
-   - Verify data sanitization
-   - Look for information leakage
-
-4. **Rate Limiting**
-   - Check for rate limiting on endpoints
-   - Verify DoS protection
-
-Provide specific findings with code locations and remediation steps.
+Output a Markdown report with a "Risk Level" (Low/Medium/High) for each finding.
 ```
+
+**Usage:**
+1. Open a firmware source file (e.g., `motor.cpp`)
+2. Type `/check-safety` in Chat view
+3. Copilot analyzes the code and produces a safety report
+
+### Using Prompt Files
+
+**Example with Build Firmware:**
+1. Type `/build-firmware` in Chat view
+2. Copilot sources environment and builds for specified board
+3. Reports build status and output files
+
+**Example with Optimize Critical:**
+1. Select performance-critical code in the editor
+2. Type `/optimize-critical` in Chat view
+3. Copilot analyzes and applies safe optimizations
 
 ### Create a Prompt File
 
@@ -307,7 +443,7 @@ Provide specific findings with code locations and remediation steps.
 
 ---
 
-## Custom Agents (.agent.md)
+## 4. Custom Agents (.agent.md)
 
 Custom agents enable you to configure the AI to adopt different personas tailored to specific development roles and tasks.
 
@@ -333,152 +469,98 @@ handoffs:
 Your specialized instructions go here...
 ```
 
-### Example: Planning Agent
+### Example: ODrive Engineer Agent
+
+The primary development orchestrator for ODrive firmware.
+
+**File:** `.github/agents/ODrive-Engineer.agent.md`
 
 ```markdown
 ---
-description: Generate implementation plans for features
-name: Planner
-tools: ['search', 'fetch', 'githubRepo', 'usages', 'codebase']
-model: Claude Sonnet 4
-handoffs:
-  - label: Start Implementation
-    agent: agent
-    prompt: Implement the plan outlined above.
-    send: false
+name: 'ODrive Engineer'
+description: 'Primary orchestrator agent for ODrive development. Invokes specialized skills for firmware, motor control, and hardware tasks.'
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'agent', 'todo']
 ---
 
-# Planning Instructions
+# ODrive Engineer (Primary Development Orchestrator)
 
-You are in planning mode. Generate implementation plans without making code edits.
+You are the **primary development orchestrator** for the ODrive Development System.
 
-## Plan Structure
+## Quick Reference
 
-1. **Overview**: Brief description of the feature/task
-2. **Requirements**: Detailed requirements list
-3. **Architecture**: High-level design decisions
-4. **Implementation Steps**: Detailed step-by-step plan
-5. **Testing Strategy**: How to verify the implementation
-6. **Risks & Considerations**: Potential issues to watch
+| Attribute | Value |
+|-----------|-------|
+| **Role** | Primary Development Orchestrator |
+| **Domains** | Firmware, Motor Control, Hardware |
+| **Skills** | odrive-toolchain, control-algorithms, foc-tuning |
+| **Invocation** | `@odrive-engineer [request]` |
 
-## Process
+## Skills Hierarchy
 
-1. Analyze existing codebase using #tool:codebase
-2. Research similar implementations using #tool:githubRepo
-3. Identify affected files using #tool:usages
-4. Generate comprehensive plan
-5. Don't make any code changes - planning only
+```
+copilot-instructions.md (Constitution)
+        ↓
+  ODrive-Engineer.agent (You - Primary Orchestrator)
+        ↓
+  ┌───────┴────────┬──────────┬───────────┐
+  ↓               ↓          ↓          ↓
+odrive-       odrive-    control-   foc-tuning
+toolchain       ops      algorithms    (🚧)
+  (✅)          (✅)        (🚧)
 ```
 
-### Example: Embedded Expert Agent
+## Safety
+
+**CRITICAL:** Before ANY hardware operation (flashing, calibration, motor operation),
+provide clear warnings and wait for explicit user confirmation.
+```
+
+**Usage:**
+- Invoke with `@odrive-engineer` in Chat view
+- Automatically routes requests to appropriate skills
+
+### Example: ODrive Toolchain Agent
+
+Handles build, test, and code navigation operations.
+
+**File:** `.github/agents/ODrive-Toolchain.agent.md`
 
 ```markdown
 ---
-description: Expert in embedded C/C++ and RTOS development
-name: Embedded-Expert
-tools: ['search', 'edit_files', 'create_file', 'codebase']
-model: Claude Sonnet 4
+name: 'ODrive Toolchain'
+description: 'Build, compile, test, and code navigation for ODrive firmware development'
+tools: ['execute', 'read', 'search']
 ---
 
-# Embedded Systems Expert
+# ODrive Toolchain Agent
 
-You are an expert in embedded C/C++ development with deep knowledge of RTOS, hardware abstraction layers, and real-time constraints.
+You handle **build, test, and code navigation** for ODrive firmware.
 
-## Embedded Constraints
+## Quick Reference
 
-**Always consider:**
-- No dynamic memory allocation
-- No exceptions
-- Static allocation only
-- Interrupt safety
-- Real-time requirements
-- Memory constraints
-- Power consumption
+| Attribute | Value |
+|-----------|-------|
+| **Role** | Build & Test Operations |
+| **Invocation** | `@odrive-toolchain [request]` |
+| **Skill** | `odrive-toolchain` |
 
-## Code Patterns
+## What You Do
 
-**Use these patterns:**
-- State machines for complex logic
-- Hardware abstraction layers (HAL)
-- Volatile for hardware registers
-- Const correctness
-- RAII patterns (C++)
+| Operation | Command |
+|-----------|--------|
+| **Build firmware** | `python .github/skills/odrive-toolchain/build_firmware.py board-v3.6-56V` |
+| **Find symbols** | `python .github/skills/odrive-toolchain/search_symbol.py Controller` |
+| **List errors** | `python .github/skills/odrive-toolchain/list_errors.py --filter encoder` |
 
-## MISRA Compliance
+## Safety
 
-**Follow MISRA C/C++ guidelines:**
-- No goto statements
-- Single return point per function
-- Explicit type conversions
-- No recursion
-- Limited nesting depth
-
-## Documentation
-
-**Always document:**
-- Interrupt handlers
-- Hardware register access
-- Timing constraints
-- Thread safety assumptions
+✅ **Safe**: Build, search, list errors, run software tests  
+⚠️ **Confirmation Required**: Flash firmware, HIL tests
 ```
 
-### Example: Code Review Agent
-
-```markdown
----
-description: Perform thorough code reviews
-name: Code-Reviewer
-tools: ['search', 'codebase', 'usages']
-model: Claude Sonnet 4
-handoffs:
-  - label: Fix Issues
-    agent: edit
-    prompt: Fix the issues identified in the code review above.
-    send: false
----
-
-# Code Review Instructions
-
-Perform comprehensive code review focusing on:
-
-## Review Checklist
-
-1. **Code Quality**
-   - Readability and maintainability
-   - Naming conventions
-   - Code duplication
-   - Function complexity
-
-2. **Best Practices**
-   - Design patterns usage
-   - Error handling
-   - Resource management
-   - Thread safety
-
-3. **Testing**
-   - Unit test coverage
-   - Edge cases
-   - Error conditions
-
-4. **Performance**
-   - Algorithm efficiency
-   - Memory usage
-   - Potential bottlenecks
-
-5. **Security**
-   - Input validation
-   - Authentication/authorization
-   - Data sanitization
-
-## Output Format
-
-For each issue found:
-- **Severity**: Critical/High/Medium/Low
-- **Location**: File and line number
-- **Issue**: Clear description
-- **Recommendation**: How to fix
-- **Example**: Code snippet if helpful
-```
+**Usage:**
+- Invoke with `@odrive-toolchain build firmware for v3.6`
+- Automatically sources environment and executes build scripts
 
 ### Create a Custom Agent
 
@@ -502,8 +584,7 @@ For each issue found:
 
 ---
 
-
-## Agent Skills (SKILL.md folders)
+## 5. Agent Skills (SKILL.md folders)
 
 Agent Skills are folders of instructions, scripts, and resources that Copilot can load when relevant to perform specialized tasks.
 
@@ -519,147 +600,106 @@ Agent Skills are folders of instructions, scripts, and resources that Copilot ca
 
 ### Skill Structure
 
+Example from the ODrive toolchain skill:
+
 ```
-.github/skills/webapp-testing/
+.github/skills/odrive-toolchain/
 ├── SKILL.md                 # Skill definition
-├── test-template.js         # Test template
-├── scripts/
-│   └── run-tests.sh        # Helper scripts
-├── examples/
-│   ├── unit-test.js
-│   └── integration-test.js
-└── references/
-    └── testing-guide.md
+├── setup-env.ps1            # Environment setup script
+├── build_firmware.py        # Build automation
+├── search_symbol.py         # Symbol search tool
+├── list_errors.py           # Error code listing
+└── find_symbol.ps1          # Quick symbol search
 ```
 
-### SKILL.md Format
+### Example: ODrive Toolchain Skill
+
+**File:** `.github/skills/odrive-toolchain/SKILL.md`
 
 ```markdown
 ---
-name: skill-name
-description: What the skill does and when to use it (max 1024 chars)
+name: 'ODrive Toolchain'
+description: 'Build, test, search, and error inspection for ODrive firmware'
+status: production
+version: 1.0.0
 ---
 
-# Skill Instructions
+# ODrive Toolchain Skill
 
-Detailed instructions, guidelines, and examples...
+All build, test, search, and error inspection scripts in one place.
 
-## Resources
+## Scripts
 
-- [Test Template](./test-template.js)
-- [Run Script](./scripts/run-tests.sh)
-- [Examples](./examples/)
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `setup-env.ps1` | Add tup + ARM GCC to PATH | `. .\setup-env.ps1` |
+| `build_firmware.py` | Build firmware for board | `python build_firmware.py board-v3.6-56V` |
+| `search_symbol.py` | Search for symbols | `python search_symbol.py Encoder --type class` |
+| `list_errors.py` | List error codes | `python list_errors.py --filter encoder` |
+
+## Quick Usage
+
+### Build Firmware
+```powershell
+. .github\skills\odrive-toolchain\setup-env.ps1
+python .github\skills\odrive-toolchain\build_firmware.py board-v3.6-56V
 ```
 
-### Example: Web Application Testing Skill
+## Safety
+
+✅ **Safe**: All operations are read-only or local builds  
+⚠️ **Never auto-execute**: Flash firmware, HIL tests
+```
+
+### Example: FOC Tuning Skill (Stub)
+
+This shows how to create a skill that's in development.
+
+**File:** `.github/skills/foc-tuning/SKILL.md`
 
 ```markdown
 ---
-name: webapp-testing
-description: Generate and run tests for web applications using Jest and React Testing Library. Use when testing React components, API endpoints, or user workflows.
+name: foc-tuning
+description: 🚧 STUB - Automated FOC parameter tuning procedures and optimization
+status: in-development
 ---
 
-# Web Application Testing
+# FOC Tuning Skill (🚧 In Development)
 
-Generate comprehensive tests for web applications following these patterns:
+**Status:** Stub - Planned for future implementation  
+**Owner:** motor-control-engineer.agent
 
-## Test Structure
+## Purpose
 
-Use the template from [test-template.js](./test-template.js):
+This skill will provide automated tuning procedures for Field-Oriented Control (FOC) motor controllers.
 
-```javascript
-import { render, screen, fireEvent } from '@testing-library/react';
-import { ComponentName } from './ComponentName';
+## Planned Capabilities
 
-describe('ComponentName', () => {
-  it('should render correctly', () => {
-    // Test implementation
-  });
-});
+- Automated current loop bandwidth measurement
+- Velocity loop step response tuning
+- Position loop gain optimization
+- Anti-cogging calibration procedures
+- Stability margin analysis
+
+## Dependencies
+
+- Motor parameter identification
+- Hardware-in-the-loop testing infrastructure
+
+## Implementation Status
+
+- [ ] Current loop auto-tuning
+- [ ] Velocity loop auto-tuning
+- [ ] Position loop auto-tuning
+- [ ] Anti-cogging calibration
+
+## Related Skills
+
+- `control-algorithms` - Controller implementations
+- `sensorless-control` - Observer tuning
 ```
 
-## Testing Patterns
-
-1. **Component Tests**
-   - Render component with props
-   - Assert DOM structure
-   - Test user interactions
-   - Verify state changes
-
-2. **API Tests**
-   - Mock API calls
-   - Test success scenarios
-   - Test error handling
-   - Verify request parameters
-
-3. **Integration Tests**
-   - Test user workflows
-   - Verify multi-step interactions
-   - Test data persistence
-
-## Running Tests
-
-Use [scripts/run-tests.sh](./scripts/run-tests.sh) to execute tests:
-
-```bash
-./scripts/run-tests.sh --coverage --watch
-```
-
-## Examples
-
-See [examples/](./examples/) for complete test examples:
-- [Unit Test Example](./examples/unit-test.js)
-- [Integration Test Example](./examples/integration-test.js)
-```
-
-### Example: GitHub Actions Debugging Skill
-
-```markdown
----
-name: github-actions-debug
-description: Debug GitHub Actions workflow failures by analyzing logs, identifying issues, and suggesting fixes. Use when CI/CD pipelines fail or need optimization.
----
-
-# GitHub Actions Debugging
-
-Debug GitHub Actions workflows systematically:
-
-## Debugging Process
-
-1. **Analyze Workflow File**
-   - Review .github/workflows/*.yml
-   - Check job dependencies
-   - Verify trigger conditions
-
-2. **Examine Logs**
-   - Identify failed steps
-   - Look for error messages
-   - Check environment variables
-
-3. **Common Issues**
-   - Missing secrets
-   - Incorrect paths
-   - Permission issues
-   - Dependency problems
-   - Timeout issues
-
-4. **Generate Fixes**
-   - Provide corrected workflow YAML
-   - Explain what changed and why
-   - Suggest best practices
-
-## Workflow Template
-
-See [workflow-template.yml](./workflow-template.yml) for a production-ready template with:
-- Proper caching
-- Matrix builds
-- Error handling
-- Notifications
-
-## Debugging Scripts
-
-Use [scripts/analyze-logs.sh](./scripts/analyze-logs.sh) to parse workflow logs and identify common patterns.
-```
+**Note:** Stub skills document planned functionality before implementation.
 
 ### Create an Agent Skill
 
@@ -687,6 +727,168 @@ Use [scripts/analyze-logs.sh](./scripts/analyze-logs.sh) to parse workflow logs 
 5. **Test the skill:**
    - Create a prompt that matches skill description
    - Copilot auto-loads skill when relevant
+
+---
+
+## 6. Plan Mode (Preview) 🆕
+
+> **Note:** This feature is in public preview and subject to change.
+
+Plan Mode is GitHub Copilot's agentic issue creation feature that transforms your project ideas into structured epics, features, and tasks. It's the bridge between vision and execution.
+
+### What is Plan Mode?
+
+Plan Mode helps you manage project planning using GitHub Issues with Copilot. You can turn product ideas into structured backlogs with epics, features, and tasks - all through natural language conversation.
+
+### Plan Mode Workflow
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│     Legacy      │────▶│  GHCP reviews   │────▶│    Verifies     │
+│   Application   │     │  and documents  │     │  documentation  │
+│                 │     │    codebase     │     │   complete      │
+└─────────────────┘     └─────────────────┘     └────────┬────────┘
+                                                         │
+┌─────────────────┐     ┌─────────────────┐     ┌────────▼────────┐
+│   Agent mode    │◀────│  GHCP in Plan   │◀────│   Works with    │
+│    follows      │     │  Mode generates │     │   GHCP to       │
+│ plan to implement│     │  plan for PRD   │     │ generate PRD    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+### When to Use Plan Mode
+
+| Scenario | Plan Mode Benefit |
+|----------|-------------------|
+| **New project kickoff** | Turn ideas into structured issues |
+| **Legacy migration** | Break down complex migrations into phases |
+| **Feature planning** | Decompose features into actionable tasks |
+| **Sprint planning** | Generate detailed task breakdowns |
+| **Technical debt** | Organize refactoring into manageable chunks |
+
+### Plan Mode Best Practices
+
+1. **Be Specific in Your Prompt**
+   - Include technology stack
+   - Specify requirements and constraints
+   - Mention team structure if relevant
+
+2. **Iterate on Generated Issues**
+   - Ask Copilot to break down high-level issues
+   - Request improved descriptions with code snippets
+   - Add acceptance criteria and technical details
+
+3. **Use Versioning**
+   - Compare different versions of generated issues
+   - Keep the best aspects from each version
+
+4. **Organize Hierarchically**
+   - Epic → Features → Tasks
+   - Use clear naming conventions
+   - Link related issues appropriately
+
+### Example: Ada to C++ Migration Plan
+
+We've created a complete migration plan using Plan Mode. See the example:
+
+📄 **[Ada to C++ Migration Plan](ada-to-cpp-migration-plan.md)**
+
+This plan demonstrates:
+- **Epic structure** for the overall migration project
+- **Feature breakdown** for each migration phase
+- **Task decomposition** with specific prompts
+- **Pattern mappings** between Ada and C++ constructs
+- **Risk assessment** and timeline estimation
+
+### How to Use Plan Mode
+
+#### Step 1: Start the Conversation
+
+```
+I'm planning to migrate an Ada embedded system to Modern C++. 
+The system has cyclic tasks, protected objects, and strong types.
+Please help me create a structured project plan with epics, features, and tasks.
+```
+
+#### Step 2: Review and Refine
+
+After Copilot generates the initial plan:
+- Click on epics to view details
+- Navigate the issue tree
+- Request breakdowns of high-level items
+
+```
+Can you break down the "Feature: Concurrency Migration" into smaller tasks?
+```
+
+#### Step 3: Improve Descriptions
+
+```
+Can you improve the description for "Task: Migrate Storage protected object"?
+Please include:
+- Technical summary
+- Ada to C++ pattern mapping
+- Implementation steps
+- Code snippets
+- Acceptance criteria
+```
+
+#### Step 4: Create Issues
+
+Once satisfied with the plan:
+1. Review all generated issues
+2. Click "Create all" to create issues in your repository
+3. Assign to team members or Copilot
+
+### Plan Mode + Agents + Skills
+
+Plan Mode works seamlessly with custom agents and skills:
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│                         Plan Mode                              │
+│  Creates structured epics, features, and tasks                 │
+└───────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌───────────────────────────────────────────────────────────────┐
+│                      Custom Agents                             │
+│  @ada-to-cpp-migrator executes specific migration tasks        │
+└───────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌───────────────────────────────────────────────────────────────┐
+│                         Skills                                 │
+│  ada-cpp-migration provides patterns, templates, references    │
+└───────────────────────────────────────────────────────────────┘
+```
+
+### Plan Mode Output Example
+
+```markdown
+## 📋 Epic: Migrate Ada System to C++
+
+### 🎯 Feature 1: Project Analysis
+- Task 1.1: Scan Ada source files
+- Task 1.2: Build dependency graph
+- Task 1.3: Inventory concurrency patterns
+
+### 🎯 Feature 2: Foundation Setup
+- Task 2.1: Create C++ project structure
+- Task 2.2: Implement strong type library
+- Task 2.3: Create task wrapper framework
+
+### 🎯 Feature 3: Type Migration
+- Task 3.1: Migrate HK_Data package
+- Task 3.2: Migrate TTC_Data package
+...
+```
+
+### Further Reading
+
+- [Using GitHub Copilot to create or update issues](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-to-create-issues)
+- [Best practices for using GitHub Copilot to work on tasks](https://docs.github.com/en/copilot/using-github-copilot/best-practices-for-using-github-copilot-to-work-on-tasks)
+- [Asking GitHub Copilot to create a pull request](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-to-create-a-pull-request)
 
 ---
 
@@ -902,29 +1104,411 @@ Walk through creating a complete customization setup:
 
 ---
 
+## 6. Guided Hands-On: Create Steering Docs
+
+### Step 1: Create copilot-instructions.md (3 min)
+
+1. Create `.github/copilot-instructions.md`
+2. Add your project's coding standards:
+
+```markdown
+# Project Coding Standards
+
+## C++ Standards
+- Use C++17
+- No exceptions, use error codes
+- Static allocation only
+- Use volatile for hardware registers
+
+## Documentation
+- Doxygen-style comments
+- Document all public APIs
+```
+
+3. Test: Ask Copilot to generate code and verify it follows your standards
+
+### Step 2: Create a Prompt File (4 min)
+
+1. Create `.github/prompts/add-doxygen.prompt.md`:
+
+```markdown
+---
+description: Add Doxygen documentation to selected code
+name: add-doxygen
+agent: edit
+---
+
+# Add Doxygen Documentation
+
+Add comprehensive Doxygen comments to the selected code:
+- @brief description
+- @param for each parameter with units and range
+- @return description
+- @note for important details
+- @warning for safety-critical information
+```
+
+2. Test: Select a function and type `/add-doxygen`
+
+### Step 3: Create a Custom Agent (4 min)
+
+1. Create `.github/agents/Code-Reviewer.agent.md`:
+
+```markdown
+---
+description: Review code for best practices and issues
+name: Code-Reviewer
+tools: ['search', 'codebase']
+---
+
+# Code Review Agent
+
+Review code for:
+1. RAII compliance
+2. Const correctness
+3. Thread safety
+4. Error handling
+5. Memory management
+
+Provide specific recommendations with code examples.
+```
+
+2. Test: Select the agent and ask it to review a file
+
+### Step 4: Create a Skill (2 min)
+
+1. Create `.github/skills/test-generator/SKILL.md`:
+
+```markdown
+---
+name: test-generator
+description: Generate unit tests for embedded C++ code using doctest framework
+---
+
+# Test Generator Skill
+
+Generate comprehensive unit tests:
+- Normal operation cases
+- Edge cases and boundaries
+- Error conditions
+- Thread-safety tests (if applicable)
+
+Use doctest framework with CHECK() and REQUIRE() macros.
+```
+
+2. Test: Ask "Generate tests for this function" - skill should auto-load
+
+---
+
+## Practice Exercises
+
+### Exercise 1: Create Project-Specific Instructions
+**Goal:** Define coding standards for your project
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Create `.github/copilot-instructions.md`
+2. Add sections for:
+   - Language standards (C++17, etc.)
+   - Memory management rules
+   - Error handling patterns
+   - Documentation requirements
+   - Testing framework
+
+3. Test by asking Copilot to generate a new function
+4. Verify it follows your standards
+
+**Success Criteria:**
+- ✅ Instructions file created
+- ✅ Standards are specific and actionable
+- ✅ Generated code follows standards
+</details>
+
+<details>
+<summary>💡 Solution Template</summary>
+
+```markdown
+# [Project Name] Coding Standards
+
+## Language Standards
+- C++ Version: C++17
+- Style Guide: Google C++ Style
+- Naming: snake_case for functions, PascalCase for classes
+
+## Memory Management
+- [x] Static allocation only
+- [x] No new/delete in production code
+- [x] Use std::array instead of C arrays
+- [x] Fixed-size buffers with bounds checking
+
+## Error Handling
+- [x] Return error codes (enum class)
+- [x] No exceptions
+- [x] Document all error conditions
+- [x] Always check return values
+
+## Documentation
+- [x] Doxygen-style comments
+- [x] @brief, @param, @return required
+- [x] Document thread-safety
+- [x] Include usage examples
+
+## Testing
+- Framework: doctest
+- Coverage goal: 80%
+- Test edge cases and error paths
+```
+</details>
+
+---
+
+### Exercise 2: Build a Reusable Prompt
+**Goal:** Create a prompt file for a common task
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Identify a task you do frequently
+2. Create `.github/prompts/[task-name].prompt.md`
+3. Define:
+   - Description and name
+   - Agent mode (ask/edit/agent)
+   - Required tools
+   - Detailed instructions
+   - Variables for customization
+
+4. Test the prompt with `/[task-name]`
+
+**Success Criteria:**
+- ✅ Prompt file follows correct format
+- ✅ Invokes correctly with `/name`
+- ✅ Produces consistent, high-quality output
+</details>
+
+<details>
+<summary>💡 Solution: Generate HAL Driver Prompt</summary>
+
+```markdown
+---
+description: Generate HAL driver for a peripheral
+name: generate-hal-driver
+argument-hint: PeripheralName (e.g., UART, SPI, I2C)
+agent: agent
+tools: ['edit_files', 'create_file', 'codebase']
+---
+
+# Generate HAL Driver
+
+Create a Hardware Abstraction Layer driver for: ${input:peripheral:PeripheralName}
+
+## Requirements
+- RAII for resource management
+- Error codes, no exceptions
+- Static allocation only
+- Thread-safety documented
+- Hide vendor HAL implementation
+
+## Class Structure
+```cpp
+class ${input:peripheral}Hal {
+public:
+    struct Config { /* user-friendly config */ };
+    explicit ${input:peripheral}Hal(const Config& config);
+    ~${input:peripheral}Hal();
+    
+    // Delete copy, allow move
+    ${input:peripheral}Hal(const ${input:peripheral}Hal&) = delete;
+    ${input:peripheral}Hal& operator=(const ${input:peripheral}Hal&) = delete;
+    ${input:peripheral}Hal(${input:peripheral}Hal&&) = default;
+    ${input:peripheral}Hal& operator=(${input:peripheral}Hal&&) = default;
+    
+    [[nodiscard]] ErrorCode init();
+    // ... peripheral-specific methods
+};
+```
+
+## Output Files
+- Drivers/${input:peripheral}_hal.hpp
+- Drivers/${input:peripheral}_hal.cpp
+```
+</details>
+
+---
+
+### Exercise 3: Create a Specialized Agent
+**Goal:** Design an agent for a specific role
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Choose a specialized role (code reviewer, architect, tester)
+2. Create `.github/agents/[role].agent.md`
+3. Define:
+   - Description and name
+   - Appropriate tools
+   - Specialized knowledge
+   - Constraints and guidelines
+   - Optional handoffs
+
+4. Select the agent and test with relevant prompts
+
+**Success Criteria:**
+- ✅ Agent appears in dropdown
+- ✅ Responds with specialized knowledge
+- ✅ Follows defined constraints
+</details>
+
+<details>
+<summary>💡 Solution: Safety Reviewer Agent</summary>
+
+```markdown
+---
+description: Review code for safety-critical embedded systems
+name: Safety-Reviewer
+tools: ['search', 'codebase', 'usages']
+model: Claude Sonnet 4
+handoffs:
+  - label: Generate Fixes
+    agent: edit
+    prompt: Fix the safety issues identified above.
+    send: false
+---
+
+# Safety-Critical Code Reviewer
+
+You review embedded code for safety-critical systems.
+
+## Safety Checklist
+
+### Memory Safety
+- [ ] No buffer overflows (bounds checking)
+- [ ] No null pointer dereferences
+- [ ] No use-after-free
+- [ ] No memory leaks
+
+### Concurrency Safety
+- [ ] No race conditions
+- [ ] Proper mutex usage
+- [ ] ISR-safe data access
+- [ ] Volatile for shared variables
+
+### Arithmetic Safety
+- [ ] No integer overflow
+- [ ] No division by zero
+- [ ] Proper range checking
+
+### Control Flow Safety
+- [ ] All paths return values
+- [ ] No infinite loops without exit
+- [ ] Proper error handling
+
+## Output Format
+
+For each issue:
+- **Severity:** Critical/High/Medium/Low
+- **Location:** file:line
+- **Issue:** Description
+- **Risk:** What could go wrong
+- **Fix:** Recommended solution
+```
+</details>
+
+---
+
+### Exercise 4: Build a Complete Skill
+**Goal:** Create a skill with bundled resources
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Create `.github/skills/[skill-name]/` directory
+2. Create SKILL.md with:
+   - Name and description
+   - Detailed instructions
+   - References to bundled resources
+
+3. Add supporting files:
+   - Templates in `templates/`
+   - Examples in `examples/`
+   - Scripts in `scripts/` (if applicable)
+
+4. Test: Ask a question that should trigger the skill
+
+**Success Criteria:**
+- ✅ Skill is auto-discovered
+- ✅ Uses bundled resources
+- ✅ Produces comprehensive output
+</details>
+
+<details>
+<summary>💡 Solution: API Documentation Skill</summary>
+
+**Directory structure:**
+```
+.github/skills/api-docs/
+├── SKILL.md
+├── templates/
+│   └── api-doc-template.md
+└── examples/
+    └── sample-api-doc.md
+```
+
+**SKILL.md:**
+```markdown
+---
+name: api-docs
+description: Generate comprehensive API documentation for embedded libraries. 
+Use when documenting public APIs, HAL interfaces, or library functions.
+---
+
+# API Documentation Generator
+
+Generate professional API documentation.
+
+## Documentation Sections
+
+1. **Overview** - What the API does
+2. **Getting Started** - Basic usage example
+3. **API Reference** - All public functions
+4. **Error Handling** - Error codes and recovery
+5. **Thread Safety** - Concurrency considerations
+6. **Examples** - Complete usage examples
+
+## Template
+
+Use [api-doc-template.md](./templates/api-doc-template.md) for consistent formatting.
+
+## Example Output
+
+See [sample-api-doc.md](./examples/sample-api-doc.md) for the expected format.
+```
+</details>
+
+---
+
 ## Quick Reference: Customization Options
 
 ### File Locations
 
-| Type | Workspace Location | User Profile Location |
-|------|-------------------|----------------------|
+| Type | Workspace Location | User Profile |
+|------|-------------------|--------------|
 | Global Instructions | `.github/copilot-instructions.md` | N/A |
 | Conditional Instructions | `.github/instructions/*.instructions.md` | Profile folder |
 | Prompt Files | `.github/prompts/*.prompt.md` | Profile folder |
 | Custom Agents | `.github/agents/*.agent.md` | Profile folder |
-| Agent Skills | `.github/skills/*/SKILL.md` | `~/.copilot/skills/*/SKILL.md` |
+| Agent Skills | `.github/skills/*/SKILL.md` | `~/.copilot/skills/` |
 
 ### When to Use Each
 
 | Use Case | Solution |
 |----------|----------|
 | Project coding standards | `.github/copilot-instructions.md` |
-| Language-specific rules | `*.instructions.md` with `applyTo` glob pattern |
+| Language-specific rules | `*.instructions.md` with `applyTo` glob |
 | Common development tasks | `.prompt.md` files |
 | Specialized personas | `.agent.md` files |
 | Complex workflows with resources | Skills with SKILL.md |
-| Planning workflows | Custom agent with read-only tools + handoffs |
-| Sequential workflows | Custom agents with handoffs |
+| Planning workflows | Agent with read-only tools + handoffs |
 
 ### Variables in Prompt Files
 
@@ -948,6 +1532,64 @@ Walk through creating a complete customization setup:
 | **Terminal** | run_in_terminal, get_terminal_output | Build, test, deployment |
 | **Testing** | runTests, test_failure | Test generation, debugging |
 | **Source control** | changes, get_changed_files | Code review, commit messages |
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Instructions not applying | Verify `github.copilot.chat.codeGeneration.useInstructionFiles` is enabled |
+| Prompt file not found | Check file is in `.github/prompts/` with `.prompt.md` extension |
+| Custom agent not showing | Verify file is in `.github/agents/` with `.agent.md` extension |
+| Skill not loading | Enable `chat.useAgentSkills` setting and verify SKILL.md format |
+| Glob pattern not matching | Test pattern syntax, ensure paths are relative to workspace root |
+| Tool not available | Check tool name spelling, verify MCP server is running |
+| Variables not resolving | Use correct syntax `${variableName}`, check variable is supported |
+| Handoff button not appearing | Verify `handoffs` array in agent frontmatter, check target agent exists |
+| Workspace customization not shared | Ensure files are committed to source control in `.github/` folder |
+| User profile customization not syncing | Enable Settings Sync and include "Prompts and Instructions" |
+
+### Debug Tips
+
+1. **Check which instructions are loaded:**
+   - Look at References section in chat response
+   - Use Chat Debug view to see language model requests
+
+2. **Verify tool availability:**
+   - Use Tools picker in Chat view
+   - Check MCP server status
+
+3. **Test glob patterns:**
+   - Use VS Code's file search with glob pattern
+   - Verify pattern matches intended files
+
+4. **Review agent configuration:**
+   - Configure Custom Agents > hover over agent name
+   - Tooltip shows source location
+
+---
+
+## Additional Resources
+
+### Official Documentation
+- [Custom Instructions Guide](https://code.visualstudio.com/docs/copilot/copilot-customization)
+- [Prompt Files Documentation](https://code.visualstudio.com/docs/copilot/prompt-files)
+- [Custom Agents Documentation](https://code.visualstudio.com/docs/copilot/custom-agents)
+- [Agent Skills Standard](https://agentskills.io)
+
+### Community Resources
+- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) - Community examples
+- [VS Code Copilot Settings](https://code.visualstudio.com/docs/copilot/copilot-settings)
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+
+### Example Repositories
+
+Your workspace already has examples in:
+- `.github/agents/` - Custom agent examples
+- `.github/instructions/` - Instructions file examples
+- `.github/prompts/` - Prompt file examples
+- `.github/skills/` - Agent skill examples
 
 ---
 
@@ -1050,63 +1692,137 @@ Walk through creating a complete customization setup:
 
 ---
 
-## Troubleshooting
+## Frequently Asked Questions
 
-| Issue | Solution |
-|-------|----------|
-| Instructions not applying | Verify `github.copilot.chat.codeGeneration.useInstructionFiles` is enabled |
-| Prompt file not found | Check file is in `.github/prompts/` or user profile prompts folder |
-| Custom agent not showing | Verify file is in `.github/agents/` with `.agent.md` extension |
-| Skill not loading | Enable `chat.useAgentSkills` setting and verify SKILL.md format |
-| Glob pattern not matching | Test pattern syntax, ensure paths are relative to workspace root |
-| Tool not available | Check tool name spelling, verify MCP server is running |
-| Variables not resolving | Use correct syntax `${variableName}`, check variable is supported |
-| Handoff button not appearing | Verify `handoffs` array in agent frontmatter, check target agent exists |
-| Workspace customization not shared | Ensure files are committed to source control in `.github/` folder |
-| User profile customization not syncing | Enable Settings Sync and include "Prompts and Instructions" |
+### Q: How do I share customizations with my team?
 
-### Debug Tips
+**Short Answer:** Commit `.github/` folder files to your repository.
 
-1. **Check which instructions are loaded:**
-   - Look at References section in chat response
-   - Use Chat Debug view to see language model requests
-
-2. **Verify tool availability:**
-   - Use Tools picker in Chat view
-   - Check MCP server status
-
-3. **Test glob patterns:**
-   - Use VS Code's file search with glob pattern
-   - Verify pattern matches intended files
-
-4. **Review agent configuration:**
-   - Configure Custom Agents > hover over agent name
-   - Tooltip shows source location
+**Detailed Explanation:**
+- All files in `.github/` (instructions, prompts, agents, skills) can be version controlled
+- Team members get the same AI behavior when they clone the repo
+- Changes can be reviewed via pull requests
+- Use `~/.copilot/skills/` for personal customizations that shouldn't be shared
 
 ---
 
-## Additional Resources
+### Q: What's the difference between agents and skills?
 
-### Official Documentation
+**Short Answer:** Agents are personas you select; skills are auto-loaded capabilities.
 
-- [Custom Instructions Guide](https://code.visualstudio.com/docs/copilot/copilot-customization)
-- [Prompt Files Documentation](https://code.visualstudio.com/docs/copilot/prompt-files)
-- [Custom Agents Documentation](https://code.visualstudio.com/docs/copilot/custom-agents)
-- [Agent Skills Standard](https://agentskills.io)
+**Detailed Explanation:**
+- **Agents:** You explicitly select from dropdown. Define specialized behavior and tools.
+- **Skills:** Automatically discovered based on prompt content. Bundled with resources.
 
-### Community Resources
+Example:
+- Agent: "Embedded Expert" - always responds with embedded constraints in mind
+- Skill: "MISRA Compliance" - auto-loads when you mention MISRA or code review
 
-- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) - Community examples
-- [VS Code Copilot Settings](https://code.visualstudio.com/docs/copilot/copilot-settings)
-- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+---
 
-### Example Repositories
+### Q: Can I use conditional instructions for different parts of my project?
 
-Your workspace already has examples in:
-- `.github/agents/` - Custom agent examples
-- `.github/instructions/` - Instructions file examples
-- `.github/prompts/` - Prompt file examples
-- `.github/skills/` - Agent skill examples
+**Short Answer:** Yes, use glob patterns in `applyTo` frontmatter.
+
+**Detailed Explanation:**
+Create multiple `.instructions.md` files with different patterns:
+
+```markdown
+---
+applyTo: "Firmware/**/*.cpp"
+---
+# Firmware C++ Rules
+```
+
+```markdown
+---
+applyTo: "Tools/**/*.py"
+---
+# Python Tool Rules
+```
+
+The appropriate instructions load based on which file you're working with.
+
+---
+
+### Q: How do I debug why my custom agent isn't working?
+
+**Short Answer:** Check file location, extension, and frontmatter format.
+
+**Detailed Explanation:**
+1. **Location:** Must be in `.github/agents/` or user profile
+2. **Extension:** Must be `.agent.md`
+3. **Frontmatter:** Must have valid YAML with `name` and `description`
+4. **Tools:** Tool names must match exactly (`edit_files` not `editFiles`)
+5. **Reload:** Sometimes VS Code needs restart to pick up new agents
+
+---
+
+### Q: Can skills reference external URLs or APIs?
+
+**Short Answer:** Skills can include instructions for using `#fetch` tool.
+
+**Detailed Explanation:**
+Skills themselves don't make API calls, but they can:
+1. Include `fetch` in their tool list
+2. Provide instructions for fetching specific URLs
+3. Document API endpoints and expected responses
+4. The agent then uses the fetch tool during execution
+
+---
+
+### Q: How do handoffs work between agents?
+
+**Short Answer:** Handoffs create buttons that switch to another agent with context.
+
+**Detailed Explanation:**
+```yaml
+handoffs:
+  - label: "Start Implementation"    # Button text
+    agent: agent                     # Target agent
+    prompt: "Implement the plan..."  # Prompt sent to target
+    send: false                      # true = auto-send, false = user reviews
+```
+
+When clicked:
+1. Conversation context transfers to the target agent
+2. The specified prompt is queued (or sent automatically)
+3. User can review and modify before sending
+
+---
+
+## Summary: Key Takeaways
+
+### 1. Customization Hierarchy
+- **Instructions:** Always-on coding standards
+- **Prompts:** Reusable task templates (`/name`)
+- **Agents:** Specialized personas (dropdown selection)
+- **Skills:** Auto-loaded capabilities with resources
+
+### 2. File Locations Matter
+- `.github/copilot-instructions.md` - Global, always applied
+- `.github/instructions/*.instructions.md` - Conditional via glob
+- `.github/prompts/*.prompt.md` - Invoked with `/name`
+- `.github/agents/*.agent.md` - Selected from dropdown
+- `.github/skills/*/SKILL.md` - Auto-discovered
+
+### 3. Front-Loading Context Wins
+- Define standards once, apply everywhere
+- Reduce repetition in prompts
+- Ensure consistent team behavior
+- Version control your AI configuration
+
+### 4. Layer Your Customizations
+- Base: Global instructions (coding standards)
+- Task: Prompt files (specific workflows)
+- Role: Custom agents (specialized personas)
+- Capability: Skills (complex tasks with resources)
+
+### 5. Test and Iterate
+- Verify instructions are being applied
+- Test prompts produce expected output
+- Refine agents based on actual usage
+- Share successful patterns with team
 
 ---
 
@@ -1141,5 +1857,5 @@ After completing this session:
 
 ---
 
-*GitHub Copilot Planning & Steering Documents Guide*  
+*Lesson 3: Planning & Steering Documents - GitHub Copilot Customization*  
 *Last Updated: January 2026*

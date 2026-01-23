@@ -33,6 +33,17 @@ public:
         float vel_integrator_limit = INFINITY;   // Vel. integrator clamping value. Infinity to disable.
         float vel_ramp_rate = 1.0f;              // [(turn/s) / s]
         float torque_ramp_rate = 0.01f;          // Nm / sec
+        
+        /**
+         * @brief Deceleration rate when performing a soft stop
+         * 
+         * Controls how quickly the motor decelerates when a soft stop is
+         * commanded. Higher values result in faster stops.
+         * 
+         * Units: [turn/s^2]
+         */
+        float soft_stop_rate = 10.0f;
+        
         bool circular_setpoints = false;
         float circular_setpoint_range = 1.0f;    // Circular range when circular_setpoints is true. [turn]
         uint32_t steps_per_circular_range = 1024;

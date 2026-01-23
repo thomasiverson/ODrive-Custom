@@ -7,6 +7,57 @@
 #include <functional>
 #include <type_traits>
 
+/**
+ * @file callback.hpp
+ * @brief Provides a lightweight callback mechanism for the fibre library.
+ * 
+ * This header defines a type-erased callback class that can wrap function pointers,
+ * lambdas, and member functions. It provides a uniform interface for storing and
+ * invoking callbacks without requiring virtual functions or std::function.
+ * 
+ * @namespace fibre
+ * @namespace fibre::detail
+ * 
+ * @class Callback
+ * @brief A type-erased callback wrapper that stores a function pointer and context.
+ * 
+ * @tparam TRet The return type of the callback
+ * @tparam TArgs The argument types of the callback
+ * 
+ * The Callback class provides:
+ * - Construction from raw function pointers with a void* context
+ * - Construction from functors (lambdas, function objects) - note: functor must outlive the Callback
+ * - Safe invocation with default return value when callback is null
+ * - One-shot invocation via invoke_and_clear()
+ * 
+ * @struct function_traits
+ * @brief Helper struct to extract return type, object type, and argument types from member function pointers.
+ * 
+ * @struct MemberCallback
+ * @brief Helper struct to create Callback objects from member function pointers.
+ * 
+ * @fn make_callback
+ * @brief Creates a Callback from a member function pointer and object instance.
+ * @tparam T The type of the member function pointer
+ * @tparam func The member function pointer value
+ * @param obj Pointer to the object instance
+ * @return A Callback that will invoke the member function on the given object
+ * 
+ * @def MEMBER_CB
+ * @brief Convenience macro to create a callback from an object pointer and member function name.
+ * @param obj Pointer to the object instance
+ * @param func Name of the member function (without parentheses or &)
+ * 
+ * Example usage:
+ * @code
+ * class MyClass {
+ *     void myMethod(int x) { ... }
+ * };
+ * MyClass obj;
+ * auto cb = MEMBER_CB(&obj, myMethod);
+ * cb.invoke(42);
+ * @endcode
+ */
 namespace fibre {
 
 namespace detail {
