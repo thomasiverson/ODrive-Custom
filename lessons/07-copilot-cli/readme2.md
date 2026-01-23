@@ -1,10 +1,10 @@
 # Lesson 7: GitHub Copilot CLI
 
-**Session Duration:** 30 minutes  
+**Session Duration:** 45 minutes  
 **Audience:** Embedded/C++ Developers (Intermediate to Advanced)  
 **Environment:** Windows, VS Code, Terminal  
 **Extensions:** GitHub Copilot, GitHub Copilot CLI  
-**Source Control:** GitHub/Bitbucket
+**Source Control:** GitHub/Bitbucket (Copilot CLI authenticates with GitHub.com regardless of code host)
 
 ---
 
@@ -29,9 +29,24 @@ This lesson teaches you how to use GitHub Copilot CLI to transform natural langu
 
 ---
 
+## Agenda
+
+| Sub-Topic | Focus | Time |
+|-----------|-------|------|
+| Installation | Install gh and gh-copilot extension | 5 min |
+| Authentication | GitHub auth and verification | 3 min |
+| Command Reference | suggest, explain, target types | 7 min |
+| Hands-On Exercises | Generate real commands | 15 min |
+| Standalone CLI (Optional) | Alternative copilot tool | 15 min |
+
+**Total Time:** 45 minutes (30 min core + 15 min optional)
+
+---
+
 ## Table of Contents
 
 - [Overview](#overview)
+- [Agenda](#agenda)
 - [Prerequisites](#prerequisites)
 - [Why Copilot CLI Matters](#why-copilot-cli-matters)
 - [Learning Path](#learning-path)
@@ -39,12 +54,16 @@ This lesson teaches you how to use GitHub Copilot CLI to transform natural langu
 - [Authentication](#2-authentication-3-min)
 - [Command Reference](#3-command-reference-7-min)
 - [Hands-On Exercises](#4-hands-on-exercises-15-min)
+- [Speaker Instructions](#speaker-instructions)
+- [Participant Instructions](#participant-instructions)
 - [Practice Exercises](#practice-exercises)
 - [Quick Reference](#quick-reference)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [Summary: Key Takeaways](#summary-key-takeaways)
+- [Next Steps](#next-steps)
+- [Alternative: Standalone Copilot CLI Tool](#alternative-standalone-copilot-cli-tool)
 
 ---
 
@@ -56,6 +75,11 @@ Before starting this session, ensure you have:
 - ✅ **GitHub Copilot subscription** - Active Copilot license
 - ✅ **Terminal access** - PowerShell, CMD, or Git Bash on Windows
 - ✅ **VS Code** with integrated terminal
+- ✅ **PowerShell 7+** recommended for standalone Copilot CLI (not Windows PowerShell 5.1)
+
+### Important Note
+
+Copilot CLI authenticates with **GitHub.com** to access the AI service. This works regardless of where your code is hosted (Bitbucket, GitLab, local git). You need a GitHub account with an active Copilot subscription.
 
 ### Verify Your Setup
 
@@ -356,6 +380,229 @@ gh copilot explain "git log --oneline --graph --all --decorate"
 
 ---
 
+## Speaker Instructions
+
+### Demo 1: Installation Verification (2 min)
+
+**Show participants how to verify their setup:**
+
+1. **Check GitHub CLI version:**
+   ```powershell
+   gh --version
+   ```
+   > Point out: Need version 2.x or higher
+
+2. **Check authentication status:**
+   ```powershell
+   gh auth status
+   ```
+   > Point out: Should show "Logged in to github.com"
+
+3. **Verify Copilot extension:**
+   ```powershell
+   gh extension list
+   ```
+   > Point out: Should show "github/gh-copilot"
+
+### Demo 2: Basic Suggest Commands (3 min)
+
+**Demonstrate the suggest command flow:**
+
+1. **Simple file listing:**
+   ```powershell
+   gh copilot suggest "list all files in current directory"
+   ```
+   > Walk through: Query → Suggestion → Options (Copy/Execute/Revise)
+
+2. **More specific query:**
+   ```powershell
+   gh copilot suggest "find all C++ source files recursively"
+   ```
+   > Point out: Being specific improves suggestions
+
+3. **With target type:**
+   ```powershell
+   gh copilot suggest -t git "show last 5 commits with file changes"
+   ```
+   > Explain: -t git focuses on Git commands
+
+### Demo 3: Explain Command (2 min)
+
+**Show how to understand complex commands:**
+
+1. **Explain a complex git command:**
+   ```powershell
+   gh copilot explain "git rebase -i HEAD~5"
+   ```
+   > Show: Detailed breakdown of what each part does
+
+2. **Explain build flags:**
+   ```powershell
+   gh copilot explain "gcc -Wall -Werror -O2 -g -o output input.c"
+   ```
+   > Point out: Useful for understanding inherited scripts
+
+### Demo 4: Setting Up Aliases (3 min)
+
+**Show how to create productivity shortcuts:**
+
+1. **Show current profile location:**
+   ```powershell
+   echo $PROFILE
+   ```
+
+2. **Add aliases (show, don't execute):**
+   ```powershell
+   # Add these to your PowerShell profile:
+   function ?? { gh copilot suggest $args }
+   function git? { gh copilot suggest -t git $args }
+   function explain { gh copilot explain $args }
+   ```
+
+3. **Demonstrate usage (if pre-configured):**
+   ```powershell
+   ?? "show disk usage"
+   git? "undo last commit"
+   ```
+
+### Demo 5: Standalone CLI (Optional) (5 min)
+
+**For presenters who want to show the standalone Copilot CLI:**
+
+1. **Launch interactive session:**
+   ```powershell
+   copilot
+   ```
+
+2. **Show slash commands:**
+   ```
+   /help
+   ```
+   > Show available commands
+
+   ```
+   /model
+   ```
+   > Show model options, explain Claude Sonnet 4.5 is default
+
+3. **File references with @ syntax:**
+   ```
+   Explain @src\main.c
+   ```
+   > Key point: `@` lets you focus Copilot on specific files
+
+4. **Shell commands with ! prefix:**
+   ```
+   !git status
+   ```
+   > The `!` prefix runs shell commands directly
+
+5. **Code generation with approval:**
+   ```
+   Create a simple hello world in @src\hello.c
+   ```
+   > Show approval prompt before file changes
+
+---
+
+## Participant Instructions
+
+### Task 1: Verify Installation (2 min)
+
+**Goal:** Confirm Copilot CLI is working
+
+1. Open VS Code integrated terminal (Ctrl+`)
+
+2. Check GitHub CLI:
+   ```powershell
+   gh --version
+   ```
+   Expected: `gh version 2.x.x`
+
+3. Check Copilot extension:
+   ```powershell
+   gh copilot --help
+   ```
+   Expected: Help text for gh copilot commands
+
+4. If extension missing, install:
+   ```powershell
+   gh extension install github/gh-copilot
+   ```
+
+### Task 2: Generate Navigation Commands (3 min)
+
+**Goal:** Use suggest for file navigation
+
+1. Navigate to the workshop repository:
+   ```powershell
+   cd C:\path\to\workshop-repo
+   ```
+
+2. Generate a command to list files:
+   ```powershell
+   gh copilot suggest "list all .cpp files in src-ODrive"
+   ```
+
+3. Review the suggested command
+
+4. Choose "Execute" or "Copy to clipboard"
+
+5. Verify the command worked as expected
+
+### Task 3: Generate Git Commands (3 min)
+
+**Goal:** Use suggest for Git operations
+
+1. Generate a Git status command:
+   ```powershell
+   gh copilot suggest -t git "show short status"
+   ```
+
+2. Generate a log command:
+   ```powershell
+   gh copilot suggest -t git "show last 10 commits as one line each"
+   ```
+
+3. Generate a branch comparison:
+   ```powershell
+   gh copilot suggest -t git "show commits in current branch not in main"
+   ```
+
+### Task 4: Use Explain Command (2 min)
+
+**Goal:** Understand complex commands
+
+1. Explain a Git rebase command:
+   ```powershell
+   gh copilot explain "git rebase -i HEAD~3"
+   ```
+
+2. Explain a grep command:
+   ```powershell
+   gh copilot explain "grep -rn 'volatile' --include='*.cpp'"
+   ```
+
+3. Note how each part is explained
+
+### Task 5: Try Specific Queries (3 min)
+
+**Goal:** Practice being specific for better suggestions
+
+1. **Vague query (see result):**
+   ```powershell
+   gh copilot suggest "delete files"
+   ```
+
+2. **Specific query (compare):**
+   ```powershell
+   gh copilot suggest "delete all .o object files in build directory recursively"
+   ```
+
+3. Note the difference in suggestion quality
+
+---
+
 ## Practice Exercises
 
 ### Exercise 1: Daily Workflow Commands
@@ -565,9 +812,16 @@ gh extension list
 ### GitHub Documentation
 - [Copilot CLI Extension](https://github.com/github/gh-copilot)
 - [GitHub CLI Quickstart](https://docs.github.com/en/github-cli/github-cli/quickstart)
+- [Copilot in the CLI Docs](https://docs.github.com/en/copilot/github-copilot-in-the-cli) — Official documentation
 
 ### Video Tutorials
 - [GitHub Copilot CLI in Action](https://www.youtube.com/watch?v=fHwtrOcLAnI)
+
+### Getting Help
+
+- Check version: `gh copilot --version` or `copilot --version`
+- Official docs: https://docs.github.com/en/copilot/github-copilot-in-the-cli
+- Submit feedback: `/feedback` in the standalone CLI
 
 ---
 
@@ -671,6 +925,324 @@ Use Copilot CLI when working in the terminal; use VS Code Copilot when editing c
 - Commands are suggested, not auto-executed
 - Review before running
 - Use explain for unfamiliar commands
+
+---
+
+## Next Steps
+
+After completing this lesson:
+
+1. **Set up your shell profile** - Add the aliases for `??`, `git?`, and `explain`
+
+2. **Practice daily** - Use Copilot CLI for your routine commands to build muscle memory
+
+3. **Explore more complex queries** - Try multi-step workflows like "build, test, and commit"
+
+4. **Combine with VS Code Copilot** - Use CLI for terminal tasks, VS Code Copilot for code
+
+5. **Create a cheat sheet** - Note your most useful queries for quick reference
+
+6. **Share with team** - Show colleagues how to use explain for knowledge transfer
+
+---
+
+## Alternative: Standalone Copilot CLI Tool
+
+In addition to the `gh copilot` extension, GitHub offers a **standalone Copilot CLI** tool with different features. This section covers installation and usage of this alternative approach.
+
+### Standalone CLI vs gh Extension
+
+| Feature | Standalone `copilot` CLI | `gh copilot` Extension |
+|---------|--------------------------|------------------------|
+| Installation | `winget install GitHub.Copilot` | `gh extension install github/gh-copilot` |
+| Launch | `copilot` (interactive session) | Command-based (`gh copilot suggest`) |
+| File References | `@path\file` syntax | Not available |
+| Shell Commands | `!command` prefix | Generated via suggest |
+| Programmatic Mode | Yes (`copilot -p "prompt"`) | No |
+| Trust Directories | Yes (prompted) | Not applicable |
+
+### Installing Standalone Copilot CLI
+
+**Step 1: Verify PowerShell Version**
+
+```powershell
+$PSVersionTable.PSVersion
+```
+
+If version is less than 6, upgrade:
+```powershell
+winget install Microsoft.PowerShell
+```
+
+Then open PowerShell 7:
+```powershell
+pwsh
+```
+
+**Step 2: Install Copilot CLI**
+
+```powershell
+winget install GitHub.Copilot
+```
+
+Restart PowerShell after installation.
+
+**Step 3: Verify Installation**
+
+```powershell
+copilot --version
+```
+
+**Fallback: Direct Download**
+
+If winget fails, download directly from:  
+https://github.com/github/copilot-cli/releases
+
+1. Download the Windows executable
+2. Extract to a folder (e.g., `C:\Tools\copilot`)
+3. Add folder to PATH
+
+### Authentication & First Launch
+
+**Step 1: Launch Copilot CLI**
+
+```powershell
+cd C:\path\to\workshop-repo
+copilot
+```
+
+**Step 2: Authenticate**
+
+When prompted, run:
+```
+/login
+```
+
+Follow the browser authentication flow:
+1. Copy the one-time code
+2. Open https://github.com/login/device
+3. Enter the code
+4. Authorize GitHub Copilot CLI
+5. Return to terminal — should see "Successfully authenticated!"
+
+**Step 3: Trust the Directory**
+
+When prompted "Do you trust the files in this folder?":
+- **Option 1:** Yes, for this session only
+- **Option 2:** Yes, always trust this folder ← Recommended for your projects
+- **Option 3:** No
+
+### Standalone CLI Command Reference
+
+| Command | Purpose |
+|---------|---------|
+| `copilot` | Start interactive session |
+| `copilot -p "prompt"` | Single prompt, then exit |
+| `/help` | List available slash commands |
+| `/model` | Change AI model |
+| `/compact` | Compress conversation context |
+| `/login` | Authenticate with GitHub |
+| `@path\file` | Reference specific file in prompt |
+| `!command` | Run shell command directly |
+| `--allow-tool 'shell(git)'` | Pre-approve a tool (programmatic mode) |
+| `--deny-tool 'shell(rm)'` | Block a tool (programmatic mode) |
+
+### File References with @ Syntax
+
+Reference specific files in your prompts:
+
+```
+Explain @src\main.c
+```
+
+```
+What functions are defined in @src\utils.c?
+```
+
+```
+Compare @src\config.h and @src\defaults.h - what's different?
+```
+
+> **Key point:** The `@` prefix lets you focus Copilot on specific files
+
+### Shell Commands with ! Prefix
+
+Run shell commands directly:
+
+```
+!git status
+```
+
+```
+!git log --oneline -5
+```
+
+> **Key point:** The `!` prefix runs shell commands directly without approval prompts
+
+### Programmatic Mode
+
+Run a single prompt without interactive session:
+
+```powershell
+copilot -p "How many lines of code are in src\?" --allow-tool 'shell(find)'
+```
+
+```powershell
+copilot -p "List all TODO comments in this project" --allow-tool 'shell(grep)'
+```
+
+**Tool Control Flags:**
+- `--allow-tool 'shell(git)'` — Pre-approve git commands
+- `--deny-tool 'shell(rm)'` — Block dangerous commands
+
+### Standalone CLI Exercises
+
+#### Exercise A: Get Oriented (3 min)
+
+**Goal:** Familiarize yourself with the interactive CLI interface
+
+1. Launch Copilot in the workshop repo:
+   ```powershell
+   cd C:\path\to\workshop-repo
+   copilot
+   ```
+
+2. Explore available commands:
+   ```
+   /help
+   ```
+
+3. Check available models:
+   ```
+   /model
+   ```
+
+4. Ask about the project:
+   ```
+   What is this project and what does it do?
+   ```
+
+**What to observe:** Copilot analyzes the codebase and provides a summary.
+
+---
+
+#### Exercise B: Explore Files (4 min)
+
+**Goal:** Use file references to analyze code
+
+1. Get an explanation of a file:
+   ```
+   Explain @src\main.c
+   ```
+
+2. Find functions in a file:
+   ```
+   What functions are defined in @src\utils.c?
+   ```
+
+3. Compare two files:
+   ```
+   Compare @src\config.h and @src\defaults.h - what are the differences?
+   ```
+
+**What to observe:** Copilot reads the files and provides detailed analysis.
+
+---
+
+#### Exercise C: Generate Code (4 min)
+
+**Goal:** Have Copilot create and modify code
+
+1. Add a function to an existing file:
+   ```
+   Add a function to @src\utils.c that calculates factorial of an integer
+   ```
+   - Review the proposed change
+   - Approve or reject
+
+2. Create a new file:
+   ```
+   Create @src\logger.c with functions for debug, info, and error logging
+   ```
+   - Review the generated code
+   - Approve to create the file
+
+**What to observe:** Copilot always asks for approval before modifying files.
+
+---
+
+#### Exercise D: Git & Shell Integration (4 min)
+
+**Goal:** Use Copilot to run commands and analyze git history
+
+1. Run a git command directly:
+   ```
+   !git log --oneline -5
+   ```
+
+2. Ask Copilot to analyze git history:
+   ```
+   Show me what files changed in the last commit
+   ```
+
+3. Get code statistics:
+   ```
+   How many lines of code are in the src\ directory?
+   ```
+
+**What to observe:** Copilot proposes shell commands and asks for approval before running them.
+
+### Standalone CLI Quick Reference
+
+| You Type | What Happens |
+|----------|--------------|
+| `copilot` | Start interactive session |
+| `/help` | List commands |
+| `/model` | Change AI model |
+| `/compact` | Reduce context size |
+| `/login` | Authenticate |
+| `@file.c` | Reference a file |
+| `!git status` | Run shell command |
+
+### Common Prompts (Standalone CLI)
+
+```
+Explain @filename
+```
+```
+Fix bugs in @filename
+```
+```
+Create @path\newfile.c with...
+```
+```
+Add a function to @filename that...
+```
+```
+Compare @file1 and @file2
+```
+```
+Show me the git history
+```
+```
+What changed in the last commit?
+```
+```
+Generate a Makefile for this project
+```
+
+### Standalone CLI Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| `copilot` not recognized | Restart PowerShell; check if install completed |
+| PowerShell version < 6 | Run: `winget install Microsoft.PowerShell` |
+| winget not found | Install "App Installer" from Microsoft Store |
+| Authentication fails | Verify Copilot subscription at github.com/settings/copilot |
+| "Not authenticated" error | Run `/login` and complete browser flow |
+| Directory not trusted | Approve when prompted, or restart session in trusted folder |
+| Slow responses | Use `/compact` to reduce context size |
+| Wrong file being modified | Review carefully before approving; use full path with `@` |
 
 ---
 
