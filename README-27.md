@@ -1,11 +1,11 @@
-# GitHub Copilot Hackathon for Embedded C++ Developers
+# GitHub Copilot Hackathon for Developers
 
 ## 🎯 Workshop Overview
 
 | Detail | Description |
 |--------|-------------|
-| **Audience** | 100 C++/Embedded Developers (Intermediate to Advanced) |
-| **Languages** | C++, C, Ada for embedded/RTOS development |
+| **Audience** | Combination of 25 C#/C++ Embedded Developers (Intermediate to Advanced) |
+| **Languages** | C++, C# |
 | **Editor** | VS Code with GitHub Copilot |
 | **Schedule** | 9:00 AM - 3:00 PM (Both Days) |
 | **Reference Repos** | [ODrive](https://github.com/odriverobotics/ODrive), [Marlin](https://github.com/MarlinFirmware/Marlin) |
@@ -41,7 +41,7 @@ A hands-on hackathon teaching embedded C++ and C# developers how to leverage Git
 1. **VS Code** with the following extensions:
    - GitHub Copilot
    - GitHub Copilot Chat
-   - C/C++ or C# Extension Packs
+   - C/C++ Extension Pack or C# Dev Kit
 
 2. **GitHub Copilot license** - Active subscription
 
@@ -84,7 +84,7 @@ ODriveHack/
 | 4 | [Agentic Patterns](lessons/04-agentic-patterns/readme.md) | 45 min | Context engineering, decomposition, iterative refinement |
 | 5 | [Best Practices](lessons/05-best-practices/readme.md) | 50 min | RAII, templates, const correctness, embedded patterns |
 | 6 | [Debugging](lessons/06-debugging/readme.md) | 45 min | @terminal, /fix, common bugs |
-| 7 | [Copilot CLI](lessons/07-copilot-cli/readme.md) | 45 min | Using the cli. |
+| 7 | [Copilot CLI](lessons/07-copilot-cli/readme.md) | 45 min | Using the cli and a first look at the GHCP SDK |
 | 8 | [Parallel Agents](lessons/08-parallel-agents/readme.md) | 20 min | Multi-agent workflows, cloud agents |
 
 ### Recording
@@ -100,6 +100,7 @@ ODriveHack/
 - [GitHub Copilot Chat in VS Code](https://learn.microsoft.com/training/modules/use-github-copilot-chat-vs-code/)
 - [C++ Development in VS Code](https://learn.microsoft.com/cpp/build/vscpp-step-0-installation)
 - [GitHub Copilot CLI](https://learn.microsoft.com/training/modules/use-github-copilot-cli/)
+- [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit/)
 
 ### Reference Repositories
 
