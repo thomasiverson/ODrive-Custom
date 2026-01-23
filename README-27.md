@@ -18,7 +18,7 @@ A hands-on hackathon teaching embedded C++ and C# developers how to leverage Git
 
 ### Workshop Goals
 
-- Apply agentic development patterns to real-world C++ codebases
+- Apply agentic development patterns to real-world codebases
 - Modernize legacy embedded code using AI-assisted workflows
 
 ## 🎓 Key Learning Outcomes
@@ -62,7 +62,7 @@ ODriveHack/
 │   ├── 02-basic features/         # Copilot modes and commands
 │   ├── 03-planning/               # Steering documents
 │   ├── 04-agentic-patterns/       # Context engineering
-│   ├── 05-best-practices/         # C++ patterns with Copilot
+│   ├── 05-best-practices/         # Patterns with Copilot
 │   ├── 06-debugging/              # AI-assisted debugging
 │   ├── 07-copilot-cli/            # Command-line interface
 │   ├── 08-parallel-agents/        # Multi-agent workflows
@@ -74,7 +74,7 @@ ODriveHack/
 
 ## 📚 Lesson Overview
 
-### Day 1: GitHub Copilot for Embedded C/C++ Development
+### Day 1: GitHub Copilot
 
 | # | Lesson | Duration | Topics |
 |---|--------|----------|--------|
@@ -82,7 +82,7 @@ ODriveHack/
 | 2 | [Basic Features](lessons/02-basic%20features/readme.md) | 45 min | Chat modes, @workspace, /fix, /explain, inline chat |
 | 3 | [Planning & Steering](lessons/03-planning/readme.md) | 60 min | spec driven development, copilot-instructions.md, prompt files, custom agents, skills |
 | 4 | [Agentic Patterns](lessons/04-agentic-patterns/readme.md) | 45 min | Context engineering, decomposition, iterative refinement |
-| 5 | [C++ Best Practices](lessons/05-best-practices/readme.md) | 50 min | RAII, templates, const correctness, embedded patterns |
+| 5 | [Best Practices](lessons/05-best-practices/readme.md) | 50 min | RAII, templates, const correctness, embedded patterns |
 | 6 | [Debugging](lessons/06-debugging/readme.md) | 45 min | @terminal, /fix, common bugs |
 | 7 | [Copilot CLI](lessons/07-copilot-cli/readme.md) | 45 min | Using the cli. |
 | 8 | [Parallel Agents](lessons/08-parallel-agents/readme.md) | 20 min | Multi-agent workflows, cloud agents |
