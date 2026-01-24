@@ -49,8 +49,7 @@ This lesson teaches you how to customize GitHub Copilot's behavior through plann
 - [**Plan Mode (Preview)**](#6-plan-mode-preview) 🆕
 - [**Spec-Driven Development**](#7-spec-driven-development) 🆕
 - [Speaker Instructions](#speaker-instructions)
-- [Participant Instructions](#participant-instructions)
-- [Practice Exercises](#practice-exercises)
+- [**Hands-On Exercises**](#hands-on-exercises) 🆕
 - [Quick Reference](#quick-reference-customization-options)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
@@ -127,14 +126,15 @@ Front-loading context improves output quality dramatically. Instead of repeatedl
 
 | Sub-Topic | Focus | Time |
 |-----------|-------|------|
-| Why Planning Matters | Front-loading context improves output quality | 5 min |
-| copilot-instructions.md | Repo-level coding standards, constraints, patterns | 8 min |
-| Prompt Files (.prompt.md) | Reusable task templates for common workflows | 8 min |
-| Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 10 min |
-| Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 8 min |
-| **Plan Mode (Preview)** 🆕 | Turn project ideas into structured issues/epics | 8 min |
-| **Spec-Driven Development** 🆕 | Formalized specs for scalable, production-quality AI workflows | 10 min |
-| **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 13 min |
+| Why Planning Matters | Front-loading context improves output quality | 3 min |
+| copilot-instructions.md | Repo-level coding standards, constraints, patterns | 5 min |
+| Prompt Files (.prompt.md) | Reusable task templates for common workflows | 5 min |
+| Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 5 min |
+| Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 5 min |
+| **Plan Mode (Preview)** 🆕 | Turn project ideas into structured issues/epics | 5 min |
+| **Spec-Driven Development** 🆕 | Formalized specs for scalable, production-quality AI workflows | 5 min |
+| **Instructor Demo** | Live demo of all features | 7 min |
+| **[Hands-On Exercises](hands-on-exercises.md)** 🆕 | Participants practice creating customizations | 20 min |
 
 ---
 
@@ -144,14 +144,15 @@ This lesson covers seven key areas. Work through them sequentially for the best 
 
 | Topic | What You'll Learn | Estimated Time |
 |-------|-------------------|----------------|
-| Customization Hierarchy | Where files go and when they're loaded | 3 min |
-| Custom Instructions | Repo-level coding standards | 8 min |
-| Prompt Files | Reusable task templates | 8 min |
-| Custom Agents | Specialized personas | 10 min |
-| Agent Skills | Bundled instructions with resources | 8 min |
-| **Plan Mode (Preview)** 🆕 | Turn ideas into structured issues | 8 min |
-| **Spec-Driven Development** 🆕 | Production-quality specs with SpecKit | 10 min |
-| Guided Hands-On | Build a complete customization setup | 15 min |
+| Customization Hierarchy | Where files go and when they're loaded | 2 min |
+| Custom Instructions | Repo-level coding standards | 5 min |
+| Prompt Files | Reusable task templates | 5 min |
+| Custom Agents | Specialized personas | 5 min |
+| Agent Skills | Bundled instructions with resources | 5 min |
+| **Plan Mode (Preview)** 🆕 | Turn ideas into structured issues | 5 min |
+| **Spec-Driven Development** 🆕 | Production-quality specs with SpecKit | 5 min |
+| **Instructor Demo** | Live demonstration of features | 8 min |
+| **[Hands-On Exercises](hands-on-exercises.md)** 🆕 | Practice creating customizations | 20 min |
 
 ---
 
@@ -1417,458 +1418,40 @@ Walk through creating a complete customization setup:
 
 ---
 
-## Participant Instructions
+## Hands-On Exercises
 
-### Exercise 1: Create Custom Instructions (10 min)
+**Duration:** 20 minutes
 
-**Task:** Create a `.github/copilot-instructions.md` file for your project
+For the hands-on portion of this lesson, participants should follow the dedicated exercises file:
 
-> 💡 **Quick Creation Tip:** Click the **gear icon (⚙️)** in the top-right corner of the Chat view, then select **"Chat Instructions"** → **"New Instruction File"**. After specifying the file name, you can save it directly to your workspace under the `.github` folder.
+📄 **[Hands-On Exercises](hands-on-exercises.md)**
 
-1. Create the file in your workspace:
-   - Click gear icon (⚙️) → **Chat Instructions** → **New Instruction File**
-   - Specify the file name
-   - Save to workspace (`.github` folder)
-2. Add coding standards for your primary language
-3. Add project-specific constraints
-4. Add documentation requirements
+### Exercise Overview
 
-**Example template:**
+| Exercise | Focus | Time |
+|----------|-------|------|
+| 1. Custom Instructions | Create coding standards + test with `#file:` references | 5 min |
+| 2. Prompt Files | Create reusable prompts + test with `/command` | 5 min |
+| 3. Custom Agents | Create specialized persona + test with real code | 5 min |
+| 4. Agent Skills | Create skill folder + test auto-discovery | 5 min |
 
-```markdown
-# Project Coding Standards
+### Key Learning Outcomes
 
-## [Language] Standards
-- Version:
-- Style guide:
-- Key principles:
+After completing the exercises, participants will be able to:
 
-## Project Constraints
-- Memory limits:
-- Performance requirements:
-- Dependencies:
+- ✅ Create custom instructions that auto-apply based on file type
+- ✅ Build reusable prompt files invoked with `/name`
+- ✅ Design specialized agents with checklists and output formats
+- ✅ Package skills with bundled resources
+- ✅ Use `#file:` references to verify instructions are applied
+- ✅ Check the References panel to debug customization issues
 
-## Documentation
-- Comment style:
-- Required documentation:
-```
+### Quick Start
 
-### Exercise 2: Create a Prompt File (10 min)
-
-**Task:** Create a reusable prompt for a common task
-
-> 💡 **Quick Creation Tip:** Click the **gear icon (⚙️)** in the top-right corner of the Chat view, then select **"Prompt Files"** → **"New Prompt File"**. After specifying the file name, you can save it directly to your workspace under the `.github/prompts` folder.
-
-1. In Chat view:
-   - Click gear icon (⚙️) → **Prompt Files** → **New Prompt File**
-   - Specify the file name
-   - Save to workspace (`.github/prompts` folder)
-2. Create a prompt for one of:
-   - Generating unit tests
-   - Creating API endpoints
-   - Generating state machines
-   - Code refactoring
-
-**Test your prompt:**
-- Type `/your-prompt-name` in chat
-- Verify it works as expected
-
-### Exercise 3: Create a Custom Agent (12 min)
-
-**Task:** Create a specialized agent for your domain
-
-> 💡 **Quick Creation Tip:** Click the **gear icon (⚙️)** in the top-right corner of the Chat view, then select **"Custom Agents"** → **"New Custom Agent"**. After specifying the file name, you can save it directly to your workspace under the `.github/agents` folder.
-
-1. In Chat view:
-   - Click gear icon (⚙️) → **Custom Agents** → **New Custom Agent**
-   - Specify the file name
-   - Save to workspace (`.github/agents` folder)
-2. Create an agent for one of:
-   - Code reviewer
-   - Testing specialist
-   - Architecture advisor
-   - Domain expert
-
-**Test your agent:**
-- Select it from agents dropdown
-- Ask a relevant question
-- Verify specialized behavior
-
-### Exercise 4: Create an Agent Skill (10 min)
-
-**Task:** Create a skill with bundled resources
-
-> 📝 **Note:** Unlike Custom Instructions, Prompt Files, and Custom Agents, Skills are created manually as folder structures. There is no gear icon option for skills—you create the folder and files directly in your workspace.
-
-1. Create `.github/skills/my-skill/` directory
-2. Create SKILL.md with instructions
-3. Add at least one resource file:
-   - Example script
-   - Template file
-   - Reference documentation
-
-**Test your skill:**
-- Ask a question that matches the skill description
-- Verify Copilot loads the skill
-- Check that it uses bundled resources
-
----
-
-## Practice Exercises
-
-### Exercise 1: Create Project-Specific Instructions
-**Goal:** Define coding standards for your project
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Create `.github/copilot-instructions.md`
-2. Add sections for:
-   - Language standards (C++17, etc.)
-   - Memory management rules
-   - Error handling patterns
-   - Documentation requirements
-   - Testing framework
-
-3. Test by asking Copilot to generate a new function
-4. Verify it follows your standards
-
-**Success Criteria:**
-- ✅ Instructions file created
-- ✅ Standards are specific and actionable
-- ✅ Generated code follows standards
-</details>
-
-<details>
-<summary>💡 Solution Template</summary>
-
-```markdown
-# [Project Name] Coding Standards
-
-## Language Standards
-- C++ Version: C++17
-- Style Guide: Google C++ Style
-- Naming: snake_case for functions, PascalCase for classes
-
-## Memory Management
-- [x] Static allocation only
-- [x] No new/delete in production code
-- [x] Use std::array instead of C arrays
-- [x] Fixed-size buffers with bounds checking
-
-## Error Handling
-- [x] Return error codes (enum class)
-- [x] No exceptions
-- [x] Document all error conditions
-- [x] Always check return values
-
-## Documentation
-- [x] Doxygen-style comments
-- [x] @brief, @param, @return required
-- [x] Document thread-safety
-- [x] Include usage examples
-
-## Testing
-- Framework: doctest
-- Coverage goal: 80%
-- Test edge cases and error paths
-```
-</details>
-
----
-
-### Exercise 2: Build a Reusable Prompt
-**Goal:** Create a prompt file for a common task
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Identify a task you do frequently
-2. Create `.github/prompts/[task-name].prompt.md`
-3. Define:
-   - Description and name
-   - Agent mode (ask/edit/agent)
-   - Required tools
-   - Detailed instructions
-   - Variables for customization
-
-4. Test the prompt with `/[task-name]`
-
-**Success Criteria:**
-- ✅ Prompt file follows correct format
-- ✅ Invokes correctly with `/name`
-- ✅ Produces consistent, high-quality output
-</details>
-
-<details>
-<summary>💡 Solution: Generate HAL Driver Prompt</summary>
-
-```markdown
----
-description: Generate HAL driver for a peripheral
-name: generate-hal-driver
-argument-hint: PeripheralName (e.g., UART, SPI, I2C)
-agent: agent
-tools: ['edit_files', 'create_file', 'codebase']
----
-
-# Generate HAL Driver
-
-Create a Hardware Abstraction Layer driver for: ${input:peripheral:PeripheralName}
-
-## Requirements
-- RAII for resource management
-- Error codes, no exceptions
-- Static allocation only
-- Thread-safety documented
-- Hide vendor HAL implementation
-
-## Class Structure
-```cpp
-class ${input:peripheral}Hal {
-public:
-    struct Config { /* user-friendly config */ };
-    explicit ${input:peripheral}Hal(const Config& config);
-    ~${input:peripheral}Hal();
-    
-    // Delete copy, allow move
-    ${input:peripheral}Hal(const ${input:peripheral}Hal&) = delete;
-    ${input:peripheral}Hal& operator=(const ${input:peripheral}Hal&) = delete;
-    ${input:peripheral}Hal(${input:peripheral}Hal&&) = default;
-    ${input:peripheral}Hal& operator=(${input:peripheral}Hal&&) = default;
-    
-    [[nodiscard]] ErrorCode init();
-    // ... peripheral-specific methods
-};
-```
-
-## Output Files
-- Drivers/${input:peripheral}_hal.hpp
-- Drivers/${input:peripheral}_hal.cpp
-```
-</details>
-
----
-
-### Exercise 3: Create a Specialized Agent
-**Goal:** Design an agent for a specific role
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Choose a specialized role (code reviewer, architect, tester)
-2. Create `.github/agents/[role].agent.md`
-3. Define:
-   - Description and name
-   - Appropriate tools
-   - Specialized knowledge
-   - Constraints and guidelines
-   - Optional handoffs
-
-4. Select the agent and test with relevant prompts
-
-**Success Criteria:**
-- ✅ Agent appears in dropdown
-- ✅ Responds with specialized knowledge
-- ✅ Follows defined constraints
-</details>
-
-<details>
-<summary>💡 Solution: Safety Reviewer Agent</summary>
-
-```markdown
----
-description: Review code for safety-critical embedded systems
-name: Safety-Reviewer
-tools: ['search', 'codebase', 'usages']
-model: Claude Sonnet 4
-handoffs:
-  - label: Generate Fixes
-    agent: edit
-    prompt: Fix the safety issues identified above.
-    send: false
----
-
-# Safety-Critical Code Reviewer
-
-You review embedded code for safety-critical systems.
-
-## Safety Checklist
-
-### Memory Safety
-- [ ] No buffer overflows (bounds checking)
-- [ ] No null pointer dereferences
-- [ ] No use-after-free
-- [ ] No memory leaks
-
-### Concurrency Safety
-- [ ] No race conditions
-- [ ] Proper mutex usage
-- [ ] ISR-safe data access
-- [ ] Volatile for shared variables
-
-### Arithmetic Safety
-- [ ] No integer overflow
-- [ ] No division by zero
-- [ ] Proper range checking
-
-### Control Flow Safety
-- [ ] All paths return values
-- [ ] No infinite loops without exit
-- [ ] Proper error handling
-
-## Output Format
-
-For each issue:
-- **Severity:** Critical/High/Medium/Low
-- **Location:** file:line
-- **Issue:** Description
-- **Risk:** What could go wrong
-- **Fix:** Recommended solution
-```
-</details>
-
----
-
-### Exercise 4: File-Type-Specific Instructions Demo
-**Goal:** Verify that file-type-specific instructions work automatically
-
-<details>
-<summary>📋 Instructions</summary>
-
-Try these prompts and observe how Copilot applies different coding standards based on file type:
-
-**Header File Prompts** (→ `header_file_rules.instructions.md`):
-```
-Create a header file for a motor controller class
-Create a header file for an SPI driver
-Add a new header file for CAN message parsing
-```
-
-**C++ Source Prompts** (→ `cpp_coding_standards.instructions.md`):
-```
-Create a C++ class to manage encoder readings
-Implement a velocity controller in C++
-Create a .cpp file with a function to calculate motor torque
-```
-
-**Python Prompts** (→ `python_coding_standards.instructions.md`):
-```
-Create a Python script to log motor temperature
-Write a Python class to configure ODrive parameters
-Create a Python function to validate motor configuration
-```
-
-**Success Criteria:**
-- ✅ Header files use `#pragma once`, forward declarations
-- ✅ C++ uses PascalCase classes, camelCase methods, `kConstants`
-- ✅ Python uses snake_case, type hints, Google docstrings
-- ✅ No manual selection needed - automatic by file type
-</details>
-
-<details>
-<summary>💡 Expected Patterns by File Type</summary>
-
-**Header Files (.hpp/.h):**
-| Pattern | Example |
-|---------|---------|
-| Include guard | `#pragma once` (not `#ifndef`) |
-| Forward declarations | `class Motor;` instead of `#include "Motor.hpp"` |
-| No namespace pollution | Never `using namespace std;` |
-| Trivial getters inline | `int getSpeed() const { return speed_; }` |
-| Complex methods declared only | `void calibrate();` (defined in .cpp) |
-
-**C++ Source Files (.cpp/.c):**
-| Pattern | Example |
-|---------|---------|
-| Class names | `PascalCase` → `MotorController` |
-| Method names | `camelCase` → `updatePosition()` |
-| Boolean methods | `is`/`has` prefix → `isRunning()`, `hasError()` |
-| Private members | Trailing `_` → `velocity_`, `position_` |
-| Constants | `kPascalCase` → `kMaxSpeed`, `kTimeout` |
-| Enums | `enum class` with PascalCase values |
-
-**Python Files (.py):**
-| Pattern | Example |
-|---------|---------|
-| Functions | `snake_case` → `read_temperature()` |
-| Classes | `PascalCase` → `TemperatureLogger` |
-| Constants | `UPPER_CASE` → `MAX_TEMPERATURE` |
-| Private members | `_leading_underscore` → `self._value` |
-| Type hints | `def func(x: int) -> float:` |
-| Docstrings | Google-style with `Args:`, `Returns:`, `Raises:` |
-</details>
-
----
-
-### Exercise 5: Build a Complete Skill
-**Goal:** Create a skill with bundled resources
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Create `.github/skills/[skill-name]/` directory
-2. Create SKILL.md with:
-   - Name and description
-   - Detailed instructions
-   - References to bundled resources
-
-3. Add supporting files:
-   - Templates in `templates/`
-   - Examples in `examples/`
-   - Scripts in `scripts/` (if applicable)
-
-4. Test: Ask a question that should trigger the skill
-
-**Success Criteria:**
-- ✅ Skill is auto-discovered
-- ✅ Uses bundled resources
-- ✅ Produces comprehensive output
-</details>
-
-<details>
-<summary>💡 Solution: API Documentation Skill</summary>
-
-**Directory structure:**
-```
-.github/skills/api-docs/
-├── SKILL.md
-├── templates/
-│   └── api-doc-template.md
-└── examples/
-    └── sample-api-doc.md
-```
-
-**SKILL.md:**
-```markdown
----
-name: api-docs
-description: Generate comprehensive API documentation for embedded libraries. 
-Use when documenting public APIs, HAL interfaces, or library functions.
----
-
-# API Documentation Generator
-
-Generate professional API documentation.
-
-## Documentation Sections
-
-1. **Overview** - What the API does
-2. **Getting Started** - Basic usage example
-3. **API Reference** - All public functions
-4. **Error Handling** - Error codes and recovery
-5. **Thread Safety** - Concurrency considerations
-6. **Examples** - Complete usage examples
-
-## Template
-
-Use [api-doc-template.md](./templates/api-doc-template.md) for consistent formatting.
-
-## Example Output
-
-See [sample-api-doc.md](./examples/sample-api-doc.md) for the expected format.
-```
-</details>
+1. Open the [hands-on-exercises.md](hands-on-exercises.md) file
+2. Start with Exercise 1 (Custom Instructions)
+3. Complete as many exercises as time allows
+4. Focus on Exercises 1-2 if short on time
 
 ---
 

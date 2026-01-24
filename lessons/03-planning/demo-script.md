@@ -1,6 +1,6 @@
 # Section 3 Demo Script: Planning & Steering Documents
 
-**Duration:** 60 minutes total (demos ~45 min, hands-on ~15 min)  
+**Duration:** 60 minutes total (instructor demos ~40 min, hands-on ~20 min)  
 **Presenter Notes:** This script provides exact steps and dialogue for live demos
 
 ---
@@ -123,6 +123,50 @@ Create a .cpp file with a function to calculate motor torque
 Write a Python class to configure ODrive parameters
 Create a Python function to validate motor configuration
 ```
+
+**Explicit File References (Shows Instructions in References Panel):**
+
+> 💡 **Tip:** Using `#file:` syntax lets you verify which instructions are applied by checking the References panel!
+
+**C++ with File Reference:**
+```
+Add a method to enable the NVIC interrupt for a GPIO pin in #file:Firmware/Drivers/STM32/stm32_gpio.cpp
+
+The method should:
+- Take priority and sub-priority as parameters
+- Use the get_irq_number() helper function
+- Follow the existing code patterns
+```
+✅ **Check References panel** → `cpp_coding_standards.instructions.md` should appear
+
+**Python with File Reference:**
+```
+Add a function to #file:docs/conf.py that validates all fibre interface files exist before building documentation.
+
+The function should:
+- Check each path in fibre_interface_files list
+- Log warnings for missing files
+- Return True if all files exist, False otherwise
+```
+✅ **Check References panel** → `python_coding_standards.instructions.md` should appear
+
+**Header with File Reference:**
+```
+Add a method declaration to #file:Firmware/Drivers/STM32/stm32_gpio.hpp for configuring alternate function mode.
+
+The method should:
+- Take the alternate function number (0-15) as parameter
+- Return bool for success/failure
+- Be consistent with existing config() method
+```
+✅ **Check References panel** → `header_file_rules.instructions.md` should appear
+
+**Presenter Says:**
+> "Using explicit `#file:` references has two benefits:
+> 1. Copilot understands the existing code patterns in that file
+> 2. You can verify which instructions are being applied by checking References
+>
+> This is great for debugging when code doesn't follow your standards - check if the right instructions are being loaded!"
 
 ---
 
@@ -793,79 +837,27 @@ based on the current patterns and dependencies.
 
 ---
 
-## Hands-On Exercises (15 min)
+## Hands-On Exercises (20 min)
 
 **Presenter Says:**
-> "Your turn! Create your own customization files."
+> "Your turn! Open the [hands-on-exercises.md](hands-on-exercises.md) file and work through the exercises."
 
-### Exercise 1: Create Custom Instructions (5 min)
+📄 **Direct participants to:** [hands-on-exercises.md](hands-on-exercises.md)
 
-**Task:**
-Create `.github/copilot-instructions.md` with:
-- Your team's naming conventions
-- Memory/performance constraints
-- Documentation requirements
-- Error handling patterns
+### Exercise Overview (20 min total)
 
-**Test it:**
-Ask Copilot to generate code and verify it follows your rules.
-
-### Exercise 2: Create a Prompt File (5 min)
-
-**Task:**
-Create `.github/prompts/code-review.prompt.md` that:
-- Defines review criteria
-- Has an output format (✅/❌ checklist)
-- Includes severity ratings
-
-**Test it:**
-Use `/code-review` on a file.
-
-### Exercise 3: Create an Agent (5 min)
-
-**Task:**
-Create `.github/agents/my-expert.agent.md` for your domain:
-- Define the persona
-- List expertise areas
-- Add a checklist
-- Specify output format
-
-**Test it:**
-Select your agent and ask a domain question.
-
-### Exercise 4: File-Type Instructions Demo (5 min)
-
-**Goal:** Verify that file-type-specific instructions work correctly.
-
-**Try these prompts and check that each follows the correct standards:**
-
-| Prompt | Expected Standards Applied |
-|--------|---------------------------|
-| `Create a header file for an SPI driver` | `#pragma once`, forward declarations, no `using namespace` |
-| `Create a C++ class to control motor velocity` | PascalCase class, camelCase methods, `kConstants` |
-| `Create a Python function to validate motor configuration` | snake_case, type hints, Google docstrings |
-| `Implement a velocity controller in C++` | `is`/`has` prefixes, trailing `_` for members |
-| `Write a Python class to configure ODrive parameters` | `UPPER_CASE` constants, `_private` members |
-| `Add a new header file for CAN message parsing` | Forward decls, trivial inline getters |
+| Exercise | Focus | Time |
+|----------|-------|------|
+| 1. Custom Instructions | Create coding standards + test with `#file:` | 5 min |
+| 2. Prompt Files | Create reusable prompts + test with `/command` | 5 min |
+| 3. Custom Agents | Create specialized persona + test with real code | 5 min |
+| 4. Agent Skills | Create skill folder + test auto-discovery | 5 min |
 
 **Presenter Tips:**
-- Point out the `applyTo` pattern in each instruction file
-- Show how the same concept (temperature reading) differs between C++ and Python
-- Highlight that this is automatic - no manual selection needed
-
-### Exercise 5: Try SpecKit (Bonus - 10 min)
-
-**Task:**
-Initialize SpecKit in a new folder and go through the full workflow:
-1. Create a constitution for a simple project (todo app, blog, etc.)
-2. Build a specification
-3. Use Clarify to answer AI questions
-4. Generate a technical plan
-5. Create and review tasks
-
-**Explore:**
-- Try modifying the generated spec.md directly
-- See how changes affect the plan
+- Walk around and help participants who get stuck
+- Point out the `applyTo` pattern in instruction files
+- Remind them to check the References panel
+- Exercises 1-2 are most important if short on time
 
 ---
 
@@ -889,15 +881,15 @@ Initialize SpecKit in a new folder and go through the full workflow:
 - **Skill not discovered:** Ensure SKILL.md exists and description matches
 
 ### Time Management
-- Demo 1 (File-Type Instructions): 10 min
-- Demo 2 (Prompts): 8 min
-- Demo 3 (Agents): 10 min
-- Demo 4 (Skills): 8 min
-- Demo 5 (Plan Mode): 8 min
-- Demo 6 (SpecKit): 10 min
-- Hands-On: 15 min (adjust as needed)
+- Demo 1 (File-Type Instructions): 8 min
+- Demo 2 (Prompts): 6 min
+- Demo 3 (Agents): 8 min
+- Demo 4 (Skills): 6 min
+- Demo 5 (Plan Mode): 6 min
+- Demo 6 (SpecKit): 6 min
+- **Hands-On Exercises**: 20 min
 
-**Total: ~69 min** - Adjust by skipping Demo 4 (Skills) or Demo 6 (SpecKit) for 60-min sessions
+**Total: 60 min** - Skip Demo 4 (Skills) or Demo 6 (SpecKit) if running short
 
 ---
 
