@@ -1348,7 +1348,12 @@ Walk through creating a complete customization setup:
 
 **Task:** Create a `.github/copilot-instructions.md` file for your project
 
-1. Create the file in your workspace
+> 💡 **Quick Creation Tip:** Click the **gear icon (⚙️)** in the top-right corner of the Chat view, then select **"Chat Instructions"** → **"New Instruction File"**. After specifying the file name, you can save it directly to your workspace under the `.github` folder.
+
+1. Create the file in your workspace:
+   - Click gear icon (⚙️) → **Chat Instructions** → **New Instruction File**
+   - Specify the file name
+   - Save to workspace (`.github` folder)
 2. Add coding standards for your primary language
 3. Add project-specific constraints
 4. Add documentation requirements
@@ -1377,9 +1382,13 @@ Walk through creating a complete customization setup:
 
 **Task:** Create a reusable prompt for a common task
 
-1. In Chat view: Configure Chat > Prompt Files > New prompt file
-2. Choose workspace location
-3. Create a prompt for one of:
+> 💡 **Quick Creation Tip:** Click the **gear icon (⚙️)** in the top-right corner of the Chat view, then select **"Prompt Files"** → **"New Prompt File"**. After specifying the file name, you can save it directly to your workspace under the `.github/prompts` folder.
+
+1. In Chat view:
+   - Click gear icon (⚙️) → **Prompt Files** → **New Prompt File**
+   - Specify the file name
+   - Save to workspace (`.github/prompts` folder)
+2. Create a prompt for one of:
    - Generating unit tests
    - Creating API endpoints
    - Generating state machines
@@ -1393,9 +1402,13 @@ Walk through creating a complete customization setup:
 
 **Task:** Create a specialized agent for your domain
 
-1. From agents dropdown: Configure Custom Agents > Create new custom agent
-2. Choose workspace location
-3. Create an agent for one of:
+> 💡 **Quick Creation Tip:** Click the **gear icon (⚙️)** in the top-right corner of the Chat view, then select **"Custom Agents"** → **"New Custom Agent"**. After specifying the file name, you can save it directly to your workspace under the `.github/agents` folder.
+
+1. In Chat view:
+   - Click gear icon (⚙️) → **Custom Agents** → **New Custom Agent**
+   - Specify the file name
+   - Save to workspace (`.github/agents` folder)
+2. Create an agent for one of:
    - Code reviewer
    - Testing specialist
    - Architecture advisor
@@ -1409,6 +1422,8 @@ Walk through creating a complete customization setup:
 ### Exercise 4: Create an Agent Skill (10 min)
 
 **Task:** Create a skill with bundled resources
+
+> 📝 **Note:** Unlike Custom Instructions, Prompt Files, and Custom Agents, Skills are created manually as folder structures. There is no gear icon option for skills—you create the folder and files directly in your workspace.
 
 1. Create `.github/skills/my-skill/` directory
 2. Create SKILL.md with instructions
