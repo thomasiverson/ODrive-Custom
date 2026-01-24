@@ -179,7 +179,7 @@ uint32_t micros(void) {
 }
 
 // @brief: Busy wait delay for given amount of microseconds (us)
-void delay_ust(uint32_t us)
+void delay_us(uint32_t us)
 {
     uint32_t start = micros();
     while (micros() - start < (uint32_t) us) {
