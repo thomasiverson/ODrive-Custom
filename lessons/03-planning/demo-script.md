@@ -723,6 +723,202 @@ Idea → Plan Mode → Refine → Create Issues → Agent Mode → Implementatio
 
 ---
 
+## Demo 7: Spec-Driven Development with SpecKit (10 min)
+
+### Setup
+- Have terminal open in VS Code
+- Ensure Python/UV is installed (for specify CLI)
+- Create a demo folder or use existing project
+
+### Demo Flow
+
+---
+
+### Part A: Understanding Vibe Coding vs. Spec-Driven (2 min)
+
+**Presenter Says:**
+> "Before we dive into SpecKit, let me explain WHY we need it. Many of us start with what's called 'vibe coding' - you have an idea, type a few sentences, and let the AI figure it out."
+
+**Show this comparison:**
+
+| Vibe Coding | Spec-Driven |
+|-------------|-------------|
+| "Build me a website" | Constitution → Spec → Plan → Tasks |
+| AI chooses frameworks | You define the stack |
+| Inconsistent patterns | Enforced conventions |
+| Hard to maintain | Documented decisions |
+
+**Presenter Says:**
+> "Vibe coding is great for prototypes, but production software needs guardrails. SpecKit provides those guardrails - it's essentially formalizing context for AI models so they make the decisions YOU want."
+
+---
+
+### Part B: Install and Initialize SpecKit (2 min)
+
+**Presenter Says:**
+> "SpecKit is just prompts and scripts - no magic. Let me show you how to set it up."
+
+**In Terminal:**
+```powershell
+# Install the specify CLI (using UV - recommended)
+uv tool install spec-kit
+
+# Initialize in a new project folder
+mkdir podcast-demo
+cd podcast-demo
+specify init .
+```
+
+**Presenter Says:**
+> "The CLI asks which agent to use - Copilot, Claude, Gemini, etc. Select 'copilot' and your shell type."
+
+**Show the folder structure created:**
+```
+.github/
+├── .speckit/
+│   ├── agents/
+│   │   └── specify.agent.md
+│   ├── prompts/
+│   │   ├── constitution.prompt.md
+│   │   ├── spec.prompt.md
+│   │   ├── clarify.prompt.md
+│   │   └── plan.prompt.md
+│   └── scripts/
+└── vscode/
+```
+
+**Presenter Says:**
+> "It's just markdown files and scripts. You could manually download these from the GitHub releases - no installation required!"
+
+---
+
+### Part C: Create a Constitution (2 min)
+
+**Presenter Says:**
+> "The constitution is your project's non-negotiable principles. These apply to EVERYTHING."
+
+**In Copilot Chat - notice the suggested action "Constitution":**
+
+**Click it or type:**
+```
+Create a constitution for a static podcast website with minimal dependencies, 
+always deploy to Azure, use Hugo for static generation, and Tailwind CSS for styling.
+```
+
+**Show the generated constitution.md:**
+
+**Presenter Says:**
+> "Look what it created:
+> - **Minimal dependencies** - it's tracking this!
+> - **Static-first architecture** - from my prompt
+> - **Azure deployment** - non-negotiable
+> - **Performance standards** - Lighthouse 90+
+>
+> This is now enforced on everything that follows. It's like `copilot-instructions.md` but specifically for this project's architecture."
+
+---
+
+### Part D: Build Specification & Clarify (2 min)
+
+**Presenter Says:**
+> "Now let's create the functional spec. Notice the handoff suggestion at the bottom of the chat."
+
+**Click "Build Specification" or type:**
+```
+Build a specification for a podcast website with featured episodes and guest profiles
+```
+
+**Wait for spec to generate, then:**
+
+**Presenter Says:**
+> "Good start, but here's my favorite part - Clarify mode. The AI asks ME questions I didn't think to ask!"
+
+**Click "Clarify Spec Requirements":**
+
+**Show the AI asking questions:**
+```
+Q1: How will episode data be managed?
+    A) Admin CMS  B) Static JSON  C) RSS Import
+
+Q2: Expected episode catalog size?
+    A) 10-50  B) 50-100  C) 100-200  D) 200+
+
+Q3: Audio hosting provider?
+    A) Self-hosted  B) Libsyn  C) Transistor
+```
+
+**Answer with single letters:**
+```
+B
+D
+A
+```
+
+**Presenter Says:**
+> "Each answer updates the spec! It's now recording these clarifications and adding them to the specification. This is incredibly powerful - the AI is helping me think through things I would have forgotten."
+
+---
+
+### Part E: Technical Plan & Tasks (2 min)
+
+**Presenter Says:**
+> "Now we add the technical details."
+
+**Click "Build Technical Plan" or type:**
+```
+Build technical plan using Hugo and Tailwind CSS for styling
+```
+
+**Wait for plan to generate, show the artifacts:**
+
+**Presenter Says:**
+> "Look at what it created:
+> - **plan.md** - Architecture, dependencies, folder structure
+> - **data-model.md** - Episode entity with fields
+> - **contracts.md** - API definitions
+> - **research.md** - How to integrate Tailwind with Hugo
+>
+> All this context is now available for implementation!"
+
+**Show the folder structure:**
+```
+specs/
+└── 001-podcast-website/
+    ├── spec.md           # Functional requirements
+    ├── plan.md           # Technical architecture
+    ├── data-model.md     # Entity definitions
+    ├── tasks.md          # Implementation steps
+    └── research.md       # Technical research
+```
+
+**Click "Create Tasks":**
+
+**Presenter Says:**
+> "Finally, we break it into implementable tasks. Notice it identifies MVP tasks separately!"
+
+**Click "Implement" to start execution:**
+
+> "Now it follows the plan to implement each task. The spec, plan, and constitution guide every decision. THIS is spec-driven development!"
+
+---
+
+### Part F: Existing Projects & Multiple Variations (Optional - if time)
+
+**Presenter Says:**
+> "What about existing projects? Point SpecKit at your codebase:"
+
+```
+I have an existing React app. Analyze the project and create a constitution 
+based on the current patterns and dependencies.
+```
+
+> "For new features, create `specs/002-new-feature/` and go through the workflow. 
+> 
+> Even cooler - you can fork a spec into multiple implementations. Same spec, 
+> different technical plans: one with Hugo, one with Next.js. Compare the outcomes!"
+
+---
+
 ## Hands-On Exercises (15 min)
 
 **Presenter Says:**
@@ -763,6 +959,20 @@ Create `.github/agents/my-expert.agent.md` for your domain:
 **Test it:**
 Select your agent and ask a domain question.
 
+### Exercise 4: Try SpecKit (Bonus - 10 min)
+
+**Task:**
+Initialize SpecKit in a new folder and go through the full workflow:
+1. Create a constitution for a simple project (todo app, blog, etc.)
+2. Build a specification
+3. Use Clarify to answer AI questions
+4. Generate a technical plan
+5. Create and review tasks
+
+**Explore:**
+- Try modifying the generated spec.md directly
+- See how changes affect the plan
+
 ---
 
 ## Demo Tips for Presenters
@@ -791,7 +1001,10 @@ Select your agent and ask a domain question.
 - Demo 4 (Agents): 10 min
 - Demo 5 (Skills): 8 min
 - Demo 6 (Plan Mode): 8 min
+- Demo 7 (SpecKit): 10 min
 - Hands-On: 15 min (adjust as needed)
+
+**Total: ~72 min** - Adjust by skipping Demo 5 (Skills) or Demo 7 (SpecKit) for 60-min sessions
 
 ---
 
