@@ -1123,6 +1123,156 @@ For each module, ensure you have tests for:
 
 ---
 
+### Real-World Example: Testing `try_parse_key()`
+
+This example demonstrates using the `/generate-tests` prompt on real ODrive code.
+
+**Source File:** `Firmware/fibre-cpp/channel_discoverer.cpp`
+
+**Function Under Test:**
+```cpp
+bool ChannelDiscoverer::try_parse_key(const char* begin, const char* end, 
+                                       const char* key, 
+                                       const char** val_begin, 
+                                       const char** val_end) {
+    ssize_t keylen = strlen(key);
+    while (begin != end) {
+        const char* next_delim = std::find(begin, end, ',');
+        if ((next_delim - begin >= keylen) && (memcmp(begin, key, keylen) == 0)) {
+            if (next_delim - begin == keylen) {
+                *val_begin = *val_end = next_delim;  // Key with no value
+                return true;
+            } else if (begin[keylen] == '=') {
+                *val_begin = begin + keylen + 1;
+                *val_end = next_delim;
+                return true;
+            }
+        }
+        begin = std::min(next_delim + 1, end);
+    }
+    return false;
+}
+```
+
+**Using `/generate-tests` Prompt:**
+
+1. Select the function in the editor (lines 9-31)
+2. Invoke: `/generate-tests`
+3. Copilot generates comprehensive tests:
+
+```cpp
+// test_channel_discoverer.cpp
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest.h>
+#include <cstring>
+#include <algorithm>
+
+// Function extracted for standalone testing
+bool try_parse_key(const char* begin, const char* end, const char* key, 
+                   const char** val_begin, const char** val_end);
+
+TEST_CASE("try_parse_key - key with value") {
+    const char* input = "name=value";
+    const char* val_begin = nullptr;
+    const char* val_end = nullptr;
+    
+    bool result = try_parse_key(input, input + strlen(input), 
+                                 "name", &val_begin, &val_end);
+    
+    CHECK(result);
+    CHECK_EQ(std::string(val_begin, val_end), "value");
+}
+
+TEST_CASE("try_parse_key - key without value") {
+    const char* input = "flag";
+    const char* val_begin = nullptr;
+    const char* val_end = nullptr;
+    
+    bool result = try_parse_key(input, input + strlen(input), 
+                                 "flag", &val_begin, &val_end);
+    
+    CHECK(result);
+    CHECK_EQ(val_begin, val_end);  // Empty value range
+}
+
+TEST_CASE("try_parse_key - key not found") {
+    const char* input = "other=value";
+    const char* val_begin = nullptr;
+    const char* val_end = nullptr;
+    
+    bool result = try_parse_key(input, input + strlen(input), 
+                                 "name", &val_begin, &val_end);
+    
+    CHECK_FALSE(result);
+}
+
+TEST_CASE("try_parse_key - multiple comma-separated keys") {
+    const char* input = "first=1,second=2,third=3";
+    const char* val_begin = nullptr;
+    const char* val_end = nullptr;
+    
+    SUBCASE("find first key") {
+        CHECK(try_parse_key(input, input + strlen(input), 
+                            "first", &val_begin, &val_end));
+        CHECK_EQ(std::string(val_begin, val_end), "1");
+    }
+    
+    SUBCASE("find middle key") {
+        CHECK(try_parse_key(input, input + strlen(input), 
+                            "second", &val_begin, &val_end));
+        CHECK_EQ(std::string(val_begin, val_end), "2");
+    }
+    
+    SUBCASE("find last key") {
+        CHECK(try_parse_key(input, input + strlen(input), 
+                            "third", &val_begin, &val_end));
+        CHECK_EQ(std::string(val_begin, val_end), "3");
+    }
+}
+
+TEST_CASE("try_parse_key - edge cases") {
+    const char* val_begin = nullptr;
+    const char* val_end = nullptr;
+    
+    SUBCASE("empty string returns false") {
+        const char* input = "";
+        CHECK_FALSE(try_parse_key(input, input, "key", &val_begin, &val_end));
+    }
+    
+    SUBCASE("key as prefix of another - should not match") {
+        const char* input = "prefix_key=value";
+        CHECK_FALSE(try_parse_key(input, input + strlen(input), 
+                                   "prefix", &val_begin, &val_end));
+    }
+}
+```
+
+**Compile and Run:**
+```powershell
+cd Firmware
+$env:PATH = "C:\mingw64\bin;$env:PATH"
+g++ -O3 -std=c++17 -I. -Idoctest -o Tests/test_channel_discoverer.exe Tests/test_channel_discoverer.cpp
+.\Tests\test_channel_discoverer.exe
+```
+
+**Expected Output:**
+```
+[doctest] doctest version is "2.3.7"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:      6 |      6 passed |      0 failed |      0 skipped
+[doctest] assertions:     13 |     13 passed |      0 failed |
+[doctest] Status: SUCCESS!
+```
+
+**Key Learnings:**
+- The prompt analyzed pointer-based string parsing and generated appropriate tests
+- Edge cases like "prefix match" prevent false positives in key matching
+- SUBCASE blocks test multiple scenarios with shared setup
+- No heap allocation - tests work in embedded-constrained environment
+
+---
+
 ## Creating Embedded C++ Personas
 
 ### What is a Persona?
