@@ -65,6 +65,34 @@ Before starting this session, ensure you have:
 - ✅ Active internet connection for AI model access
 - ✅ A GitHub account for authentication
 
+---
+
+## Copilot Feature Availability Across IDEs
+
+GitHub Copilot features vary by IDE. This workshop focuses on **VS Code**, which has the most comprehensive feature set.
+
+![Copilot Features by IDE](copilot-features-by-ide.png)
+
+| Feature | VS Code | Visual Studio | JetBrains | Eclipse | Xcode | Neovim | GitHub.com |
+|---------|:-------:|:-------------:|:---------:|:-------:|:-----:|:------:|:----------:|
+| **Code completion** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Copilot Chat** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Model picker** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Agent mode** | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ |
+| **Edit mode** | ✅ | ✅ | ✅ | | | | |
+| **Extensions** | ✅ | ✅ | ✅ | | | | ✅ |
+| **Code review** | ✅ | ✅ | | | | | ✅ |
+| **Custom instructions** | ✅ | ✅ | | | | | |
+| **MCP Support** | ✅ | ✅ | ✅ | ✅ | ✅ | | ✅ |
+| **PR summaries** | | | | | | | ✅ |
+| **Text completions** | | | | | | | ✅ |
+| **Copilot Spaces** | | | | | | | ✅ |
+| **Copilot Coding Agent** | | | | | | | ✅ |
+
+> **Note:** VS Code and Visual Studio offer the richest Copilot experience with Edit mode, Code review, and Custom instructions support.
+
+---
+
 ### Verify Your Setup
 
 1. **Check VS Code installation:**
