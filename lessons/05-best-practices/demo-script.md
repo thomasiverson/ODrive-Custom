@@ -617,6 +617,167 @@ Unit Tests:
 
 ---
 
+## Demo 5: Test-Driven Development (10 min)
+
+### Setup
+- Have terminal ready to run setup script
+- Open `Firmware/Tests/` folder
+
+### Demo Flow
+
+---
+
+### Part A: Introduction to TDD (2 min)
+
+**Presenter Says:**
+> "Test-Driven Development means writing tests FIRST, then implementing code to make them pass. This sounds backwards, but it leads to better designed, more reliable code."
+
+**Show the Red-Green-Refactor diagram:**
+
+```
+🔴 RED      →  Write failing test
+    ↓
+🟢 GREEN    →  Write minimal code to pass
+    ↓
+🔵 REFACTOR →  Improve code quality
+    ↓
+   [Repeat]
+```
+
+> "In embedded systems, TDD is especially valuable because:
+> - Hardware isn't always available
+> - Bugs are expensive (recall, hardware damage)
+> - Tests document expected behavior"
+
+---
+
+### Part B: Setup Testing Environment (2 min)
+
+**Presenter Says:**
+> "We've created a skill that includes setup scripts. Let me show you."
+
+**In Terminal:**
+```powershell
+cd src-ODrive
+
+# Show the setup script help
+.\.github\skills\cpp-testing\setup-tests.ps1
+```
+
+**Show the output:**
+```
+🧪 ODrive C++ Test Setup
+========================
+
+Usage:
+  .\setup-tests.ps1 -InstallDoctest      # Download doctest framework
+  .\setup-tests.ps1 -CreateTestRunner    # Create test_runner.cpp
+  .\setup-tests.ps1 -BuildTests          # Compile all tests
+  .\setup-tests.ps1 -RunTests            # Run test executable
+```
+
+**Presenter Says:**
+> "The skill bundles everything needed: doctest patterns, setup scripts, mock examples. Copilot auto-discovers this when you mention testing."
+
+---
+
+### Part C: TDD Live Demo - Red Phase (3 min)
+
+**Presenter Says:**
+> "Let's add a velocity limit feature using TDD. First, the FAILING test."
+
+**Create new file:** `Firmware/Tests/test_velocity_limit.cpp`
+
+**In Copilot Chat (Agent Mode), type:**
+```
+Create a failing test for Motor::set_velocity that verifies:
+- Velocities above config_.vel_limit are clamped to the limit
+- Negative velocities beyond -vel_limit are clamped to -vel_limit
+- Velocities within limit are unchanged
+
+Use doctest framework. The test should FAIL because set_velocity doesn't exist yet.
+
+Reference: #file:Firmware/Tests/test_trap_traj.cpp for patterns
+```
+
+**Show the generated test:**
+
+```cpp
+TEST_CASE("Motor::set_velocity - clamps to configured limit") {
+    Motor motor;
+    motor.config_.vel_limit = 100.0f;
+    
+    SUBCASE("above limit - clamped") {
+        motor.set_velocity(150.0f);
+        CHECK_EQ(motor.vel_setpoint_, 100.0f);
+    }
+    
+    SUBCASE("below negative limit - clamped") {
+        motor.set_velocity(-150.0f);
+        CHECK_EQ(motor.vel_setpoint_, -100.0f);
+    }
+    
+    SUBCASE("within limit - unchanged") {
+        motor.set_velocity(50.0f);
+        CHECK_EQ(motor.vel_setpoint_, 50.0f);
+    }
+}
+```
+
+**Presenter Says:**
+> "This is the RED phase. The test documents EXACTLY what we want. It will fail because `set_velocity()` doesn't exist yet - and that's correct!"
+
+---
+
+### Part D: Green Phase (2 min)
+
+**Presenter Says:**
+> "Now we write the MINIMAL code to make it pass."
+
+**In Copilot Chat, type:**
+```
+Implement Motor::set_velocity() to make this test pass:
+
+TEST_CASE("Motor::set_velocity - clamps to configured limit") {
+    // ... test from above
+}
+
+Write the minimal implementation in motor.cpp. Use std::clamp.
+```
+
+**Show the implementation:**
+
+```cpp
+void Motor::set_velocity(float vel) {
+    vel_setpoint_ = std::clamp(vel, -config_.vel_limit, config_.vel_limit);
+}
+```
+
+**Presenter Says:**
+> "That's it! One line. The test passes. GREEN phase complete."
+
+---
+
+### Part E: Using the /generate-tests Prompt (1 min)
+
+**Presenter Says:**
+> "For existing code, use our prompt file to generate comprehensive tests."
+
+**In Copilot Chat, type:**
+```
+/generate-tests for #file:Firmware/MotorControl/encoder.cpp
+
+Focus on:
+- Encoder::get_pos_estimate() accuracy
+- Error handling for sensor failures
+- Edge cases for position rollover
+```
+
+**Presenter Says:**
+> "The prompt automatically includes doctest patterns, embedded constraints, and test categories. It generates a complete test file following our conventions."
+
+---
+
 ## Demo Wrap-Up (2 min)
 
 **Presenter Says:**
@@ -637,6 +798,12 @@ Unit Tests:
 > - State machines with task chains
 > - HAL abstractions
 > - Task synchronization
+>
+> **Test-Driven Development:**
+> - Write tests FIRST (Red)
+> - Implement minimal code (Green)
+> - Refactor with confidence (Blue)
+> - Use /generate-tests prompt and cpp-testing skill
 >
 > **The Copilot Workflow:**
 > 1. **Ask Mode** to analyze and understand patterns

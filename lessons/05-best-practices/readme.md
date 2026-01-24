@@ -907,6 +907,222 @@ Include:
 
 ---
 
+## 6. Test-Driven Development (TDD) Workflow
+
+> **TDD Principle:** Write tests FIRST, then implement code to make them pass.
+
+### Why TDD for Embedded C++?
+
+| Benefit | Description |
+|---------|-------------|
+| **Catch bugs early** | Tests verify behavior before hardware is available |
+| **Design better APIs** | Writing tests first forces you to think about usage |
+| **Safe refactoring** | Tests ensure changes don't break functionality |
+| **Living documentation** | Tests show how code should be used |
+| **Faster debugging** | Isolated tests pinpoint failures quickly |
+
+### The Red-Green-Refactor Cycle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         🔴 RED                               │
+│  1. Write a failing test for the new feature                │
+│  2. Run tests - confirm it fails                            │
+│  3. Commit the test (documents intent)                      │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                        🟢 GREEN                              │
+│  1. Write MINIMAL code to make the test pass                │
+│  2. Run tests - confirm all pass                            │
+│  3. Commit the implementation                               │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       🔵 REFACTOR                            │
+│  1. Improve code quality (naming, structure, patterns)      │
+│  2. Run tests - confirm still passing                       │
+│  3. Commit the refactoring                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Using the `/generate-tests` Prompt
+
+We've created a reusable prompt for generating tests:
+
+**Invoke with:**
+```
+/generate-tests for #file:Firmware/MotorControl/motor.cpp
+
+Focus on:
+- Motor::set_current() - verify clamping behavior
+- Motor::update() - test control loop states
+- Error handling paths
+```
+
+**The prompt automatically includes:**
+- doctest framework patterns
+- Embedded C++ constraints (no heap, no exceptions)
+- Test structure template (Arrange-Act-Assert)
+- Edge case categories
+
+### Using the cpp-testing Skill
+
+The skill auto-activates when you mention testing. Try:
+
+```
+I need unit tests for the velocity controller that:
+- Test normal velocity tracking
+- Verify acceleration limits
+- Check error conditions
+- Mock the encoder dependency
+```
+
+**The skill provides:**
+- doctest assertion macros
+- Mock patterns for hardware
+- Fixture examples
+- Setup scripts
+
+### TDD Example: Adding Velocity Limit
+
+**Step 1: 🔴 RED - Write the failing test first**
+
+```cpp
+// test_motor.cpp
+TEST_CASE("Motor::set_velocity - clamps to configured limit") {
+    Motor motor;
+    motor.config_.vel_limit = 100.0f;
+    
+    motor.set_velocity(150.0f);  // Exceeds limit
+    
+    CHECK_EQ(motor.vel_setpoint_, 100.0f);  // Should clamp
+}
+
+TEST_CASE("Motor::set_velocity - negative clamping") {
+    Motor motor;
+    motor.config_.vel_limit = 100.0f;
+    
+    motor.set_velocity(-150.0f);  // Exceeds negative limit
+    
+    CHECK_EQ(motor.vel_setpoint_, -100.0f);  // Should clamp
+}
+```
+
+**Run tests - they FAIL because set_velocity() doesn't exist yet!**
+
+**Step 2: 🟢 GREEN - Write minimal code to pass**
+
+```cpp
+// motor.cpp
+void Motor::set_velocity(float vel) {
+    vel_setpoint_ = std::clamp(vel, -config_.vel_limit, config_.vel_limit);
+}
+```
+
+**Run tests - they PASS!**
+
+**Step 3: 🔵 REFACTOR - Add more edge cases**
+
+```cpp
+TEST_CASE("Motor::set_velocity - edge cases") {
+    Motor motor;
+    motor.config_.vel_limit = 100.0f;
+    
+    SUBCASE("exactly at limit - unchanged") {
+        motor.set_velocity(100.0f);
+        CHECK_EQ(motor.vel_setpoint_, 100.0f);
+    }
+    
+    SUBCASE("within limit - unchanged") {
+        motor.set_velocity(50.0f);
+        CHECK_EQ(motor.vel_setpoint_, 50.0f);
+    }
+    
+    SUBCASE("zero - unchanged") {
+        motor.set_velocity(0.0f);
+        CHECK_EQ(motor.vel_setpoint_, 0.0f);
+    }
+    
+    SUBCASE("NaN input - handled safely") {
+        motor.set_velocity(std::nanf(""));
+        CHECK_FALSE(std::isnan(motor.vel_setpoint_));  // Should not propagate NaN
+    }
+}
+```
+
+### Setting Up the Test Environment
+
+**Use the setup script:**
+
+```powershell
+# Navigate to ODrive firmware
+cd src-ODrive
+
+# Install doctest (if needed)
+.\.github\skills\cpp-testing\setup-tests.ps1 -InstallDoctest
+
+# Create test runner
+.\.github\skills\cpp-testing\setup-tests.ps1 -CreateTestRunner
+
+# Build all tests
+.\.github\skills\cpp-testing\setup-tests.ps1 -BuildTests
+
+# Run all tests
+.\.github\skills\cpp-testing\setup-tests.ps1 -RunTests
+
+# Run filtered tests
+.\.github\skills\cpp-testing\setup-tests.ps1 -RunTests -Filter "Motor*"
+```
+
+### Mocking Hardware Dependencies
+
+For embedded code, you often need to mock hardware:
+
+```cpp
+// Mock GPIO interface for testing
+class MockGpio : public GpioInterface {
+public:
+    bool state_ = false;
+    int write_count_ = 0;
+    
+    bool read() override { return state_; }
+    void write(bool val) override { 
+        state_ = val; 
+        write_count_++;
+    }
+};
+
+TEST_CASE("LedController toggles GPIO correctly") {
+    MockGpio gpio;
+    LedController led(gpio);
+    
+    led.turn_on();
+    CHECK(gpio.state_ == true);
+    CHECK_EQ(gpio.write_count_, 1);
+    
+    led.turn_off();
+    CHECK(gpio.state_ == false);
+    CHECK_EQ(gpio.write_count_, 2);
+}
+```
+
+### Test Categories Checklist
+
+For each module, ensure you have tests for:
+
+- [ ] **Constructor/Initialization** - Defaults are correct
+- [ ] **Happy Path** - Normal operation works
+- [ ] **Boundary Values** - Min, max, zero, one
+- [ ] **Error Conditions** - Invalid inputs, timeouts
+- [ ] **State Transitions** - State machine coverage
+- [ ] **Edge Cases** - NaN, overflow, empty buffers
+- [ ] **Integration** - Works with dependencies
+
+---
+
 ## Creating Embedded C++ Personas
 
 ### What is a Persona?
