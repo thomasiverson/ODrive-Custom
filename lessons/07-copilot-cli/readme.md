@@ -1,144 +1,104 @@
-# GitHub Copilot CLI Reference Guide
+# Lesson 7: GitHub Copilot CLI
 
 **Session Duration:** 45 minutes  
-**Audience:** C++ Embedded Systems Developers  
-**Environment:** Windows PowerShell 7+  
-**Source Control:** Git (Bitbucket or GitHub remote)
+**Audience:** Embedded/C++ Developers (Intermediate to Advanced)  
+**Environment:** Windows + PowerShell 7+ (also Linux, macOS, WSL)  
+**Focus:** Terminal-based AI agent for embedded development workflows
 
 ---
 
-## Section 2: Presenter Demo Script (20 min)
+## Overview
 
-### Installation Demo (5 min)
+GitHub Copilot CLI is an AI agent that operates directly from your terminal. It can answer questions, write and debug code, interact with GitHub.com, and execute shell commands—all through natural language prompts.
 
-1. **Open PowerShell 7** (not Windows PowerShell 5.1)
-   ```powershell
-   pwsh
-   ```
+**What You'll Learn:**
+- Install and authenticate Copilot CLI
+- Use interactive and programmatic modes
+- Leverage file references, shell integration, and GitHub.com tasks
+- Customize with MCP servers, custom agents, and instructions
 
-2. **Install Copilot CLI**
-   ```powershell
-   winget install GitHub.Copilot
-   ```
+**Key Concepts:**
 
-3. **Verify installation**
-   ```powershell
-   copilot --version
-   ```
-   > If not found, restart PowerShell
-
-### Authentication Demo (3 min)
-
-1. **Navigate to workshop repo**
-   ```powershell
-   cd C:\path\to\workshop-repo
-   ```
-
-2. **Launch Copilot CLI**
-   ```powershell
-   copilot
-   ```
-
-3. **Authenticate**
-   ```
-   /login
-   ```
-   - Copy the device code displayed
-   - Open browser to https://github.com/login/device
-   - Enter the code
-   - Authorize the application
-   - Return to terminal — should see "Successfully authenticated!"
-
-4. **Trust the directory**
-   - When prompted, choose "Yes, always trust this folder"
-
-### Core Features Demo (12 min)
-
-**Slash Commands (2 min):**
-```
-/help
-```
-> Show available commands
-
-```
-/model
-```
-> Show model options, explain Claude Sonnet 4.5 is default
-
-**Basic Prompts (2 min):**
-```
-What files are in this project?
-```
-
-```
-Summarize what this codebase does in 3 sentences.
-```
-
-**File References (3 min):**
-```
-Explain @src\main.c
-```
-
-```
-What functions are defined in @src\utils.c?
-```
-
-```
-Compare @src\config.h and @src\defaults.h - what's different?
-```
-> Key point: `@` lets you focus Copilot on specific files
-
-**Shell Commands (3 min):**
-```
-!git status
-```
-
-```
-!git log --oneline -5
-```
-> The `!` prefix runs shell commands directly
-
-```
-Show me the last 5 commits
-```
-> Copilot proposes the command and asks for approval
-
-**Code Generation (2 min):**
-```
-Create a simple hello world in @src\hello.c
-```
-> Show approval prompt before file changes
-> Demonstrate reviewing the proposed change
+| Concept | Description |
+|---------|-------------|
+| **AI Agent** | Powerful agent that works iteratively on your behalf |
+| **Interactive Mode** | Launch `copilot` for multi-turn conversations |
+| **Programmatic Mode** | Single prompt with `-p` flag for automation |
+| **File References** | Use `@path/file` to focus on specific files |
+| **GitHub.com Integration** | Create PRs, manage issues, work across repos |
+| **MCP Servers** | Extend capabilities with Model Context Protocol |
+| **Custom Agents** | Specialized versions for different tasks |
+| **Directory Trust** | Security feature requiring explicit folder approval |
 
 ---
 
-## Section 3: Installation Guide (For Participants)
+## Agenda (45 min)
 
-### Step 1: Verify PowerShell Version
+| Sub-Topic | Focus | Time |
+|-----------|-------|------|
+| Installation & Auth | Install CLI, authenticate with GitHub | 8 min |
+| Live Demo | Modes, GitHub integration, customization | 12 min |
+| Hands-On Exercises | Participants explore CLI capabilities | 20 min |
+| Wrap-Up | Q&A, troubleshooting | 5 min |
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Agenda (45 min)](#agenda-45-min)
+- [Prerequisites](#prerequisites)
+- [1. Installation](#1-installation)
+- [2. Authentication](#2-authentication)
+- [3. Modes of Use](#3-modes-of-use)
+- [4. Model Selection](#4-model-selection)
+- [5. Key Features Demo](#5-key-features-demo)
+- [6. Customization](#6-customization)
+- [7. Hands-On Exercises](#7-hands-on-exercises)
+- [Quick Reference](#quick-reference)
+- [Troubleshooting](#troubleshooting)
+- [Additional Resources](#additional-resources)
+
+---
+
+## Prerequisites
+
+Before starting this session, ensure you have:
+
+- ✅ **Windows 10/11** with PowerShell 7+ (or Linux/macOS/WSL)
+- ✅ **GitHub account** with Copilot Pro, Pro+, Business, or Enterprise
+- ✅ **Git** installed and configured
+- ✅ **Workshop repository** cloned locally
+
+### Verify Your Environment
 
 ```powershell
+# Check PowerShell version (need 7+)
 $PSVersionTable.PSVersion
+
+# Check Git is available
+git --version
 ```
 
-If version is less than 6, upgrade:
-```powershell
-winget install Microsoft.PowerShell
-```
+---
 
-Then open PowerShell 7:
-```powershell
-pwsh
-```
+## 1. Installation
 
-### Step 2: Install Copilot CLI
+### Windows (winget)
 
 ```powershell
 winget install GitHub.Copilot
 ```
 
-Restart PowerShell after installation.
+> Restart PowerShell after installation
 
-### Step 3: Verify Installation
+### macOS (Homebrew)
+
+```bash
+brew install github/copilot-cli/copilot
+```
+
+### Verify Installation
 
 ```powershell
 copilot --version
@@ -146,254 +106,272 @@ copilot --version
 
 ### Fallback: Direct Download
 
-If winget fails, download directly from:  
-https://github.com/github/copilot-cli/releases
-
-1. Download the Windows executable
-2. Extract to a folder (e.g., `C:\Tools\copilot`)
-3. Add folder to PATH
-
-### Important Note
-
-Copilot CLI authenticates with **GitHub.com** to access the AI service. This works regardless of where your code is hosted (Bitbucket, GitLab, local git). You need a GitHub account with an active Copilot subscription.
+If package manager fails, download from [GitHub Releases](https://github.com/github/copilot-cli/releases)
 
 ---
 
-## Section 4: Authentication & First Launch
+## 2. Authentication
 
-### Step 1: Clone the Workshop Repository
+### Launch & Login
 
 ```powershell
-cd C:\Users\YourName\repos
-git clone <workshop-repo-url>
-cd workshop-repo
+cd C:\path\to\workshop-repo
+copilot
 ```
 
-### Step 2: Launch Copilot CLI
+```
+/login
+```
+
+### Authentication Flow
+
+1. Copy the device code displayed
+2. Open https://github.com/login/device
+3. Enter code and authorize
+4. Return to terminal — "Successfully authenticated!"
+
+### Trust Directory
+
+When prompted, choose **"Yes, always trust this folder"** for your projects.
+
+> **Warning:** Only launch Copilot CLI from directories you trust. Do not launch from your home directory or directories with sensitive data.
+
+---
+
+## 3. Modes of Use
+
+### Interactive Mode (Default)
+
+Start a multi-turn conversation session:
 
 ```powershell
 copilot
 ```
 
-### Step 3: Authenticate
+### Programmatic Mode
 
-When prompted, run:
+Run a single prompt and exit—ideal for scripts and automation:
+
+```powershell
+copilot -p "Show me this week's commits and summarize them" --allow-tool 'shell(git)'
 ```
-/login
+
+### Tool Approval Options
+
+| Option | Description |
+|--------|-------------|
+| `--allow-tool 'shell(git)'` | Allow specific command without approval |
+| `--deny-tool 'shell(rm)'` | Block specific command |
+| `--allow-all-tools` | Allow all tools (use with caution) |
+
+**Example: Allow git but block destructive commands:**
+```powershell
+copilot --allow-all-tools --deny-tool 'shell(rm)' --deny-tool 'shell(git push)'
 ```
-
-Follow the browser authentication flow:
-1. Copy the one-time code
-2. Open https://github.com/login/device
-3. Enter the code
-4. Authorize GitHub Copilot CLI
-5. Return to terminal
-
-### Step 4: Trust the Directory
-
-When prompted "Do you trust the files in this folder?":
-- **Option 1:** Yes, for this session only
-- **Option 2:** Yes, always trust this folder ← Recommended for your projects
-- **Option 3:** No
 
 ---
 
-## Section 5: Command Reference
+## 4. Model Selection
+
+The default model is **Claude Sonnet 4.5**. Change models with:
+
+```
+/model
+```
+
+Select from available models—each shows a multiplier for premium request usage (e.g., `Claude Sonnet 4.5 (1x)`).
+
+---
+
+## 5. Key Features Demo
+
+### Local Tasks
+
+**Code Analysis:**
+```
+Explain @Firmware/MotorControl/motor.cpp
+What functions are in @Firmware/Drivers/spi_driver.c?
+```
+
+**Code Generation:**
+```
+Add a factorial function to @src\utils.c
+Suggest improvements to @Firmware/MotorControl/encoder.cpp
+```
+
+**Git Operations:**
+```
+Commit the changes to this repo
+Show me the last 5 changes made to CHANGELOG.md
+Revert the last commit, leaving changes unstaged
+```
+
+### GitHub.com Integration
+
+**Pull Requests:**
+```
+List my open PRs
+Create a PR that updates the README at https://github.com/owner/repo
+Check the changes in PR https://github.com/owner/repo/pull/123
+Merge all open PRs that I created in owner/repo
+```
+
+**Issues:**
+```
+List all open issues assigned to me in owner/repo
+Raise an improvement issue in owner/repo for the unclosed file handle
+I've been assigned this issue: https://github.com/owner/repo/issues/123. Start working on it.
+```
+
+**GitHub Actions:**
+```
+List any Actions workflows in this repo that add comments to PRs
+Create a workflow that runs eslint on PRs and fails if errors are found
+```
+
+### Shell Integration
+
+```
+!git status
+!git log --oneline -5
+How many lines of code are in src\?
+```
+
+---
+
+## 6. Customization
+
+| Feature | Description |
+|---------|-------------|
+| **Custom Instructions** | Add project context and build/test/validate guidance |
+| **MCP Servers** | Connect to external data sources and tools |
+| **Custom Agents** | Create specialized versions (e.g., frontend expert) |
+| **Hooks** | Execute shell commands at key execution points |
+| **Skills** | Enhance with instructions, scripts, and resources |
+
+### Slash Commands
 
 | Command | Purpose |
 |---------|---------|
-| `copilot` | Start interactive session |
-| `copilot -p "prompt"` | Single prompt, then exit |
-| `/help` | List available slash commands |
+| `/help` | List available commands |
 | `/model` | Change AI model |
 | `/compact` | Compress conversation context |
-| `/login` | Authenticate with GitHub |
-| `@path\file` | Reference specific file in prompt |
-| `!command` | Run shell command directly |
-| `--allow-tool 'shell(git)'` | Pre-approve a tool (programmatic mode) |
-| `--deny-tool 'shell(rm)'` | Block a tool (programmatic mode) |
-
-### Programmatic Mode
-
-Run a single prompt without interactive session:
-
-```powershell
-copilot -p "How many lines of code are in src\?" --allow-tool 'shell(find)'
-```
-
-```powershell
-copilot -p "List all TODO comments in this project" --allow-tool 'shell(grep)'
-```
+| `/mcp` | List configured MCP servers |
+| `/feedback` | Submit feedback, bugs, or feature requests |
 
 ---
 
-## Section 6: Participant Exercises (15 min)
+## 7. Hands-On Exercises
 
 ### Exercise 1: Get Oriented (3 min)
 
-**Goal:** Familiarize yourself with the CLI interface
+```powershell
+cd C:\path\to\workshop-repo
+copilot
+```
 
-1. Launch Copilot in the workshop repo:
-   ```powershell
-   cd C:\path\to\workshop-repo
-   copilot
-   ```
+```
+/help
+/model
+What is this project and what does it do?
+```
 
-2. Explore available commands:
-   ```
-   /help
-   ```
+### Exercise 2: Local Tasks (5 min)
 
-3. Check available models:
-   ```
-   /model
-   ```
+```
+Explain @Firmware/MotorControl/motor.cpp
+What functions are defined in @Firmware/Drivers/spi_driver.c?
+Suggest improvements to @Firmware/Board/v3/board.cpp
+```
 
-4. Ask about the project:
-   ```
-   What is this project and what does it do?
-   ```
+### Exercise 3: GitHub.com Tasks (5 min)
 
-**What to observe:** Copilot analyzes the codebase and provides a summary.
+```
+List my open PRs
+List all open issues assigned to me in <your-repo>
+Check the changes in PR https://github.com/<owner>/<repo>/pull/<number>
+```
 
----
+### Exercise 4: Code Generation (4 min)
 
-### Exercise 2: Explore Files (4 min)
+```
+Add a function to @src\utils.c that calculates factorial
+Create @src\logger.c with debug, info, error logging functions
+```
+> Review and approve/reject proposed changes
 
-**Goal:** Use file references to analyze code
+### Exercise 4: Code Generation (4 min)
 
-1. Get an explanation of a file:
-   ```
-   Explain @src\main.c
-   ```
+```
+Add a function to @src\utils.c that calculates factorial
+Create @src\logger.c with debug, info, error logging functions
+```
+> Review and approve/reject proposed changes
 
-2. Find functions in a file:
-   ```
-   What functions are defined in @src\utils.c?
-   ```
+### Exercise 5: Git Integration (3 min)
 
-3. Compare two files:
-   ```
-   Compare @src\config.h and @src\defaults.h - what are the differences?
-   ```
-
-**What to observe:** Copilot reads the files and provides detailed analysis.
-
----
-
-### Exercise 3: Generate Code (4 min)
-
-**Goal:** Have Copilot create and modify code
-
-1. Add a function to an existing file:
-   ```
-   Add a function to @src\utils.c that calculates factorial of an integer
-   ```
-   - Review the proposed change
-   - Approve or reject
-
-2. Create a new file:
-   ```
-   Create @src\logger.c with functions for debug, info, and error logging
-   ```
-   - Review the generated code
-   - Approve to create the file
-
-**What to observe:** Copilot always asks for approval before modifying files.
+```
+!git log --oneline -5
+Show me what files changed in the last commit
+Commit the staged changes with a descriptive message
+```
 
 ---
 
-### Exercise 4: Git & Shell Integration (4 min)
-
-**Goal:** Use Copilot to run commands and analyze git history
-
-1. Run a git command directly:
-   ```
-   !git log --oneline -5
-   ```
-
-2. Ask Copilot to analyze git history:
-   ```
-   Show me what files changed in the last commit
-   ```
-
-3. Get code statistics:
-   ```
-   How many lines of code are in the src\ directory?
-   ```
-
-**What to observe:** Copilot proposes shell commands and asks for approval before running them.
-
----
-
-## Section 7: Quick Reference Card
+## Quick Reference
 
 ### Essential Commands
 
 | You Type | What Happens |
 |----------|--------------|
 | `copilot` | Start interactive session |
+| `copilot -p "prompt"` | Programmatic mode (single prompt) |
 | `/help` | List commands |
-| `/model` | Change AI model |
+| `/model` | Change AI model (default: Claude Sonnet 4.5) |
 | `/compact` | Reduce context size |
-| `/login` | Authenticate |
+| `/mcp` | List MCP servers |
 | `@file.c` | Reference a file |
 | `!git status` | Run shell command |
 
 ### Common Prompts
 
-```
-Explain @filename
-```
-```
-Fix bugs in @filename
-```
-```
-Create @path\newfile.c with...
-```
-```
-Add a function to @filename that...
-```
-```
-Compare @file1 and @file2
-```
-```
-Show me the git history
-```
-```
-What changed in the last commit?
-```
-```
-Generate a Makefile for this project
-```
-
-### Programmatic Mode
-
-```powershell
-copilot -p "your prompt here" --allow-tool 'shell(git)'
-```
+| Prompt | Use Case |
+|--------|----------|
+| `Explain @filename` | Understand code |
+| `Suggest improvements to @filename` | Code review |
+| `Add a function to @filename that...` | Code generation |
+| `List my open PRs` | GitHub.com integration |
+| `Create a PR that...` | Automated PR creation |
+| `Commit the changes` | Git operations |
 
 ---
 
-## Section 8: Troubleshooting
+## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| `copilot` not recognized | Restart PowerShell; check if install completed |
-| PowerShell version < 6 | Run: `winget install Microsoft.PowerShell` |
+| `copilot` not recognized | Restart PowerShell |
+| PowerShell version < 7 | `winget install Microsoft.PowerShell` |
 | winget not found | Install "App Installer" from Microsoft Store |
-| Authentication fails | Verify Copilot subscription at github.com/settings/copilot |
-| "Not authenticated" error | Run `/login` and complete browser flow |
-| Directory not trusted | Approve when prompted, or restart session in trusted folder |
-| Slow responses | Use `/compact` to reduce context size |
-| Wrong file being modified | Review carefully before approving; use full path with `@` |
-
-### Getting Help
-
-- Official docs: https://docs.github.com/en/copilot/github-copilot-in-the-cli
-- Check version: `copilot --version`
-- Submit feedback: `/feedback` in the CLI
+| Authentication fails | Verify subscription at github.com/settings/copilot |
+| Slow responses | Use `/compact` to reduce context |
+| Tool not approved | Use `--allow-tool` or approve when prompted |
 
 ---
 
-*GitHub Copilot CLI Reference Guide*
+## Additional Resources
+
+### Microsoft Learn Documentation
+
+| Resource | Description |
+|----------|-------------|
+| [GitHub Copilot CLI](https://learn.microsoft.com/training/modules/use-github-copilot-cli/) | Official CLI training module |
+| [Get started with GitHub Copilot](https://learn.microsoft.com/training/modules/get-started-github-copilot-visual-studio-code/) | Copilot fundamentals |
+| [GitHub Copilot Chat in VS Code](https://learn.microsoft.com/training/modules/use-github-copilot-chat-vs-code/) | Chat interface patterns |
+
+### Official Documentation
+
+- [About GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli) - Comprehensive feature overview
+- [Installing GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli) - Installation guide
+- [Using GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli) - Usage patterns
+- [Copilot Subscription](https://github.com/settings/copilot) - Manage your subscription
