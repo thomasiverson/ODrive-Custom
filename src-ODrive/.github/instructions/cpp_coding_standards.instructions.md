@@ -1,7 +1,6 @@
 ---
-name: 'C++ Coding Practices'
-description: 'C++ coding standards, formatting rules, and modern best practices for firmware development.'
 applyTo: '**/*.{cpp,c,hpp,h,cc}'
+description: 'C++ coding standards for ODrive firmware. Apply when writing, reviewing, or discussing C++, C, or header files (.cpp, .c, .hpp, .h, .cc).'
 ---
 
 # C++ Coding Practices and Guidelines

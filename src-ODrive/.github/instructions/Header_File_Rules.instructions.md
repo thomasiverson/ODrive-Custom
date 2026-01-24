@@ -1,7 +1,6 @@
 ---
-name: 'Header File Rules'
-description: 'Guidelines for C++ header files: includes, pragmas, and structure.'
 applyTo: '**/*.{h,hpp}'
+description: 'Header file rules for C/C++ headers. Apply when creating or reviewing header files (.h, .hpp).'
 ---
 
 # Header File Rules

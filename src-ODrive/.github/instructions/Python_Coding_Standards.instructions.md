@@ -1,7 +1,6 @@
 ---
-name: 'Python Coding Standards'
-description: 'Python coding standards, PEP 8 compliance, and testing guidelines for ODrive tools.'
 applyTo: '**/*.py'
+description: 'Python coding standards for ODrive tools and scripts. Apply when writing, reviewing, or discussing Python files (.py).'
 ---
 
 # Python Coding Standards
