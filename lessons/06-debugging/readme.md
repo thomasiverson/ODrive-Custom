@@ -273,13 +273,13 @@ Which header is missing?
 
 **Error Message:**
 ```
-[ tup ] motor.cpp:234:error: 'motor_current_limit' was not declared in this scope
+[ tup ] motor.cpp:514:error: 'motor_current_limit' was not declared in this scope
 [ tup ] Build failed
 ```
 
 **💬 Chat Mode Prompt:**
 ```
-@terminal shows compile error: 'motor_current_limit' not declared in motor.cpp:234
+@terminal shows compile error: 'motor_current_limit' not declared in motor.cpp:514
 
 Context: I'm in the update() method trying to limit phase current.
 What's the correct variable name and where is it defined?
@@ -294,7 +294,7 @@ the correct member variable is:
 
 Not 'motor_current_limit'. The current limit is accessed through the config struct.
 
-Fix in motor.cpp line 234:
+Fix in motor.cpp line 514:
     float Iq_limit = motor_.config_.current_lim;
 
 The config struct is defined in motor.hpp around line 45.
@@ -304,7 +304,7 @@ The config struct is defined in motor.hpp around line 45.
 
 **1. Provide Context**
 ```
-Good: "@terminal shows error at motor.cpp:234. 
+Good: "@terminal shows error at motor.cpp:514. 
        I'm trying to access the current limit configuration."
 
 Bad:  "@terminal fix this"
