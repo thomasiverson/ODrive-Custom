@@ -17,8 +17,8 @@
 **Presenter Says:**
 > "Let me show you how Copilot automatically applies different coding standards based on file type. We have three instruction files set up:
 > - `cpp_coding_standards.instructions.md` → for `.cpp` files
-> - `Header_File_Rules.instructions.md` → for `.hpp`/`.h` files  
-> - `Python_Coding_Standards.instructions.md` → for `.py` files
+> - `header_file_rules.instructions.md` → for `.hpp`/`.h` files  
+> - `python_coding_standards.instructions.md` → for `.py` files
 >
 > Watch how the same concept produces different code styles depending on the file type requested."
 
@@ -31,7 +31,7 @@
 Create a header file for a motor controller class
 ```
 
-**Expected Output - Copilot follows `Header_File_Rules.instructions.md`:**
+**Expected Output - Copilot follows `header_file_rules.instructions.md`:**
 
 **Presenter Says:**
 > "Notice these patterns from our header rules:
@@ -70,7 +70,7 @@ Create a C++ class to manage encoder readings
 Create a Python script to log motor temperature
 ```
 
-**Expected Output - Copilot follows `Python_Coding_Standards.instructions.md`:**
+**Expected Output - Copilot follows `python_coding_standards.instructions.md`:**
 
 **Presenter Says:**
 > "Now Python standards are applied:
@@ -89,9 +89,9 @@ Create a Python script to log motor temperature
 
 | File Extension | Instruction File Triggered | Key Rules Applied |
 |----------------|---------------------------|------------------|
-| `*.hpp`, `*.h` | `Header_File_Rules.instructions.md` | `#pragma once`, forward decls, no `using namespace` |
+| `*.hpp`, `*.h` | `header_file_rules.instructions.md` | `#pragma once`, forward decls, no `using namespace` |
 | `*.cpp`, `*.c` | `cpp_coding_standards.instructions.md` | PascalCase classes, camelCase methods, `kConstants` |
-| `*.py` | `Python_Coding_Standards.instructions.md` | snake_case, type hints, Google docstrings |
+| `*.py` | `python_coding_standards.instructions.md` | snake_case, type hints, Google docstrings |
 
 **Presenter Says:**
 > "The `applyTo` glob pattern in each instruction file controls this:

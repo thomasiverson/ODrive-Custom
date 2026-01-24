@@ -274,7 +274,7 @@ description: Embedded C/C++ coding standards
 
 Use these prompts to see how Copilot automatically applies different coding standards based on file type:
 
-#### Header File Prompts (.hpp/.h) → `Header_File_Rules.instructions.md`
+#### Header File Prompts (.hpp/.h) → `header_file_rules.instructions.md`
 
 | Prompt | Expected Patterns |
 |--------|-------------------|
@@ -308,7 +308,7 @@ Use these prompts to see how Copilot automatically applies different coding stan
 
 ---
 
-#### Python Prompts (.py) → `Python_Coding_Standards.instructions.md`
+#### Python Prompts (.py) → `python_coding_standards.instructions.md`
 
 | Prompt | Expected Patterns |
 |--------|-------------------|
@@ -1738,7 +1738,7 @@ For each issue:
 
 Try these prompts and observe how Copilot applies different coding standards based on file type:
 
-**Header File Prompts** (→ `Header_File_Rules.instructions.md`):
+**Header File Prompts** (→ `header_file_rules.instructions.md`):
 ```
 Create a header file for a motor controller class
 Create a header file for an SPI driver
@@ -1752,7 +1752,7 @@ Implement a velocity controller in C++
 Create a .cpp file with a function to calculate motor torque
 ```
 
-**Python Prompts** (→ `Python_Coding_Standards.instructions.md`):
+**Python Prompts** (→ `python_coding_standards.instructions.md`):
 ```
 Create a Python script to log motor temperature
 Write a Python class to configure ODrive parameters
