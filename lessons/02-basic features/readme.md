@@ -507,6 +507,8 @@ Agent Mode can make coordinated changes across multiple files:
 - **Agent Mode:**
   - Try: "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
 
+> **💡 Tip:** When referencing files in your prompts, you must manually type `#file:` followed by the filename (e.g., `#file:motor.cpp`). This tells GitHub Copilot to include that file's content as context. The `#file:` prefix won't auto-complete—you need to type it yourself to get file context in your prompt.
+
 ### 2. Try Chat Participants & Slash Commands
 
 #### Try Chat Participants:
