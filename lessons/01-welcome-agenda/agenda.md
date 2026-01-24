@@ -58,7 +58,8 @@
 | Embedded C++ Specifics | Static allocation, no exceptions, ISR handlers, volatile correctness | 12 min |
 | RTOS & Hardware Patterns | State machines, HAL abstractions, task synchronization, peripheral drivers | 10 min |
 | **Hands-On:** Generate C++ Components | Create embedded patterns with Copilot (LED driver, state machine) | 16 min |
-TODO: **Don't forget unit testing!**
+
+> **Includes:** Unit testing with `/tests` command, doctest framework, mocking, TDD workflow, `[[nodiscard]]`, `constexpr`, strong types
 
 > **For Ada developers:** Examples translate to Ada tasking, package design, and contract programming
 
