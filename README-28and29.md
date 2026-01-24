@@ -23,6 +23,12 @@ A hands-on hackathon teaching embedded C++ developers how to leverage GitHub Cop
 - Apply agentic development patterns to real-world C++ codebases
 - Modernize legacy embedded code using AI-assisted workflows
 
+### We Will Not Cover
+
+- Copilot usage statistics and satisfaction insights
+- Customer success case studies
+- Enterprise and organization administrator interfaces
+
 ## 🎓 Key Learning Outcomes
 
 ### Copilot Features

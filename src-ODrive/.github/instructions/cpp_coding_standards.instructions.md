@@ -1,7 +1,6 @@
 ---
-name: 'C++ Coding Practices'
-description: 'C++ coding standards, formatting rules, and modern best practices for firmware development.'
 applyTo: '**/*.{cpp,c,hpp,h,cc}'
+description: 'C++ coding standards for ODrive firmware. Apply when writing, reviewing, or discussing C++, C, or header files (.cpp, .c, .hpp, .h, .cc).'
 ---
 
 # C++ Coding Practices and Guidelines
@@ -522,6 +521,28 @@ public:
 };
 ```
 
+### Use [[nodiscard]] for Return Values
+Mark functions with `[[nodiscard]]` when ignoring the return value is likely a bug.
+
+```cpp
+// ✅ GOOD - Prevents ignoring important return values
+class Motor {
+public:
+    [[nodiscard]] bool initialize();      // Must check success
+    [[nodiscard]] float getSpeed() const; // Getter should be used
+    [[nodiscard]] ErrorCode setSpeed(float speed); // Error must be handled
+    
+    void update();  // No return - no [[nodiscard]] needed
+};
+
+// Usage
+if (!motor.initialize()) {  // Compiler warns if unchecked
+    handleError();
+}
+
+motor.getSpeed();  // Compiler warning: return value ignored
+```
+
 ---
 
 ## Code Formatting
@@ -578,8 +599,8 @@ void function()
 ```
 
 ### Line Length
-- **Maximum 100 characters** per line
-- Break long lines logically
+- **Maximum 120 characters** per line (aligned with project-wide standard)
+- Break long lines logically at operators or after commas
 
 ```cpp
 // ✅ GOOD - Readable line breaks

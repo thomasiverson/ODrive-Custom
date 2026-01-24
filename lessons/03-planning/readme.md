@@ -81,7 +81,7 @@ Before starting this session, ensure you have:
    - Open VS Code Settings (Ctrl+,)
    - Make sure custom instructions is enabled
    ![alt text](image.png)
-   - Search for `chat.useAgentSkills` and enable it
+   - Search for `chat.useAgentSkills` and enable it for agent skills.
 
 3. **Test basic functionality:**
    - Open Chat view (Ctrl+Alt+I)
@@ -267,6 +267,81 @@ description: Embedded C/C++ coding standards
 - Use volatile for hardware registers
 - Follow MISRA C guidelines where applicable
 ```
+
+---
+
+### Try It: File-Type-Specific Instructions Demo
+
+Use these prompts to see how Copilot automatically applies different coding standards based on file type:
+
+#### Header File Prompts (.hpp/.h) → `header_file_rules.instructions.md`
+
+| Prompt | Expected Patterns |
+|--------|-------------------|
+| `Create a header file for a motor controller class` | `#pragma once`, forward declarations |
+| `Create a header file for an SPI driver` | No `using namespace`, trivial getters inline |
+| `Add a new header file for CAN message parsing` | Complex methods declared only (not defined) |
+
+**What to look for:**
+- ✅ Uses `#pragma once` (not old-style `#ifndef` guards)
+- ✅ Forward declarations instead of heavy includes
+- ✅ No `using namespace` in header scope
+- ✅ Trivial getters inline, complex methods declared only
+
+---
+
+#### C++ Source Prompts (.cpp) → `cpp_coding_standards.instructions.md`
+
+| Prompt | Expected Patterns |
+|--------|-------------------|
+| `Create a C++ class to manage encoder readings` | PascalCase class, camelCase methods |
+| `Implement a velocity controller in C++` | `is`/`has` prefixes, `kConstants` |
+| `Create a .cpp file with a function to calculate motor torque` | Trailing `_` for private members |
+
+**What to look for:**
+- ✅ `PascalCase` for class names (`EncoderManager`, `VelocityController`)
+- ✅ `camelCase` for methods (`getPosition()`, `calculateTorque()`)
+- ✅ `is`/`has` prefixes for booleans (`isCalibrated()`, `hasError()`)
+- ✅ Trailing underscore for private members (`position_`, `velocity_`)
+- ✅ `kPascalCase` for constants (`kMaxSpeed`, `kDefaultTimeout`)
+- ✅ `enum class` with PascalCase values
+
+---
+
+#### Python Prompts (.py) → `python_coding_standards.instructions.md`
+
+| Prompt | Expected Patterns |
+|--------|-------------------|
+| `Create a Python script to log motor temperature` | snake_case, type hints, docstrings |
+| `Write a Python class to configure ODrive parameters` | `UPPER_CASE` constants, `_private` |
+| `Create a Python function to validate motor configuration` | Google-style docstrings |
+
+**What to look for:**
+- ✅ `snake_case` for functions (`read_temperature()`, `configure_axis()`)
+- ✅ `PascalCase` for classes (`TemperatureLogger`, `MotorConfig`)
+- ✅ `UPPER_CASE` for constants (`MAX_TEMPERATURE`, `DEFAULT_INTERVAL`)
+- ✅ Type hints on all parameters and returns (`def read_temp() -> float:`)
+- ✅ Google-style docstrings with `Args:`, `Returns:`, `Raises:`
+- ✅ `_leading_underscore` for private members
+
+---
+
+#### How It Works: The `applyTo` Pattern
+
+Each instruction file contains a glob pattern that controls when it's loaded:
+
+```yaml
+# Header rules - loaded for .h and .hpp files
+applyTo: '**/*.{h,hpp}'
+
+# C++ rules - loaded for .cpp, .c, .cc files  
+applyTo: '**/*.{cpp,c,cc}'
+
+# Python rules - loaded for .py files
+applyTo: '**/*.py'
+```
+
+**This is automatic!** You don't need to specify which rules to use - Copilot detects the file type and loads the appropriate instructions.
 
 ---
 
@@ -1655,7 +1730,78 @@ For each issue:
 
 ---
 
-### Exercise 4: Build a Complete Skill
+### Exercise 4: File-Type-Specific Instructions Demo
+**Goal:** Verify that file-type-specific instructions work automatically
+
+<details>
+<summary>📋 Instructions</summary>
+
+Try these prompts and observe how Copilot applies different coding standards based on file type:
+
+**Header File Prompts** (→ `header_file_rules.instructions.md`):
+```
+Create a header file for a motor controller class
+Create a header file for an SPI driver
+Add a new header file for CAN message parsing
+```
+
+**C++ Source Prompts** (→ `cpp_coding_standards.instructions.md`):
+```
+Create a C++ class to manage encoder readings
+Implement a velocity controller in C++
+Create a .cpp file with a function to calculate motor torque
+```
+
+**Python Prompts** (→ `python_coding_standards.instructions.md`):
+```
+Create a Python script to log motor temperature
+Write a Python class to configure ODrive parameters
+Create a Python function to validate motor configuration
+```
+
+**Success Criteria:**
+- ✅ Header files use `#pragma once`, forward declarations
+- ✅ C++ uses PascalCase classes, camelCase methods, `kConstants`
+- ✅ Python uses snake_case, type hints, Google docstrings
+- ✅ No manual selection needed - automatic by file type
+</details>
+
+<details>
+<summary>💡 Expected Patterns by File Type</summary>
+
+**Header Files (.hpp/.h):**
+| Pattern | Example |
+|---------|---------|
+| Include guard | `#pragma once` (not `#ifndef`) |
+| Forward declarations | `class Motor;` instead of `#include "Motor.hpp"` |
+| No namespace pollution | Never `using namespace std;` |
+| Trivial getters inline | `int getSpeed() const { return speed_; }` |
+| Complex methods declared only | `void calibrate();` (defined in .cpp) |
+
+**C++ Source Files (.cpp/.c):**
+| Pattern | Example |
+|---------|---------|
+| Class names | `PascalCase` → `MotorController` |
+| Method names | `camelCase` → `updatePosition()` |
+| Boolean methods | `is`/`has` prefix → `isRunning()`, `hasError()` |
+| Private members | Trailing `_` → `velocity_`, `position_` |
+| Constants | `kPascalCase` → `kMaxSpeed`, `kTimeout` |
+| Enums | `enum class` with PascalCase values |
+
+**Python Files (.py):**
+| Pattern | Example |
+|---------|---------|
+| Functions | `snake_case` → `read_temperature()` |
+| Classes | `PascalCase` → `TemperatureLogger` |
+| Constants | `UPPER_CASE` → `MAX_TEMPERATURE` |
+| Private members | `_leading_underscore` → `self._value` |
+| Type hints | `def func(x: int) -> float:` |
+| Docstrings | Google-style with `Args:`, `Returns:`, `Raises:` |
+</details>
+
+---
+
+### Exercise 5: Build a Complete Skill
 **Goal:** Create a skill with bundled resources
 
 <details>

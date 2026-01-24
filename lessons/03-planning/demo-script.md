@@ -5,226 +5,134 @@
 
 ---
 
-## Demo 1: Why Planning Matters - Before & After (5 min)
+## Demo 1: File-Type-Specific Custom Instructions (10 min)
 
 ### Setup
 - Open VS Code with ODrive workspace
-- Clear any existing `.github/copilot-instructions.md` (or rename it temporarily)
+- Ensure `.github/instructions/` folder contains your instruction files
 - Open Copilot Chat panel
 
 ### Demo Flow
 
+**Presenter Says:**
+> "Let me show you how Copilot automatically applies different coding standards based on file type. We have three instruction files set up:
+> - `cpp_coding_standards.instructions.md` → for `.cpp` files
+> - `header_file_rules.instructions.md` → for `.hpp`/`.h` files  
+> - `python_coding_standards.instructions.md` → for `.py` files
+>
+> Watch how the same concept produces different code styles depending on the file type requested."
+
 ---
 
-### Part A: Without Custom Instructions (2 min)
-
-**Presenter Says:**
-> "Let's see what happens when we generate code WITHOUT any custom instructions. This is how most people start with Copilot."
+### Demo 1.1: Header File (.hpp) → Header Rules
 
 **Type in Chat:**
 ```
-Create a function to read temperature from an ADC sensor and return the value in Celsius
+Create a header file for a motor controller class
 ```
 
-**Wait for response, then critique:**
+**Expected Output - Copilot follows `header_file_rules.instructions.md`:**
 
 **Presenter Says:**
-> "Look at what we got:
-> - Generic variable names (`temp`, `value`)
-> - No error handling
-> - Uses `new`/`malloc` - not embedded-safe!
-> - No documentation
-> - Doesn't follow our coding standards
-> - Might use exceptions
->
-> This code would fail code review. Let me show you how planning fixes this."
+> "Notice these patterns from our header rules:
+> - ✅ Uses `#pragma once` (not old-style `#ifndef` guards)
+> - ✅ Forward declarations instead of heavy includes
+> - ✅ No `using namespace` in header
+> - ✅ Trivial getters are inline
+> - ✅ Complex methods declared only (defined in .cpp)"
 
 ---
 
-### Part B: With Custom Instructions (3 min)
+### Demo 1.2: C++ Source File (.cpp) → C++ Coding Standards
 
-**Presenter Says:**
-> "Now let's add our custom instructions file and try the same prompt."
-
-**Create file:** `.github/copilot-instructions.md`
-
-**Type this content (or show pre-prepared):**
-
-```markdown
-# ODrive Coding Standards
-
-## C++ Requirements
-- Use C++17 features
-- No dynamic memory allocation (no new/malloc)
-- No exceptions - use error codes
-- All functions must have Doxygen documentation
-- Use snake_case for functions, PascalCase for classes
-- Prefix member variables with underscore: _member
-
-## Embedded Constraints
-- Static allocation only
-- MISRA C++ compliance preferred
-- Consider interrupt safety for motor control code
-- Use fixed-point math where possible for performance
-
-## Project Patterns
-- Error handling: return bool or error enum, not exceptions
-- Logging: use ODRIVE_LOG() macro
-- Configuration: store in Config structs
+**Type in Chat:**
+```
+Create a C++ class to manage encoder readings
 ```
 
-**Save the file**
+**Expected Output - Copilot follows `cpp_coding_standards.instructions.md`:**
 
 **Presenter Says:**
-> "I've created `.github/copilot-instructions.md`. Copilot automatically loads this for every request. Let's try the same prompt again."
-
-**Start a new chat session (Ctrl+N)**
-
-**Type the same prompt:**
-```
-Create a function to read temperature from an ADC sensor and return the value in Celsius
-```
-
-**Presenter Says:**
-> "Look at the difference now:
-> - ✅ Proper naming conventions
-> - ✅ No dynamic allocation
-> - ✅ Error handling with return codes
-> - ✅ Doxygen documentation
-> - ✅ Embedded-safe patterns
->
-> Same prompt, dramatically better output! The instructions are applied automatically to EVERY request."
+> "Watch for our C++ standards:
+> - ✅ `PascalCase` for class names (`EncoderManager`)
+> - ✅ `camelCase` for methods (`getPosition()`, `updateReadings()`)
+> - ✅ `is`/`has` prefixes for booleans (`isCalibrated()`, `hasError()`)
+> - ✅ Trailing underscore for private members (`position_`, `velocity_`)
+> - ✅ `kPascalCase` for constants (`kMaxPosition`, `kDefaultTimeout`)
+> - ✅ `enum class` with PascalCase values"
 
 ---
 
-## Demo 2: Custom Instructions Deep Dive (8 min)
+### Demo 1.3: Python File (.py) → Python Coding Standards
 
-### Setup
-- Keep the instructions file open
-- Have Chat panel visible
+**Type in Chat:**
+```
+Create a Python script to log motor temperature
+```
 
-### Demo Flow
-
----
-
-### Part A: Global vs Conditional Instructions (4 min)
+**Expected Output - Copilot follows `python_coding_standards.instructions.md`:**
 
 **Presenter Says:**
-> "There are two types of instruction files. Let me show you."
+> "Now Python standards are applied:
+> - ✅ `snake_case` for functions (`read_temperature()`, `log_to_file()`)
+> - ✅ `PascalCase` for classes (`TemperatureLogger`)
+> - ✅ `UPPER_CASE` for constants (`MAX_TEMPERATURE`, `LOG_INTERVAL`)
+> - ✅ Type hints on all parameters and returns
+> - ✅ Google-style docstrings with `Args:`, `Returns:`, `Raises:`
+> - ✅ `_leading_underscore` for private members"
 
-**Show folder structure:**
-```
-.github/
-├── copilot-instructions.md          # Global - always loaded
-└── instructions/
-    ├── cpp.instructions.md          # Loaded for *.cpp, *.hpp
-    └── python.instructions.md       # Loaded for *.py
-```
-
-**Create file:** `.github/instructions/cpp.instructions.md`
-
-```markdown
----
-applyTo: "**/*.cpp,**/*.hpp,**/*.h"
 ---
 
-# C++ Specific Instructions
+### Summary: How File Type Triggers Instructions
 
-When generating C++ code:
-- Use `#pragma once` instead of include guards
-- Prefer `constexpr` over `#define` for constants
-- Use `std::array` instead of C-style arrays
-- Mark single-argument constructors `explicit`
-- Use `[[nodiscard]]` for functions returning important values
-```
+**Show this table:**
+
+| File Extension | Instruction File Triggered | Key Rules Applied |
+|----------------|---------------------------|------------------|
+| `*.hpp`, `*.h` | `header_file_rules.instructions.md` | `#pragma once`, forward decls, no `using namespace` |
+| `*.cpp`, `*.c` | `cpp_coding_standards.instructions.md` | PascalCase classes, camelCase methods, `kConstants` |
+| `*.py` | `python_coding_standards.instructions.md` | snake_case, type hints, Google docstrings |
 
 **Presenter Says:**
-> "See the `applyTo` frontmatter? This instruction file only loads when you're working with C++ files. The glob pattern controls when it activates."
-
-**Create file:** `.github/instructions/python.instructions.md`
-
-```markdown
----
-applyTo: "**/*.py"
----
-
-# Python Specific Instructions
-
-When generating Python code:
-- Follow PEP 8 style guidelines
-- Use type hints for all function parameters and returns
-- Prefer f-strings over .format() or % formatting
-- Use pathlib for file path operations
-- Add docstrings to all public functions
-```
-
-**Presenter Says:**
-> "Now C++ files get C++ rules, Python files get Python rules. The global instructions apply everywhere, conditional instructions layer on top."
+> "The `applyTo` glob pattern in each instruction file controls this:
+> ```yaml
+> applyTo: '**/*.{h,hpp}'    # Header rules
+> applyTo: '**/*.{cpp,c}'    # C++ rules  
+> applyTo: '**/*.py'         # Python rules
+> ```
+> This is automatic - you don't need to specify which rules to use!"
 
 ---
 
-### Part B: Instruction Best Practices (4 min)
+### Additional Prompts to Try
 
-**Presenter Says:**
-> "Let me show you what makes good vs bad instructions."
-
-**Show BAD example:**
-```markdown
-# Bad Instructions ❌
-
-Write good code.
-Follow best practices.
-Use proper naming.
+**Header Files:**
+```
+Create a header file for an SPI driver
+Add a new header file for CAN message parsing
 ```
 
-**Presenter Says:**
-> "This is too vague. Copilot can't act on 'good' or 'proper'. Let me show you better patterns."
-
-**Show GOOD example:**
-```markdown
-# Good Instructions ✅
-
-## Naming Conventions
-- Functions: snake_case (e.g., `read_sensor_value`)
-- Classes: PascalCase (e.g., `MotorController`)
-- Constants: SCREAMING_SNAKE_CASE (e.g., `MAX_CURRENT`)
-- Member variables: prefix with underscore (e.g., `_velocity`)
-
-## Error Handling Pattern
-```cpp
-// Return error code, not exceptions
-ErrorCode do_something() {
-    if (failed) return ErrorCode::INVALID_STATE;
-    return ErrorCode::OK;
-}
+**C++ Source Files:**
+```
+Implement a velocity controller in C++
+Create a .cpp file with a function to calculate motor torque
 ```
 
-## Required Documentation
-Every public function must have:
-- @brief one-line description
-- @param for each parameter
-- @return description of return value
-- @note for important caveats
+**Python Files:**
 ```
-
-**Presenter Says:**
-> "Good instructions are:
-> - **Specific** - exact patterns, not vague guidance
-> - **Actionable** - Copilot can directly apply them
-> - **Include examples** - show, don't just tell
-> - **Organized** - grouped by topic for clarity"
+Write a Python class to configure ODrive parameters
+Create a Python function to validate motor configuration
+```
 
 ---
 
-## Demo 3: Prompt Files (.prompt.md) (8 min)
+## Demo 2: Prompt Files (.prompt.md) (8 min)
 
 ### Setup
 - Create `.github/prompts/` directory
 - Have Chat panel visible
 
 ### Demo Flow
-
----
 
 ### Part A: Create a Reusable Prompt (4 min)
 
@@ -281,8 +189,6 @@ Apply this documentation style to the selected code.
 **Presenter Says:**
 > "Now I can use this prompt anytime with a slash command."
 
----
-
 ### Part B: Use the Prompt (2 min)
 
 **Open a file with an undocumented function**
@@ -305,8 +211,6 @@ Apply this documentation style to the selected code.
 > - Project-specific style
 >
 > One prompt file, consistent documentation across the team!"
-
----
 
 ### Part C: Prompt with Variables (2 min)
 
@@ -363,15 +267,13 @@ Generate comprehensive tests for the selected code.
 
 ---
 
-## Demo 4: Custom Agents (.agent.md) (10 min)
+## Demo 3: Custom Agents (.agent.md) (10 min)
 
 ### Setup
 - Create `.github/agents/` directory
 - Have Chat panel visible
 
 ### Demo Flow
-
----
 
 ### Part A: Create a Specialized Agent (5 min)
 
@@ -443,8 +345,6 @@ Always end with a summary: issues found, risk assessment, and approval recommend
 >
 > Let's try it!"
 
----
-
 ### Part B: Use the Agent (3 min)
 
 **Open a code file**
@@ -474,8 +374,6 @@ Always end with a summary: issues found, risk assessment, and approval recommend
 >
 > This is far more useful than generic feedback!"
 
----
-
 ### Part C: Agent with Tool Access (2 min)
 
 **Presenter Says:**
@@ -498,15 +396,13 @@ tools: ['codebase', 'file', 'terminal']
 
 ---
 
-## Demo 5: Agent Skills (SKILL.md) (8 min)
+## Demo 4: Agent Skills (SKILL.md) (8 min)
 
 ### Setup
 - Create `.github/skills/` directory
 - Have sample skill folder ready
 
 ### Demo Flow
-
----
 
 ### Part A: Skill Structure (3 min)
 
@@ -532,8 +428,6 @@ tools: ['codebase', 'file', 'terminal']
 > - `references/` - Documentation the AI can read
 > - `templates/` - Code patterns to follow
 > - `scripts/` - Tools the AI can run"
-
----
 
 ### Part B: Create a Skill (3 min)
 
@@ -616,8 +510,6 @@ else { /* x == 0 */ }
 ```
 ```
 
----
-
 ### Part C: Use the Skill (2 min)
 
 **Presenter Says:**
@@ -638,15 +530,13 @@ Check this code for MISRA compliance violations:
 
 ---
 
-## Demo 6: Plan Mode (8 min)
+## Demo 5: Plan Mode (8 min)
 
 ### Setup
 - Open Copilot Chat on GitHub.com (Plan Mode works best there)
 - Or use VS Code with latest Copilot
 
 ### Demo Flow
-
----
 
 ### Part A: Create Project Plan (4 min)
 
@@ -676,8 +566,6 @@ Please create a structured project plan with epics, features, and tasks.
 >
 > Each with descriptions and acceptance criteria!"
 
----
-
 ### Part B: Refine the Plan (2 min)
 
 **Presenter Says:**
@@ -697,8 +585,6 @@ Include STM32 FDCAN peripheral setup, timing configuration, and interrupt handli
 > - Task: Implement TX/RX interrupt handlers
 >
 > Each task is small enough to assign to a developer."
-
----
 
 ### Part C: Improve Descriptions (2 min)
 
@@ -723,7 +609,7 @@ Idea → Plan Mode → Refine → Create Issues → Agent Mode → Implementatio
 
 ---
 
-## Demo 7: Spec-Driven Development with SpecKit (10 min)
+## Demo 6: Spec-Driven Development with SpecKit (10 min)
 
 ### Setup
 - Have terminal open in VS Code
@@ -731,8 +617,6 @@ Idea → Plan Mode → Refine → Create Issues → Agent Mode → Implementatio
 - Create a demo folder or use existing project
 
 ### Demo Flow
-
----
 
 ### Part A: Understanding Vibe Coding vs. Spec-Driven (2 min)
 
@@ -750,8 +634,6 @@ Idea → Plan Mode → Refine → Create Issues → Agent Mode → Implementatio
 
 **Presenter Says:**
 > "Vibe coding is great for prototypes, but production software needs guardrails. SpecKit provides those guardrails - it's essentially formalizing context for AI models so they make the decisions YOU want."
-
----
 
 ### Part B: Install and Initialize SpecKit (2 min)
 
@@ -790,8 +672,6 @@ specify init .
 **Presenter Says:**
 > "It's just markdown files and scripts. You could manually download these from the GitHub releases - no installation required!"
 
----
-
 ### Part C: Create a Constitution (2 min)
 
 **Presenter Says:**
@@ -815,8 +695,6 @@ always deploy to Azure, use Hugo for static generation, and Tailwind CSS for sty
 > - **Performance standards** - Lighthouse 90+
 >
 > This is now enforced on everything that follows. It's like `copilot-instructions.md` but specifically for this project's architecture."
-
----
 
 ### Part D: Build Specification & Clarify (2 min)
 
@@ -856,8 +734,6 @@ A
 
 **Presenter Says:**
 > "Each answer updates the spec! It's now recording these clarifications and adding them to the specification. This is incredibly powerful - the AI is helping me think through things I would have forgotten."
-
----
 
 ### Part E: Technical Plan & Tasks (2 min)
 
@@ -899,8 +775,6 @@ specs/
 **Click "Implement" to start execution:**
 
 > "Now it follows the plan to implement each task. The spec, plan, and constitution guide every decision. THIS is spec-driven development!"
-
----
 
 ### Part F: Existing Projects & Multiple Variations (Optional - if time)
 
@@ -959,7 +833,27 @@ Create `.github/agents/my-expert.agent.md` for your domain:
 **Test it:**
 Select your agent and ask a domain question.
 
-### Exercise 4: Try SpecKit (Bonus - 10 min)
+### Exercise 4: File-Type Instructions Demo (5 min)
+
+**Goal:** Verify that file-type-specific instructions work correctly.
+
+**Try these prompts and check that each follows the correct standards:**
+
+| Prompt | Expected Standards Applied |
+|--------|---------------------------|
+| `Create a header file for an SPI driver` | `#pragma once`, forward declarations, no `using namespace` |
+| `Create a C++ class to control motor velocity` | PascalCase class, camelCase methods, `kConstants` |
+| `Create a Python function to validate motor configuration` | snake_case, type hints, Google docstrings |
+| `Implement a velocity controller in C++` | `is`/`has` prefixes, trailing `_` for members |
+| `Write a Python class to configure ODrive parameters` | `UPPER_CASE` constants, `_private` members |
+| `Add a new header file for CAN message parsing` | Forward decls, trivial inline getters |
+
+**Presenter Tips:**
+- Point out the `applyTo` pattern in each instruction file
+- Show how the same concept (temperature reading) differs between C++ and Python
+- Highlight that this is automatic - no manual selection needed
+
+### Exercise 5: Try SpecKit (Bonus - 10 min)
 
 **Task:**
 Initialize SpecKit in a new folder and go through the full workflow:
@@ -995,16 +889,15 @@ Initialize SpecKit in a new folder and go through the full workflow:
 - **Skill not discovered:** Ensure SKILL.md exists and description matches
 
 ### Time Management
-- Demo 1 (Why Planning): 5 min
-- Demo 2 (Instructions): 8 min
-- Demo 3 (Prompts): 8 min
-- Demo 4 (Agents): 10 min
-- Demo 5 (Skills): 8 min
-- Demo 6 (Plan Mode): 8 min
-- Demo 7 (SpecKit): 10 min
+- Demo 1 (File-Type Instructions): 10 min
+- Demo 2 (Prompts): 8 min
+- Demo 3 (Agents): 10 min
+- Demo 4 (Skills): 8 min
+- Demo 5 (Plan Mode): 8 min
+- Demo 6 (SpecKit): 10 min
 - Hands-On: 15 min (adjust as needed)
 
-**Total: ~72 min** - Adjust by skipping Demo 5 (Skills) or Demo 7 (SpecKit) for 60-min sessions
+**Total: ~69 min** - Adjust by skipping Demo 4 (Skills) or Demo 6 (SpecKit) for 60-min sessions
 
 ---
 
@@ -1013,10 +906,10 @@ Initialize SpecKit in a new folder and go through the full workflow:
 ### Questions to Ask
 
 **After Demo 1:**
-> "Who has been frustrated by inconsistent AI output? [hands]
-> Custom instructions fix that - same rules, every time!"
+> "Notice how the same concept - temperature reading - looks completely different in C++ vs Python?
+> The file type automatically triggers the right coding standards!"
 
-**After Demo 3:**
+**After Demo 2:**
 > "What repetitive prompts do you use frequently? [discuss]
 > Those are perfect candidates for prompt files!"
 

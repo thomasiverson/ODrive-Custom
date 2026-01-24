@@ -19,7 +19,7 @@ applyTo: '**'
 | **Trailing Whitespace** | Remove from all lines before commit |
 | **Final Newline** | Every file must end with exactly one newline character |
 | **Indentation** | Use spaces (not tabs) — 4 spaces for Python, 4 for C/C++ |
-| **Max Line Length** | 120 characters (soft limit), 140 absolute max |
+| **Max Line Length** | 120 characters (standard limit for all languages) |
 
 ```gitattributes
 # .gitattributes - Enforce line endings
@@ -196,8 +196,9 @@ Before submitting code for review, verify:
 ## Testing Standards
 
 ### Test File Naming
-- Mirror source file structure: `motor_controller.cpp` → `test_motor_controller.cpp`
-- Prefix with `test_` (Python) or suffix with `_test` (C++)
+- Mirror source file structure
+- **Python**: Prefix with `test_` → `motor_control.py` → `test_motor_control.py`
+- **C++**: Suffix with `_test` → `motor_controller.cpp` → `motor_controller_test.cpp`
 
 ### Test Principles
 - **Isolated**: Tests should not depend on each other's state
