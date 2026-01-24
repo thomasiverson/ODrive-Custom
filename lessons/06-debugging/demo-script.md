@@ -24,7 +24,7 @@
 
 **Step 1: Make an intentional error**
 
-Open `Firmware/MotorControl/motor.cpp` and find the `update()` method (around line 230-250).
+Open `Firmware/MotorControl/motor.cpp` and find the `update()` method (around line 510-515).
 
 **Add this buggy line:**
 ```cpp
@@ -51,7 +51,7 @@ make
 **Expected Error:**
 ```
 [ tup ] Compiling motor.cpp...
-motor.cpp:234:30: error: 'motor_current_limit' was not declared in this scope
+motor.cpp:514:30: error: 'motor_current_limit' was not declared in this scope
      float current_limit = motor_current_limit;
                            ^~~~~~~~~~~~~~~~~~~
 [ tup ] Build failed
@@ -68,7 +68,7 @@ motor.cpp:234:30: error: 'motor_current_limit' was not declared in this scope
 
 **In Copilot Chat, type:**
 ```
-@terminal shows compile error: 'motor_current_limit' was not declared in this scope in motor.cpp:234
+@terminal shows compile error: 'motor_current_limit' was not declared in this scope in motor.cpp:514
 
 I'm trying to access the motor current limit configuration. What's the correct variable name?
 ```
@@ -77,7 +77,7 @@ I'm trying to access the motor current limit configuration. What's the correct v
 > "Notice I'm giving @terminal context:
 > - What I was trying to do (access current limit config)
 > - Which file (motor.cpp)
-> - What line (234)
+> - What line (514)
 > 
 > This helps the AI give me a targeted answer."
 
@@ -147,13 +147,14 @@ tup
 
 **Step 6: Introduce a linker error**
 
-**In motor.hpp, add a declaration:**
+**In motor.hpp (around line 78), add a declaration after the existing method declarations:**
 ```cpp
-class Motor {
-public:
-    void calibrate_resistance();  // Declaration
-    // ...
-};
+    bool apply_config();
+    bool setup();
+
+    void reset_phase_calibration();  // ADD THIS LINE - Declaration only, no implementation!
+
+    void update_current_controller_gains();
 ```
 
 **But don't add the implementation in motor.cpp**
@@ -165,12 +166,12 @@ tup
 
 **Expected Error:**
 ```
-undefined reference to `Motor::calibrate_resistance()'
+undefined reference to `Motor::reset_phase_calibration()'
 ```
 
 **In Copilot Chat:**
 ```
-@terminal shows linker error: undefined reference to Motor::calibrate_resistance()
+@terminal shows linker error: undefined reference to Motor::reset_phase_calibration()
 
 The function is declared in motor.hpp but I'm getting a linker error. What's wrong?
 ```
@@ -180,12 +181,12 @@ The function is declared in motor.hpp but I'm getting a linker error. What's wro
 Linker error indicates the function is declared but not defined.
 
 You have the declaration in motor.hpp:
-    void calibrate_resistance();
+    void reset_phase_calibration();
 
 But the implementation is missing from motor.cpp.
 
 Add this to motor.cpp:
-    void Motor::calibrate_resistance() {
+    void Motor::reset_phase_calibration() {
         // Implementation here
     }
 
