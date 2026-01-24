@@ -18,6 +18,7 @@ This lesson teaches you how to customize GitHub Copilot's behavior through plann
 - Designing custom agents (`.agent.md`) for specialized personas
 - Packaging skills with bundled resources for complex tasks
 - Using **Plan Mode** to turn ideas into structured epics and issues
+- **Spec-Driven Development** for production-quality, scalable software
 
 **Key Concepts:**
 
@@ -28,6 +29,7 @@ This lesson teaches you how to customize GitHub Copilot's behavior through plann
 | **Custom Agents** | Specialized personas with specific tools and behaviors |
 | **Agent Skills** | Instruction folders with bundled scripts and resources |
 | **Plan Mode** 🆕 | Turn project ideas into structured epics, features, and tasks |
+| **Spec-Driven Development** 🆕 | Formalized guardrails for AI: constitution → spec → plan → tasks |
 | **Context Layering** | Building prompts with constitution → agent → files → constraints |
 
 ---
@@ -45,6 +47,7 @@ This lesson teaches you how to customize GitHub Copilot's behavior through plann
 - [Custom Agents](#4-custom-agents-agentmd)
 - [Agent Skills](#5-agent-skills-skillmd-folders)
 - [**Plan Mode (Preview)**](#6-plan-mode-preview) 🆕
+- [**Spec-Driven Development**](#7-spec-driven-development) 🆕
 - [Speaker Instructions](#speaker-instructions)
 - [Participant Instructions](#participant-instructions)
 - [Practice Exercises](#practice-exercises)
@@ -130,6 +133,7 @@ Front-loading context improves output quality dramatically. Instead of repeatedl
 | Custom Agents (.agent.md) | Specialized agent profiles for domain-specific tasks | 10 min |
 | Agent Skills (SKILL.md folders) | Self-contained instruction folders with bundled resources | 8 min |
 | **Plan Mode (Preview)** 🆕 | Turn project ideas into structured issues/epics | 8 min |
+| **Spec-Driven Development** 🆕 | Formalized specs for scalable, production-quality AI workflows | 10 min |
 | **Hands-On:** Create Steering Docs | Build copilot-instructions.md, custom agent, and skill folder | 13 min |
 
 ---
@@ -146,6 +150,7 @@ This lesson covers seven key areas. Work through them sequentially for the best 
 | Custom Agents | Specialized personas | 10 min |
 | Agent Skills | Bundled instructions with resources | 8 min |
 | **Plan Mode (Preview)** 🆕 | Turn ideas into structured issues | 8 min |
+| **Spec-Driven Development** 🆕 | Production-quality specs with SpecKit | 10 min |
 | Guided Hands-On | Build a complete customization setup | 15 min |
 
 ---
@@ -889,6 +894,321 @@ Plan Mode works seamlessly with custom agents and skills:
 - [Using GitHub Copilot to create or update issues](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-to-create-issues)
 - [Best practices for using GitHub Copilot to work on tasks](https://docs.github.com/en/copilot/using-github-copilot/best-practices-for-using-github-copilot-to-work-on-tasks)
 - [Asking GitHub Copilot to create a pull request](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-to-create-a-pull-request)
+
+---
+
+## 7. Spec-Driven Development 🆕
+
+> **What it is:** A formalized process for providing AI models with guardrails through specifications, plans, and tasks - enabling production-quality, maintainable software.
+
+### Why Spec-Driven Development?
+
+When developers first adopt AI coding assistants, many start with **"vibe coding"** - having an idea, typing a few sentences, and letting the AI figure it out. This approach has benefits (fast prototyping) but significant downsides for production software:
+
+| Vibe Coding Approach | Spec-Driven Approach |
+|---------------------|----------------------|
+| AI makes architectural decisions for you | You define architectural constraints upfront |
+| Framework/library choices are arbitrary | Stack choices are explicit and intentional |
+| Inconsistent patterns across the codebase | Consistent conventions enforced by specs |
+| Harder to maintain long-term | Documentation and context preserved |
+| Difficult to onboard new team members | Clear specifications for everyone |
+
+> **Key Insight:** "If you start building production software, software that needs to be maintained by somebody, software that needs to evolve down the line beyond your initial prototype, that vibe coding approach doesn't really scale because the AI doesn't have the sense of taste or conventions that you need to be applying."
+
+### Plan Mode vs. Spec-Driven Development
+
+Both approaches help you plan before coding, but they serve different purposes:
+
+| Aspect | Plan Mode | Spec-Driven Development |
+|--------|-----------|-------------------------|
+| **Scope** | Single feature or idea → issues | Entire project or major feature → full implementation |
+| **Output** | GitHub Issues (epics, features, tasks) | Markdown specs, plans, tasks + code |
+| **Primary Use** | Project management, sprint planning | Production codebases, team collaboration |
+| **Integration** | GitHub Issues | Works with any agent (Copilot, Claude, Gemini) |
+| **Artifacts** | Issues in your repository | `spec.md`, `plan.md`, `tasks.md` files |
+| **Best For** | Breaking down work for a team | Ensuring consistent, high-quality AI output |
+
+**When to use Plan Mode:**
+- You want to create GitHub Issues for tracking
+- You're planning sprints or breaking down features
+- You need to assign tasks to team members
+- You want Copilot to create PRs from issues
+
+**When to use Spec-Driven Development:**
+- You're building production software that needs to scale
+- You want the AI to follow specific conventions consistently
+- You're working on a greenfield project with complex requirements
+- You need to explore multiple implementation variations (e.g., Hugo vs Next.js)
+- You want a documented decision trail for your project
+
+### The Spec-Driven Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    1. CONSTITUTION                               │
+│    Non-negotiable principles: stack, deployment, coding style   │
+│    File: constitution.md or agents.md                           │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    2. SPECIFICATION                              │
+│    Functional requirements: user stories, scenarios, edge cases │
+│    File: specs/001-feature-name/spec.md                         │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    3. CLARIFICATION                              │
+│    AI asks questions YOU didn't think to ask                    │
+│    "How will episode data be managed?" "Expected catalog size?" │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    4. TECHNICAL PLAN                             │
+│    Architecture, dependencies, data models, contracts           │
+│    File: specs/001-feature-name/plan.md                         │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    5. TASKS                                      │
+│    Broken-down implementation steps with MVP identification     │
+│    File: specs/001-feature-name/tasks.md                        │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    6. IMPLEMENTATION                             │
+│    Agent executes tasks one by one, following the plan          │
+│    Each task can be parallelized or done in background          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Key Artifacts
+
+#### 1. Constitution (`constitution.md` or `agents.md`)
+
+Non-negotiable principles for your entire project:
+
+```markdown
+# Project Constitution
+
+## Non-Negotiable Principles
+
+### Deployment
+- Always deploy to Azure
+- Use Azure-specific packages, not other cloud providers
+
+### Technology Stack
+- Always use the latest LTS version of Node.js
+- Use TypeScript with strict mode enabled
+- Use this specific logging package: [package-name]
+
+### Performance
+- Lighthouse score must be 90+ for all pages
+- Static-first architecture
+
+### Development Workflow
+- Test against Chrome, Firefox (Safari optional)
+- All code must have unit tests
+```
+
+#### 2. Specification (`spec.md`)
+
+Functional requirements with user stories and scenarios:
+
+```markdown
+# Feature: Podcast Website
+
+## User Stories
+
+### Browse Featured Episodes
+As a visitor, I want to see featured episodes on the landing page
+so that I can quickly discover popular content.
+
+**Scenarios:**
+- Display 3-5 featured episodes with thumbnails
+- Show episode title, duration, and publish date
+- Link to episode detail page
+
+### View Episode Details
+As a visitor, I want to view episode details including:
+- Full description
+- Audio player
+- Show notes
+- Guest information
+
+## Edge Cases
+- Episode with no guest
+- Episode longer than 2 hours
+- Missing thumbnail image
+```
+
+#### 3. Clarification Session
+
+The AI asks questions you didn't think to ask:
+
+| Question | Options | Answer |
+|----------|---------|--------|
+| How will episode data be managed? | A) Admin CMS B) Static JSON C) RSS import | B |
+| Expected episode catalog size? | A) 10-50 B) 50-100 C) 100-200 D) 200+ | D |
+| Audio hosting provider? | A) Self-hosted B) Libsyn C) Transistor | A |
+
+#### 4. Technical Plan (`plan.md`)
+
+Architecture and implementation details:
+
+```markdown
+# Technical Plan: Podcast Website
+
+## Technical Context
+- Framework: Hugo (static site generator)
+- Templating: Go templates with HTML5
+- Styling: Tailwind CSS
+- Build: npm for asset pipeline
+
+## Dependencies
+- hugo-extended v0.120+
+- tailwindcss v3.4+
+- alpinejs v3.x (minimal interactivity)
+
+## Content Structure
+content/
+├── episodes/
+│   ├── ep001-introduction.md
+│   └── ep002-guest-interview.md
+├── guests/
+│   └── john-doe.md
+└── pages/
+    ├── about.md
+    └── contact.md
+
+## Data Model
+### Episode
+| Field | Type | Required |
+|-------|------|----------|
+| title | string | ✓ |
+| date | datetime | ✓ |
+| duration | string | ✓ |
+| audio_url | url | ✓ |
+| description | markdown | ✓ |
+| guest | reference | |
+| featured | boolean | |
+```
+
+#### 5. Tasks (`tasks.md`)
+
+Broken-down implementation steps:
+
+```markdown
+# Implementation Tasks
+
+## MVP (Phase 1)
+- [ ] Task 1.1: Initialize Hugo project structure
+- [ ] Task 1.2: Create base layout with header/footer
+- [ ] Task 1.3: Implement episode list template
+- [ ] Task 1.4: Implement episode detail template
+- [ ] Task 1.5: Add Tailwind CSS configuration
+
+## Phase 2: Enhanced Features
+- [ ] Task 2.1: Add audio player component
+- [ ] Task 2.2: Create guest profile pages
+- [ ] Task 2.3: Implement search functionality
+```
+
+### Getting Started with SpecKit
+
+[GitHub SpecKit](https://github.com/github/spec-kit) is a collection of prompts and scripts that implement spec-driven development. It works with any agent (Copilot, Claude, Gemini, etc.).
+
+#### Installation
+
+```bash
+# Using UV (recommended for Python)
+uv tool install spec-kit
+
+# Initialize in a new project
+specify init my-project
+
+# Initialize in an existing project
+cd my-existing-project
+specify init .
+```
+
+#### Workflow Commands
+
+| Command | Purpose |
+|---------|--------|
+| `specify init` | Initialize SpecKit in a project |
+| Constitution | Establish non-negotiable project principles |
+| Build Specification | Create functional requirements |
+| Clarify | AI asks questions to fill gaps |
+| Build Technical Plan | Generate architecture and data models |
+| Create Tasks | Break down into implementable steps |
+| Implement | Execute tasks one by one |
+
+#### Example Session
+
+```
+# Start with constitution
+> Create a constitution for a static podcast website with minimal dependencies
+
+# Build the specification
+> Build a specification for a podcast website with featured episodes
+
+# Clarify requirements (AI asks you questions)
+> Clarify spec requirements
+  - Q1: How will episode data be managed? → B (Static JSON)
+  - Q2: Expected catalog size? → D (200+ episodes)
+  - Q3: Audio hosting? → A (Self-hosted)
+
+# Generate technical plan
+> Build technical plan using Hugo and Tailwind CSS
+
+# Create tasks
+> Create implementation tasks
+
+# Implement
+> Implement tasks
+```
+
+### Benefits for Existing Projects
+
+Spec-driven development isn't just for greenfield projects:
+
+1. **Retroactive Documentation**
+   - Point SpecKit at your existing codebase
+   - Generate a constitution based on current patterns
+   - Document what's already there
+
+2. **New Feature Development**
+   - Create a new spec folder: `specs/002-new-feature/`
+   - Go through the spec → plan → tasks workflow
+   - Maintain historical context for future changes
+
+3. **Multiple Variations**
+   - Create one spec, fork into multiple implementations
+   - Compare Hugo vs Next.js for the same requirements
+   - Use git worktrees for parallel exploration
+
+### Spec-Driven vs. Custom Instructions
+
+| Custom Instructions | Spec-Driven Development |
+|--------------------|-------------------------|
+| `copilot-instructions.md` | `constitution.md` + `spec.md` + `plan.md` |
+| Applied automatically to all requests | Invoked explicitly per feature |
+| General coding standards | Detailed functional + technical specs |
+| Good for coding style | Good for architectural decisions |
+| Complements spec-driven | Uses custom instructions as foundation |
+
+> **Best Practice:** Use both! Custom instructions for always-on coding standards, spec-driven development for major features and architectural work.
+
+### Further Reading
+
+- [GitHub SpecKit Repository](https://github.com/github/spec-kit) - 53K+ stars
+- [SpecKit Documentation](https://github.com/github/spec-kit#readme)
+- [Spec-Driven Development with Existing Projects (YouTube)](https://www.youtube.com/watch?v=example)
 
 ---
 
