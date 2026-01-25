@@ -12,6 +12,7 @@ This hands-on session lets you practice creating and testing GitHub Copilot cust
 
 | Exercise | Focus | Time |
 |----------|-------|------|
+| 0. Clean Slate | Delete existing customization files | 2 min |
 | 1. Custom Instructions | Create coding standards + test with file references | 5 min |
 | 2. Prompt Files | Create reusable prompts + test with `/command` | 5 min |
 | 3. Custom Agents | Create specialized persona + test with real code | 5 min |
@@ -21,75 +22,140 @@ This hands-on session lets you practice creating and testing GitHub Copilot cust
 
 ---
 
+## Exercise 0: Clean Slate Setup (2 min)
+
+### ⚠️ Important: Delete Existing Customization Files
+
+Before starting, delete the existing customization files so you can create them fresh from scratch.
+
+### Step 1: Delete Instructions Files
+
+In VS Code Explorer, navigate to `.github/instructions/` and delete these files:
+- `cpp_coding_standards.instructions.md`
+- `header_file_rules.instructions.md`  
+- `python_coding_standards.instructions.md`
+
+**Or run in terminal:**
+```powershell
+Remove-Item -Path ".github/instructions/*.instructions.md" -Force
+```
+
+### Step 2: Delete Prompt Files
+
+Navigate to `.github/prompts/` and delete all `.prompt.md` files:
+
+**Or run in terminal:**
+```powershell
+Remove-Item -Path ".github/prompts/*.prompt.md" -Force
+```
+
+### Step 3: Delete Agent Files
+
+Navigate to `.github/agents/` and delete all `.agent.md` files:
+
+**Or run in terminal:**
+```powershell
+Remove-Item -Path ".github/agents/*.agent.md" -Force
+```
+
+### Step 4: Delete Skills Folders
+
+Navigate to `.github/skills/` and delete all skill folders:
+
+**Or run in terminal:**
+```powershell
+Remove-Item -Path ".github/skills/*" -Recurse -Force
+```
+
+### Step 5: Keep the Global Instructions (Optional)
+
+You can optionally keep or delete `.github/copilot-instructions.md`:
+```powershell
+# To delete:
+Remove-Item -Path ".github/copilot-instructions.md" -Force
+```
+
+### ✅ Verification
+
+After cleanup, your `.github/` folder should look like:
+```
+.github/
+├── instructions/     # Empty folder
+├── prompts/          # Empty folder  
+├── agents/           # Empty folder
+├── skills/           # Empty folder
+└── (copilot-instructions.md - optional)
+```
+
+> 💡 **Tip:** Reload VS Code window (Ctrl+Shift+P → "Reload Window") to ensure Copilot picks up the changes.
+
+---
+
 ## Exercise 1: Create Custom Instructions (5 min)
 
-### Task: Create a coding standards file
+### Task: Create a C++ coding standards file
 
 > 💡 **Quick Creation:** Click **gear icon (⚙️)** → **Chat Instructions** → **New Instruction File**
 
-1. Create `.github/copilot-instructions.md` with:
+1. Create `.github/instructions/cpp_coding_standards.instructions.md` with:
 
 ```markdown
-# Project Coding Standards
+---
+applyTo: '**/*.{cpp,c,cc}'
+description: 'C++ coding standards for embedded firmware'
+---
 
-## C++ Standards
-- Use C++17 standard
-- PascalCase for classes, camelCase for methods
-- Trailing underscore for private members (e.g., `value_`)
-- Use `kPascalCase` for constants (e.g., `kMaxSpeed`)
+# C++ Coding Standards
+
+## Naming Conventions
+- Classes: PascalCase (e.g., `MotorController`)
+- Methods: camelCase (e.g., `getPosition()`)
+- Variables: camelCase (e.g., `motorSpeed`)
+- Constants: kPascalCase (e.g., `kMaxVoltage`)
+- Private members: trailing underscore (e.g., `position_`)
+- Booleans: is/has prefix (e.g., `isRunning()`, `hasError()`)
 
 ## Embedded Constraints
 - No dynamic memory allocation (no malloc/new)
 - No exceptions (use error codes)
 - Use volatile for hardware registers
+- Static allocation only
+
+## Modern C++ (C++17)
+- Use auto for complex types
+- Use constexpr for compile-time constants
+- Use enum class (not plain enum)
+- Use [[nodiscard]] for important return values
 
 ## Documentation
 - Use Doxygen-style comments (@brief, @param, @return)
 - Document all public APIs
+- Include units for physical quantities
 ```
 
-### 🧪 Test It: Try These Prompts
+### 🧪 Test It: Try This Prompt
 
-**Test 1: C++ with File Reference**
+**Test: Create a C++ Class**
 ```
-Add a method to enable the NVIC interrupt for a GPIO pin in #file:Firmware/Drivers/STM32/stm32_gpio.cpp
+Create a C++ class to manage motor temperature readings.
 
-The method should:
-- Take priority and sub-priority as parameters
-- Use the get_irq_number() helper function
-- Follow the existing code patterns
-```
-
-✅ **Check:** References panel shows `cpp_coding_standards.instructions.md`
-
-**Test 2: Python with File Reference**
-```
-Add a function to #file:docs/conf.py that validates all fibre interface files exist before building documentation.
-
-The function should:
-- Check each path in fibre_interface_files list
-- Log warnings for missing files
-- Return True if all files exist, False otherwise
+The class should:
+- Store current and maximum temperature
+- Provide methods to update and query temperature
+- Include safety threshold checking
 ```
 
-✅ **Check:** References panel shows `python_coding_standards.instructions.md`
-
-**Test 3: Header with File Reference**
-```
-Add a method declaration to #file:Firmware/Drivers/STM32/stm32_gpio.hpp for configuring alternate function mode.
-
-The method should:
-- Take the alternate function number (0-15) as parameter
-- Return bool for success/failure
-- Be consistent with existing config() method
-```
-
-✅ **Check:** References panel shows `header_file_rules.instructions.md`
+**What to observe:**
+- ✅ Class uses `PascalCase` (e.g., `TemperatureManager`)
+- ✅ Methods use `camelCase` (e.g., `getCurrentTemperature()`)
+- ✅ Private members have trailing `_` (e.g., `currentTemp_`)
+- ✅ Constants use `kPascalCase` (e.g., `kMaxSafeTemperature`)
+- ✅ Booleans use `is`/`has` prefix (e.g., `isOverheated()`)
 
 ### Success Criteria
-- ✅ Instructions file created
-- ✅ References panel shows correct instruction files
-- ✅ Generated code follows your standards
+- ✅ Instructions file created with `applyTo` frontmatter
+- ✅ Generated code follows your naming conventions
+- ✅ No dynamic allocation in generated code
 
 ---
 
