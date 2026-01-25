@@ -20,7 +20,7 @@
 
 ---
 
-**Part A: Introduce the Bug**
+### Introduce the Bug
 
 **Step 1: Make an intentional error**
 
@@ -62,7 +62,7 @@ motor.cpp:514:30: error: 'motor_current_limit' was not declared in this scope
 
 ---
 
-**Part B: Use @terminal to Diagnose**
+### Use @terminal to Diagnose
 
 **Step 3: Ask @terminal**
 
@@ -143,7 +143,7 @@ tup
 
 ---
 
-**Part C: Linker Error (Bonus if time permits)**
+### Linker Error (Bonus if time permits)
 
 **Step 6: Introduce a linker error**
 
@@ -211,7 +211,7 @@ Or if you don't need this function yet, remove the declaration from motor.hpp.
 
 ---
 
-**Part A: Off-By-One Error**
+### Off-By-One Error
 
 **Step 1: Show buggy code**
 
@@ -292,7 +292,7 @@ Explanation:
 
 ---
 
-**Part B: Race Condition (Advanced)**
+### Race Condition (Advanced)
 
 **Step 4: Show threading bug**
 
