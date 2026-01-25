@@ -676,7 +676,7 @@ float get_position() const {  // Now const-correct
    - "Fix race condition" → "Make thread-safe for ARM Cortex-M4 ISR"
 
 3. **Reference examples**
-   - "Follow pattern in encoder.cpp:145-160"
+   - "Follow pattern in motor.cpp:145-160"
 
 4. **Break into smaller pieces**
    - Debug one aspect at a time

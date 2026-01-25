@@ -59,7 +59,7 @@ Before starting this session, ensure you have:
 ### Verify Your Setup
 
 1. **Test terminal access:**
-   - Open integrated terminal (Ctrl+`)
+   - Open integrated terminal: `Ctrl+`` (Control + backtick) or **View → Terminal**
    - Run a build command: `tup` or `make`
    - Verify you can see compiler output
 
@@ -122,8 +122,7 @@ This lesson covers four key debugging techniques. Work through them sequentially
 **🎯 Copilot Modes: Chat**
 
 **Files to demonstrate:**
-- [src-ODrive/Firmware/MotorControl/motor.cpp](../../src-ODrive/Firmware/MotorControl/motor.cpp) - Common error source
-- [src-ODrive/Firmware/MotorControl/encoder.cpp](../../src-ODrive/Firmware/MotorControl/encoder.cpp) - Linker error examples
+- [src-ODrive/Firmware/MotorControl/motor.cpp](../../src-ODrive/Firmware/MotorControl/motor.cpp) - Common error source (for @terminal demos)
 
 **Traditional Debugging:**
 - Read cryptic compiler errors
@@ -613,9 +612,8 @@ AI will provide fixes that respect these constraints!
 
 > **Note:** For these common bugs, standard `/fix` and `@terminal` usually suffice. Use `@ODrive-Engineer` when you need deeper codebase analysis or when the bug spans multiple files.
 
-**Files to demonstrate:**
-- [src-ODrive/Firmware/MotorControl/encoder.cpp](../../src-ODrive/Firmware/MotorControl/encoder.cpp) - Variable initialization
-- [src-ODrive/Firmware/Board/v3/board.cpp](../../src-ODrive/Firmware/Board/v3/board.cpp) - Volatile usage
+**Demo file:**
+- [src-ODrive/Firmware/MotorControl/demo_buggy.cpp](../../src-ODrive/Firmware/MotorControl/demo_buggy.cpp) - Pre-created bugs for exercises
 
 #### 1. **Uninitialized Variables**
 
@@ -814,9 +812,8 @@ This guided session walks through debugging three real-world embedded bugs. Foll
 
 **Scenario:** You've inherited buggy motor control code with 3 known issues. Use Copilot to find and fix them!
 
-**Files to work with:**
-- [src-ODrive/Firmware/MotorControl/motor.cpp](../../src-ODrive/Firmware/MotorControl/motor.cpp) - Fault history bug
-- [src-ODrive/Firmware/MotorControl/encoder.cpp](../../src-ODrive/Firmware/MotorControl/encoder.cpp) - Race condition and overflow
+**File to work with:**
+- [src-ODrive/Firmware/MotorControl/demo_buggy.cpp](../../src-ODrive/Firmware/MotorControl/demo_buggy.cpp) - Contains all 3 bugs (FaultLogger, Encoder, SpeedCalculator classes)
 
 ---
 
@@ -868,7 +865,7 @@ if (fault_write_idx_ >= FAULT_HISTORY_SIZE) {
 
 ### Bug 2: Race Condition in Position Estimate (5 min)
 
-**File:** `encoder.cpp` (hypothetical)
+**File:** `demo_buggy.cpp` — Encoder class (lines 52-81)
 
 **Buggy Code:**
 ```cpp
@@ -1311,7 +1308,7 @@ float Encoder::calculate_rpm() {
 ### ODrive Reference Files
 
 - [src-ODrive/Firmware/MotorControl/motor.cpp](../../src-ODrive/Firmware/MotorControl/motor.cpp) - Motor implementation
-- [src-ODrive/Firmware/MotorControl/encoder.cpp](../../src-ODrive/Firmware/MotorControl/encoder.cpp) - Encoder logic
+- [src-ODrive/Firmware/MotorControl/demo_buggy.cpp](../../src-ODrive/Firmware/MotorControl/demo_buggy.cpp) - Demo bugs for exercises
 - [src-ODrive/Firmware/MotorControl/axis.cpp](../../src-ODrive/Firmware/MotorControl/axis.cpp) - State machine
 
 ### Further Practice

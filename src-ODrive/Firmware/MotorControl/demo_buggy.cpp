@@ -16,6 +16,7 @@
 
 //=============================================================================
 // Bug 1: Off-By-One Error in Circular Buffer
+// BUG: Can you spot the off-by-one error?
 //=============================================================================
 
 #define FAULT_HISTORY_SIZE 10
@@ -26,12 +27,11 @@ private:
     size_t fault_idx_ = 0;
 
 public:
-    // BUG: Can you spot the off-by-one error?
+    
     void log_fault(uint32_t error_code) {
         fault_history_[fault_idx_] = error_code;
         fault_idx_++;
         
-        // BUG: Should this be > or >=?
         if (fault_idx_ > FAULT_HISTORY_SIZE) {
             fault_idx_ = 0;
         }
@@ -49,6 +49,7 @@ public:
 
 //=============================================================================
 // Bug 2: Race Condition (ISR vs Main Loop)
+// RACE: Main loop reads these while ISR writes!
 //=============================================================================
 
 class Encoder {
@@ -66,7 +67,6 @@ public:
         count_ += delta;
         last_count_ = count_ - delta;
         
-        // RACE: Main loop reads these while ISR writes!
         position_estimate_ = (float)count_ / (float)cpr_;
         velocity_estimate_ = (float)delta / (float)cpr_ * 8000.0f;
     }
@@ -83,6 +83,10 @@ public:
 
 //=============================================================================
 // Bug 3: Integer Overflow in Speed Calculation
+// BUG: Integer overflow at high speeds!
+// BUG: This intermediate calculation overflows int32_t at high speeds!
+// At 10,000 RPM: delta_count ≈ 1000
+// 1000 * 60 * 1000000 = 60,000,000,000 (exceeds int32_t max of 2,147,483,647)
 //=============================================================================
 
 class SpeedCalculator {
@@ -97,14 +101,10 @@ public:
         last_count_ = last;
     }
 
-    // BUG: Integer overflow at high speeds!
     float calculate_rpm() {
         int32_t delta_count = count_ - last_count_;
         int32_t delta_time_us = 125;  // 8 kHz = 125 μs
 
-        // BUG: This intermediate calculation overflows int32_t at high speeds!
-        // At 10,000 RPM: delta_count ≈ 1000
-        // 1000 * 60 * 1000000 = 60,000,000,000 (exceeds int32_t max of 2,147,483,647)
         int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
 
         return (float)rpm;
