@@ -1,9 +1,13 @@
 ---
-applyTo: '**/*.py'
-description: 'Python coding standards for ODrive tools and scripts. Apply when writing, reviewing, or discussing Python files (.py).'
+applyTo: "**/*.py"
+description: "Python coding standards for ODrive tools and scripts. Apply when writing or reviewing Python files."
 ---
 
 # Python Coding Standards
+
+This document defines coding standards for Python files.
+
+---
 
 ## General Guidelines
 
