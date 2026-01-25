@@ -67,7 +67,7 @@ parser.add_argument("--test-rig-yaml", type=argparse.FileType('r'),
 # parser.set_defaults(test_rig_yaml=script_path + '/test-rig-parallel.yaml')
 parser.set_defaults(ignore=[])
 args = parser.parse_args()
-test_rig_yaml = yaml.load(args.test_rig_yaml)
+test_rig_yaml = yaml.load(args.test_rig_yaml, Loader=yaml.SafeLoader)
 
 # TODO: add --only option
 

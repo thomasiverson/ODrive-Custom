@@ -6,7 +6,7 @@ import threading
 import platform
 import subprocess
 import os
-from fibre.utils import Event
+from fibre.utils import Event, Logger
 import odrive.enums
 from odrive.enums import *
 
