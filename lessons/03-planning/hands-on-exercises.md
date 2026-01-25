@@ -1,6 +1,6 @@
 # Lesson 3: Hands-On Exercises
 
-**Duration:** 20 minutes  
+**Duration:** 22 minutes  
 **Format:** Individual practice  
 **Goal:** Practice creating custom instructions, prompt files, agents, and skills
 
