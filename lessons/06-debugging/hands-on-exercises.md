@@ -20,14 +20,173 @@ You'll debug **3 bugs** in ODrive-style motor control code. Each uses different 
 
 ## Setup
 
-### Files Provided
-You should have these files in your workspace:
-- `buggy_motor.cpp` - Motor control with bugs
-- `buggy_encoder.cpp` - Encoder with race condition and overflow
-- `test_fixes.cpp` - Unit tests to verify fixes
+### Demo File
+All three bugs are in a single pre-created file:
+- **`src-ODrive/Firmware/MotorControl/demo_buggy.cpp`** - Contains all bugs for exercises
 
-### If Files Don't Exist
-Create them with the buggy code provided in each exercise below.
+Open this file in VS Code before starting.
+
+### Bug Locations in demo_buggy.cpp
+| Bug | Class | Lines |
+|-----|-------|-------|
+| 1. Circular Buffer | `FaultLogger` | 29-37 |
+| 2. Race Condition | `Encoder` | 63-80 |
+| 3. Integer Overflow | `SpeedCalculator` | 96-106 |
+
+### If demo_buggy.cpp Doesn't Exist
+
+<details>
+<summary>Click to expand full file contents — copy/paste to create the file</summary>
+
+Create `src-ODrive/Firmware/MotorControl/demo_buggy.cpp` with this content:
+
+```cpp
+/**
+ * @file demo_buggy.cpp
+ * @brief Demo file for Section 6: Debugging with Copilot
+ * 
+ * This file contains intentional bugs for demonstration purposes.
+ * DO NOT include in production builds!
+ * 
+ * Bugs included:
+ * 1. Off-by-one error in circular buffer (log_fault)
+ * 2. Race condition between ISR and main loop
+ * 3. Integer overflow in RPM calculation
+ */
+
+#include <cstdint>
+#include <cstdio>
+
+//=============================================================================
+// Bug 1: Off-By-One Error in Circular Buffer
+//=============================================================================
+
+#define FAULT_HISTORY_SIZE 10
+
+class FaultLogger {
+private:
+    uint32_t fault_history_[FAULT_HISTORY_SIZE];
+    size_t fault_idx_ = 0;
+
+public:
+    // BUG: Can you spot the off-by-one error?
+    void log_fault(uint32_t error_code) {
+        fault_history_[fault_idx_] = error_code;
+        fault_idx_++;
+        
+        // BUG: Should this be > or >=?
+        if (fault_idx_ > FAULT_HISTORY_SIZE) {
+            fault_idx_ = 0;
+        }
+    }
+
+    void print_faults() {
+        printf("Fault History:\n");
+        for (size_t i = 0; i < FAULT_HISTORY_SIZE; i++) {
+            printf("  [%zu]: 0x%08X\n", i, fault_history_[i]);
+        }
+    }
+    
+    size_t get_index() const { return fault_idx_; }
+};
+
+//=============================================================================
+// Bug 2: Race Condition (ISR vs Main Loop)
+//=============================================================================
+
+class Encoder {
+private:
+    int32_t count_ = 0;
+    int32_t last_count_ = 0;
+    float position_estimate_ = 0.0f;
+    float velocity_estimate_ = 0.0f;
+    int32_t cpr_ = 8192;  // Counts per revolution
+
+public:
+    // Called from 8 kHz interrupt
+    void update_isr() {
+        int32_t delta = 10;  // Simulated hardware read
+        count_ += delta;
+        last_count_ = count_ - delta;
+        
+        // RACE: Main loop reads these while ISR writes!
+        position_estimate_ = (float)count_ / (float)cpr_;
+        velocity_estimate_ = (float)delta / (float)cpr_ * 8000.0f;
+    }
+
+    // Called from main loop (1 kHz)
+    float get_position() {
+        return position_estimate_;  // RACE: ISR writes this!
+    }
+
+    float get_velocity() {
+        return velocity_estimate_;  // RACE: ISR writes this!
+    }
+};
+
+//=============================================================================
+// Bug 3: Integer Overflow in Speed Calculation
+//=============================================================================
+
+class SpeedCalculator {
+private:
+    int32_t count_ = 0;
+    int32_t last_count_ = 0;
+    int32_t cpr_ = 8192;  // Counts per revolution
+
+public:
+    void set_counts(int32_t current, int32_t last) {
+        count_ = current;
+        last_count_ = last;
+    }
+
+    // BUG: Integer overflow at high speeds!
+    float calculate_rpm() {
+        int32_t delta_count = count_ - last_count_;
+        int32_t delta_time_us = 125;  // 8 kHz = 125 μs
+
+        // BUG: This intermediate calculation overflows int32_t at high speeds!
+        // At 10,000 RPM: delta_count ≈ 1000
+        // 1000 * 60 * 1000000 = 60,000,000,000 (exceeds int32_t max of 2,147,483,647)
+        int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
+
+        return (float)rpm;
+    }
+};
+
+//=============================================================================
+// Test Harness (for manual testing)
+//=============================================================================
+
+#ifdef DEMO_MAIN
+int main() {
+    printf("=== Bug 1: Off-By-One Error Demo ===\n");
+    FaultLogger logger;
+    
+    // Log 15 faults - should wrap around safely
+    for (int i = 0; i < 15; i++) {
+        printf("Logging fault %d, index before: %zu\n", i, logger.get_index());
+        logger.log_fault(0x1000 + i);
+    }
+    logger.print_faults();
+    
+    printf("\n=== Bug 3: Integer Overflow Demo ===\n");
+    SpeedCalculator calc;
+    
+    // Low speed - should work
+    calc.set_counts(100, 0);
+    printf("Low speed (100 delta): %.1f RPM\n", calc.calculate_rpm());
+    
+    // High speed - will overflow!
+    calc.set_counts(1000, 0);
+    printf("High speed (1000 delta): %.1f RPM (OVERFLOW!)\n", calc.calculate_rpm());
+    
+    return 0;
+}
+#endif
+```
+
+</details>
 
 ---
 
@@ -38,30 +197,25 @@ The motor controller logs the last 10 faults in a circular buffer. Users report 
 
 ### Buggy Code
 
-**File:** `buggy_motor.cpp`
+**File:** `src-ODrive/Firmware/MotorControl/demo_buggy.cpp` — `FaultLogger` class (lines 23-48)
 
 ```cpp
 #define FAULT_HISTORY_SIZE 10
 
-class Motor {
+class FaultLogger {
 private:
     uint32_t fault_history_[FAULT_HISTORY_SIZE];
     size_t fault_idx_ = 0;
-    
+
 public:
+    // BUG: Can you spot the off-by-one error?
     void log_fault(uint32_t error_code) {
         fault_history_[fault_idx_] = error_code;
         fault_idx_++;
         
-        // BUG: Boundary check is wrong!
+        // BUG: Should this be > or >=?
         if (fault_idx_ > FAULT_HISTORY_SIZE) {
             fault_idx_ = 0;
-        }
-    }
-    
-    void print_faults() {
-        for (size_t i = 0; i < FAULT_HISTORY_SIZE; i++) {
-            printf("Fault %zu: 0x%08X\n", i, fault_history_[i]);
         }
     }
 };
@@ -71,10 +225,15 @@ public:
 
 **Step 1: Identify the Bug (2 min)**
 
-Select the `log_fault()` function and type:
+1. Open `demo_buggy.cpp` and scroll to the `FaultLogger` class (line 23)
+2. **Select lines 29-37** (the `log_fault` function)
+3. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
+4. Type:
 ```
 /fix the circular buffer boundary check
 ```
+
+> **Note:** Use Chat mode (not inline `Ctrl+I`) to get detailed explanation of WHY it's wrong.
 
 **Questions to answer:**
 - What's wrong with `if (fault_idx_ > FAULT_HISTORY_SIZE)`?
@@ -145,7 +304,7 @@ The encoder updates position estimates in an 8 kHz interrupt. The main control l
 
 ### Buggy Code
 
-**File:** `buggy_encoder.cpp`
+**File:** `src-ODrive/Firmware/MotorControl/demo_buggy.cpp` — `Encoder` class (lines 52-81)
 
 ```cpp
 class Encoder {
@@ -155,31 +314,26 @@ private:
     float position_estimate_ = 0.0f;
     float velocity_estimate_ = 0.0f;
     int32_t cpr_ = 8192;  // Counts per revolution
-    
+
 public:
     // Called from 8 kHz interrupt
     void update_isr() {
-        int32_t delta = get_delta_count();  // Hardware read
+        int32_t delta = 10;  // Simulated hardware read
         count_ += delta;
+        last_count_ = count_ - delta;
         
         // RACE: Main loop reads these while ISR writes!
         position_estimate_ = (float)count_ / (float)cpr_;
-        velocity_estimate_ = (float)delta / (float)cpr_ * 8000.0f;  // delta * freq
+        velocity_estimate_ = (float)delta / (float)cpr_ * 8000.0f;
     }
-    
+
     // Called from main loop (1 kHz)
     float get_position() {
         return position_estimate_;  // RACE: ISR writes this!
     }
-    
+
     float get_velocity() {
         return velocity_estimate_;  // RACE: ISR writes this!
-    }
-    
-private:
-    int32_t get_delta_count() {
-        // Simulated: read encoder hardware
-        return 10;  // Dummy value
     }
 };
 ```
@@ -188,7 +342,10 @@ private:
 
 **Step 1: Identify the Race (2 min)**
 
-Select both `update_isr()` and `get_position()` functions. Type:
+1. In `demo_buggy.cpp`, scroll to the `Encoder` class (line 52)
+2. **Select lines 63-80** (both `update_isr()` and `get_position()` functions)
+3. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
+4. Type:
 ```
 /fix thread safety issue between ISR and main loop
 
@@ -198,6 +355,8 @@ Context:
 - ARM Cortex-M4 (float not atomic)
 - Need lowest overhead solution
 ```
+
+> **Note:** Chat mode gives multiple solutions with trade-off analysis. Inline chat would just apply one fix.
 
 **Questions to answer:**
 - Why is this a race condition?
@@ -304,28 +463,31 @@ The encoder calculates motor RPM from tick counts. At low speeds it works fine, 
 
 ### Buggy Code
 
-**File:** `buggy_encoder.cpp`
+**File:** `src-ODrive/Firmware/MotorControl/demo_buggy.cpp` — `SpeedCalculator` class (lines 85-109)
 
 ```cpp
-class Encoder {
+class SpeedCalculator {
 private:
     int32_t count_ = 0;
     int32_t last_count_ = 0;
     int32_t cpr_ = 8192;  // Counts per revolution
-    
+
 public:
-    // Called every 125 μs (8 kHz)
+    void set_counts(int32_t current, int32_t last) {
+        count_ = current;
+        last_count_ = last;
+    }
+
+    // BUG: Integer overflow at high speeds!
     float calculate_rpm() {
         int32_t delta_count = count_ - last_count_;
-        last_count_ = count_;
-        
-        int32_t delta_time_us = 125;  // 8 kHz = 125 μs period
-        
-        // BUG: Integer overflow in calculation!
-        // RPM = (counts/revolution) * (revolutions/second) * (60 sec/min)
-        // RPM = (delta_count / cpr) * (1,000,000 us/s / delta_time_us) * 60
+        int32_t delta_time_us = 125;  // 8 kHz = 125 μs
+
+        // BUG: This intermediate calculation overflows int32_t at high speeds!
+        // At 10,000 RPM: delta_count ≈ 1000
+        // 1000 * 60 * 1000000 = 60,000,000,000 (exceeds int32_t max of 2,147,483,647)
         int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
-        
+
         return (float)rpm;
     }
 };
@@ -335,10 +497,15 @@ public:
 
 **Step 1: Understand the Bug (2 min)**
 
-Select the `calculate_rpm()` function and type:
+1. In `demo_buggy.cpp`, scroll to the `SpeedCalculator` class (line 85)
+2. **Select lines 96-106** (the `calculate_rpm` function)
+3. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
+4. Type:
 ```
 /explain why this gives wrong values at high speeds
 ```
+
+> **Note:** `/explain` in Chat mode provides detailed analysis with math breakdown.
 
 **Questions to answer:**
 - At what motor speed does overflow occur?
@@ -356,7 +523,7 @@ Show me the math for when (delta_count * 60 * 1000000) overflows int32_t
 
 **Step 3: Get the Fix (1 min)**
 
-Type:
+With the same code selected, type:
 ```
 /fix use float math to avoid overflow
 ```

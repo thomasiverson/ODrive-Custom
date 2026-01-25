@@ -241,14 +241,16 @@ void log_fault(uint32_t error_code) {
 
 ---
 
-**Step 2: Use /fix**
+**Step 2: Use /fix in Chat**
 
 1. **Select lines 29-37** (the entire `log_fault` function)
-2. Press `Ctrl+I` to open inline chat
+2. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
 3. Type: `/fix the circular buffer boundary check`
 
+> **Note:** Use Chat mode (not inline `Ctrl+I`) to get the detailed explanation. Inline chat gives a quick fix but less explanation.
+
 **Presenter Says:**
-> "I've selected the function and asked /fix to check the circular buffer logic. Notice I'm being specific about what to fix."
+> "I've selected the function and asked /fix to check the circular buffer logic. Notice I'm being specific about what to fix. I'm using Chat mode because it gives us a detailed explanation - great for learning!"
 
 *[Wait for AI response]*
 
@@ -320,7 +322,7 @@ float get_position() {
 **Step 5: Ask /fix for solutions**
 
 1. **Select lines 63-80** (both `update_isr()` and `get_position()` functions)
-2. Press `Ctrl+I` to open inline chat
+2. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
 3. Type:
 ```
 /fix thread safety issue - ISR writes position_, main loop reads it
@@ -331,6 +333,8 @@ Context:
 - ARM Cortex-M4 (float not atomic)
 - Need lowest-overhead solution
 ```
+
+> **Note:** Chat mode gives multiple solutions with trade-off analysis. Inline chat would just apply one fix.
 
 **Presenter Says:**
 > "I'm giving /fix important context: this is an interrupt vs. main loop race, ARM platform, and I need low overhead because this runs 8000 times per second."
@@ -422,8 +426,10 @@ float calculate_rpm() {
 **Step 2: Ask for explanation**
 
 1. **Select lines 96-106** (the `calculate_rpm` function)
-2. Press `Ctrl+I` to open inline chat
+2. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
 3. Type: `/explain why this might give wrong values at high speeds`
+
+> **Note:** `/explain` works best in Chat mode for detailed analysis.
 
 **Expected AI Response:**
 ```
