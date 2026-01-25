@@ -147,7 +147,7 @@ This lesson covers five key areas. Work through them sequentially for the best l
 | Copilot Chat Modes | Ask, Edit, Agent - when to use each | 10 min |
 | Chat Participants & Slash Commands | `@workspace`, `@terminal`, `/fix`, `/explain` | 10 min |
 | Inline Chat & Copilot Edits | In-editor completions, multi-file editing | 10 min |
-| Guided Hands-On | Try each mode with walkthrough | 10 min |
+| **[Hands-On Exercises](hands-on-exercises.md)** | Try each mode with walkthrough | 10 min |
 
 ---
 
@@ -158,7 +158,7 @@ This lesson covers five key areas. Work through them sequentially for the best l
 | Copilot Chat Modes               | Ask, Edit, Agent mode - when to use each            | 10 min |
 | Chat Participants & Slash Cmds   | @workspace, @terminal, /fix, /explain, /tests, /doc | 10 min |
 | Inline Chat & Copilot Edits      | In-editor completions, multi-file editing           | 10 min |
-| **Hands-On:** Explore Features   | Try each mode with walkthrough in VS Code           | 15 min |
+| **[Hands-On Exercises](hands-on-exercises.md)** | Try each mode with walkthrough in VS Code  | 15 min |
 
 ---
 
@@ -521,248 +521,20 @@ Agent Mode can make coordinated changes across multiple files:
 
 ---
 
-## Participant Instructions
+## Hands-On Exercises
 
-### 1. Try Each Copilot Mode
+For detailed hands-on exercises with step-by-step instructions, see the separate exercises document:
 
-- **Ask Mode:**
-  - Try: "Explain this project in simple, layman's terms. What is the high-level functionality? Provide a tour of the folder structure and explain the key external dependencies."
+📋 **[Hands-On Exercises](hands-on-exercises.md)** (15 min)
 
-- **Edit Mode:**
-  - Try: "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in #controller.cpp to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
+The exercises cover:
+- **Exercise 1:** Explore the Codebase (Ask Mode)
+- **Exercise 2:** Generate Documentation (Edit Mode + /doc)
+- **Exercise 3:** Fix a Bug (/fix command)
+- **Exercise 4:** Generate Unit Tests (/tests command)
+- **Exercise 5:** Architecture Deep Dive (@workspace)
 
-- **Agent Mode:**
-  - Try: "Implement a 'Stall Detection' feature. Research how other motor controllers detect stalls. Modifications should likely involve #file:motor.cpp to monitor back-EMF vs current. Create a plan, then add the config flag and the detection logic."
-
-> **💡 Tip:** When referencing files in your prompts, you must manually type `#file:` followed by the filename (e.g., `#file:motor.cpp`). This tells GitHub Copilot to include that file's content as context. The `#file:` prefix won't auto-complete—you need to type it yourself to get file context in your prompt.
-
-### 2. Try Chat Participants & Slash Commands
-
-#### Try Chat Participants:
-
-- **@workspace:**
-  - Try: "@workspace Trace where `ERROR_PHASE_RESISTANCE_OUT_OF_RANGE` is defined in #file:Firmware/odrive-interface.yaml and find all occurrences where it is raised in the C++ firmware files."
-
-- **@terminal:**
-  - Try: "@terminal What is the specific `tup` command to build only the firmware for the v3.6 board variant? Explain the flags."
-
-- **@vscode:**
-  - Try: "@vscode How do I configure `launch.json` to attach the Cortex-Debug extension to an ST-Link OpenOCD server for this project?"
-
-#### Try Slash Commands:
-
-- **Code documentation:**
-  - Select a function in the editor
-  - Press Ctrl+I and type: `/doc`
-
-- **Fix code errors:**
-  - Select code with errors
-  - Press Ctrl+I and type: `/fix`
-
-- **Generate tests:**
-  - Select a function
-  - Press Ctrl+I and type: `/tests`
-
-#### Try Chat Tools:
-
-- **Reference specific files:**
-  - In Chat view: "Explain #file:motor.cpp"
-
-- **Search codebase:**
-  - In Chat view: "Find all error handling code #codebase"
-
----
-
-## Practice Exercises
-
-### Exercise 1: Explore the Codebase
-**Goal:** Use Ask Mode to understand an unfamiliar codebase
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Open Chat view (Ctrl+Alt+I)
-2. Ask: "Explain this project in simple, layman's terms. What is the high-level functionality?"
-3. Follow up: "What are the key external dependencies?"
-4. Follow up: "Show me the main entry point and explain the startup sequence"
-
-**Success Criteria:**
-- ✅ Understand the project's purpose
-- ✅ Know the folder structure
-- ✅ Identify key dependencies
-</details>
-
-<details>
-<summary>💡 Solution</summary>
-
-**Sample prompts that work well:**
-```
-Explain this project in simple, layman's terms. What is the high-level 
-functionality? Provide a tour of the folder structure.
-```
-
-```
-What are the external dependencies in this project? List them with 
-a brief description of what each provides.
-```
-
-```
-Where is the main entry point? Walk me through the startup sequence 
-from power-on to ready state.
-```
-</details>
-
----
-
-### Exercise 2: Generate Documentation
-**Goal:** Use Edit Mode to document a function
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Open a C++ source file (e.g., `motor.cpp`)
-2. Find a function without documentation
-3. Select the function signature
-4. Press Ctrl+I and type: `/doc`
-5. Review and accept the generated Doxygen comments
-
-**Success Criteria:**
-- ✅ Function has `@brief` description
-- ✅ Parameters are documented with `@param`
-- ✅ Return value documented with `@return`
-</details>
-
-<details>
-<summary>💡 Solution</summary>
-
-**Alternative approaches:**
-```
-Add Doxygen-style comments to this function, including @brief, 
-@param for each parameter, and @return.
-```
-
-You can also be more specific:
-```
-Document this function for embedded developers. Include:
-- Purpose and when to call it
-- Parameter ranges and units
-- Return value meaning
-- Thread-safety notes
-- Example usage
-```
-</details>
-
----
-
-### Exercise 3: Fix a Bug with /fix
-**Goal:** Use slash commands to diagnose and fix issues
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Find code with a known issue or warning
-2. Select the problematic code
-3. Press Ctrl+I and type: `/fix`
-4. Review the suggested fix
-5. Accept or refine the solution
-
-**Success Criteria:**
-- ✅ Issue is correctly identified
-- ✅ Fix is appropriate and complete
-- ✅ Code compiles without warnings
-</details>
-
-<details>
-<summary>💡 Solution</summary>
-
-**For more context-aware fixes:**
-```
-/fix This code has a race condition when accessed from ISR context. 
-Suggest a thread-safe alternative.
-```
-
-**For embedded-specific fixes:**
-```
-/fix This uses dynamic allocation. Refactor to use static allocation 
-appropriate for embedded systems.
-```
-</details>
-
----
-
-### Exercise 4: Generate Unit Tests
-**Goal:** Use /tests to create test coverage
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. Open a file with a utility function
-2. Select the function you want to test
-3. In Chat, type: `/tests`
-4. Review the generated test cases
-5. Ask for additional edge cases if needed
-
-**Success Criteria:**
-- ✅ Tests cover normal cases
-- ✅ Tests cover edge cases
-- ✅ Tests follow project testing framework
-</details>
-
-<details>
-<summary>💡 Solution</summary>
-
-**For comprehensive test generation:**
-```
-/tests Generate doctest unit tests for this function. Include:
-- Normal operation with typical inputs
-- Edge cases (zero, max values, boundaries)
-- Error conditions and invalid inputs
-- Performance-sensitive cases if applicable
-```
-
-**Follow-up for more tests:**
-```
-Add tests for thread-safety: what happens if this function is 
-called from multiple threads simultaneously?
-```
-</details>
-
----
-
-### Exercise 5: Use @workspace for Architecture
-**Goal:** Understand project architecture using chat participants
-
-<details>
-<summary>📋 Instructions</summary>
-
-1. In Chat, ask: `@workspace How does the motor control loop work?`
-2. Follow up: `@workspace Show me the relationship between Axis, Motor, and Encoder classes`
-3. Ask: `@workspace Where are errors defined and how are they propagated?`
-
-**Success Criteria:**
-- ✅ Understand control loop architecture
-- ✅ See class relationships
-- ✅ Understand error handling patterns
-</details>
-
-<details>
-<summary>💡 Solution</summary>
-
-**Effective @workspace queries:**
-```
-@workspace Explain the high-level architecture of Firmware/MotorControl. 
-How do the Axis, Motor, and Encoder classes interact during the control loop?
-```
-
-```
-@workspace Create a Mermaid diagram showing the state machine in axis.cpp
-```
-
-```
-@workspace What error codes are defined and where are they raised? 
-Show me the error propagation pattern.
-```
-</details>
+> 💡 **Tip:** Focus on Exercises 1-3 if short on time. They demonstrate the core interaction patterns.
 
 ---
 
