@@ -333,17 +333,25 @@ Bad:  "I got an error about uint32_t"
 ## 2. /fix for Bug Resolution (10 min)
 
 ### What is /fix?
-**🎯 Copilot Modes: Chat + Inline**
+**🎯 Copilot Modes: Chat (recommended) + Inline**
 
-**Files to demonstrate:**
-- [src-ODrive/Firmware/MotorControl/motor.cpp](../../src-ODrive/Firmware/MotorControl/motor.cpp) - Logic bug examples
-- [src-ODrive/Firmware/MotorControl/axis.cpp](../../src-ODrive/Firmware/MotorControl/axis.cpp) - State machine debugging
+**Demo file:**
+- [src-ODrive/Firmware/MotorControl/demo_buggy.cpp](../../src-ODrive/Firmware/MotorControl/demo_buggy.cpp) - Pre-created bugs for exercises
 
 The `/fix` command is a **code-focused debugging assistant** that:
 - Analyzes your code for bugs
 - Suggests specific fixes
 - Explains the root cause
 - Can be applied directly to your code
+
+### Chat vs Inline Mode
+
+| Mode | Shortcut | Best For |
+|------|----------|----------|
+| **Chat** | `Ctrl+Alt+I` | Detailed explanations, multiple solutions, learning |
+| **Inline** | `Ctrl+I` | Quick fixes, simple bugs, just apply the fix |
+
+> **Tip:** For demos and learning, use **Chat mode** to see the full explanation.
 
 ### /fix vs @terminal
 
@@ -356,16 +364,18 @@ The `/fix` command is a **code-focused debugging assistant** that:
 | **Works on terminal output** | **Works on code selection** |
 
 ### /fix Workflow
-**🎯 Copilot Mode: Inline + Chat**
+**🎯 Copilot Mode: Chat (for detailed explanations)**
 
 **Step 1: Select the buggy code**
 - Highlight the function or block with the bug
 - Or position cursor on the error line
 
-**Step 2: Invoke /fix**
-- Type `/fix` in chat
+**Step 2: Invoke /fix in Chat**
+- Open Chat panel (`Ctrl+Alt+I`)
+- Type `/fix` with description
 - Or select code → Right-click → "Fix using Copilot"
-- Or use inline chat: `Ctrl+I` then type `/fix`
+
+> **Note:** Inline chat (`Ctrl+I`) gives quick fixes but less explanation. Use Chat mode for learning.
 
 **Step 3: Review the suggestion**
 - AI shows the fix with explanation
@@ -380,21 +390,23 @@ The `/fix` command is a **code-focused debugging assistant** that:
 
 #### 1. **Off-by-One Errors**
 
+**File:** `demo_buggy.cpp` — FaultLogger class (line 29-37)
+
 **Buggy Code:**
 ```cpp
-// motor.cpp - Circular buffer implementation
-void Motor::log_fault(Error error) {
-    fault_history_[fault_index_] = error;
-    fault_index_++;
-    if (fault_index_ > FAULT_HISTORY_SIZE) {  // BUG!
-        fault_index_ = 0;
+// Circular buffer implementation
+void FaultLogger::log_fault(uint32_t error_code) {
+    fault_history_[fault_idx_] = error_code;
+    fault_idx_++;
+    if (fault_idx_ > FAULT_HISTORY_SIZE) {  // BUG!
+        fault_idx_ = 0;
     }
 }
 ```
 
 **💬 Chat Mode Prompt (Select code + /fix):**
 ```
-/fix this circular buffer logic
+/fix the circular buffer boundary check
 ```
 
 **AI Response:**
@@ -402,11 +414,11 @@ void Motor::log_fault(Error error) {
 Off-by-one error detected. The condition should be '>=' not '>'.
 
 With FAULT_HISTORY_SIZE = 10, valid indices are 0-9.
-Current code: fault_index_ > 10 means it wraps at 11, causing buffer overflow.
+Current code: fault_idx_ > 10 means it wraps at 11, causing buffer overflow.
 
 Fix:
-    if (fault_index_ >= FAULT_HISTORY_SIZE) {
-        fault_index_ = 0;
+    if (fault_idx_ >= FAULT_HISTORY_SIZE) {
+        fault_idx_ = 0;
     }
 ```
 
@@ -441,15 +453,20 @@ Or initialize watchdog_timer_ in constructor to avoid nullptr.
 
 #### 3. **Race Conditions (Thread Safety)**
 
+**File:** `demo_buggy.cpp` — Encoder class (lines 63-80)
+
 **Buggy Code:**
 ```cpp
-// Called from interrupt
-void Encoder::handle_index_pulse() {
-    index_found_ = true;
-    position_estimate_ = 0.0f;  // RACE: Main loop reads this!
+// Called from 8 kHz interrupt
+void Encoder::update_isr() {
+    int32_t delta = 10;
+    count_ += delta;
+    // RACE: Main loop reads these while ISR writes!
+    position_estimate_ = (float)count_ / (float)cpr_;
+    velocity_estimate_ = (float)delta / (float)cpr_ * 8000.0f;
 }
 
-// Called from main loop
+// Called from main loop (1 kHz)
 float Encoder::get_position() {
     return position_estimate_;  // RACE: ISR writes this!
 }
@@ -458,6 +475,12 @@ float Encoder::get_position() {
 **💬 Chat Mode Prompt (Select code + /fix):**
 ```
 /fix thread safety issue between ISR and main loop
+
+Context:
+- ISR runs at 8 kHz
+- Main loop at 1 kHz
+- ARM Cortex-M4 (float not atomic)
+- Need lowest-overhead solution
 ```
 
 **AI Response:**
@@ -515,39 +538,55 @@ If heap is required:
 
 #### 5. **Integer Overflow**
 
+**File:** `demo_buggy.cpp` — SpeedCalculator class (lines 96-106)
+
 **Buggy Code:**
 ```cpp
-// Calculate velocity from encoder ticks
-float Encoder::get_velocity() {
-    int32_t delta_ticks = current_ticks_ - last_ticks_;
-    float delta_time = 0.000125f;  // 8 kHz = 125 μs
-    return (delta_ticks / encoder_cpr_) * (1.0f / delta_time);  // Overflow!
+// BUG: Integer overflow at high speeds!
+float SpeedCalculator::calculate_rpm() {
+    int32_t delta_count = count_ - last_count_;
+    int32_t delta_time_us = 125;  // 8 kHz = 125 μs
+
+    // BUG: This intermediate calculation overflows int32_t at high speeds!
+    // At 10,000 RPM: delta_count ≈ 1000
+    // 1000 * 60 * 1000000 = 60,000,000,000 (exceeds int32_t max)
+    int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
+
+    return (float)rpm;
 }
 ```
 
 **💬 Chat Mode Prompt (Select code + /fix):**
 ```
-/fix potential overflow in velocity calculation
+/explain why this gives wrong values at high speeds
+```
+
+Then:
+```
+/fix use float math to avoid overflow
 ```
 
 **AI Response:**
 ```
-Integer overflow risk if delta_ticks * (1/delta_time) exceeds int32_t range.
+Integer overflow in the calculation:
 
-Also, integer division 'delta_ticks / encoder_cpr_' loses precision.
+At 10,000 RPM with delta_count = 1000:
+    1000 * 60 * 1000000 = 60,000,000,000
+    
+This exceeds int32_t max value (2,147,483,647), causing overflow.
 
-Fix:
-    float velocity = (float)delta_ticks / (float)encoder_cpr_ / delta_time;
-
-Or better:
-    float velocity = static_cast<float>(delta_ticks) / 
-                     static_cast<float>(encoder_cpr_) / delta_time;
-
-Cast to float BEFORE division to preserve precision.
+Fix - convert to float early:
+    float calculate_rpm() {
+        float delta_count = (float)(count_ - last_count_);
+        float delta_time_s = 125e-6f;  // 125 μs in seconds
+        float revolutions = delta_count / (float)cpr_;
+        float rpm = (revolutions / delta_time_s) * 60.0f;
+        return rpm;
+    }
 ```
 
 ### /fix with Embedded Systems Context
-**🎯 Copilot Mode: Chat + Inline**
+**🎯 Copilot Mode: Chat**
 
 When using `/fix` for embedded code, add context:
 
@@ -901,15 +940,16 @@ void Encoder::get_estimates(float* pos, float* vel) {
 
 ### Bug 3: Integer Overflow in Speed Calculation (5 min)
 
-**File:** `encoder.cpp` (hypothetical)
+**File:** `demo_buggy.cpp` — SpeedCalculator class (lines 96-106)
 
 **Buggy Code:**
 ```cpp
-float Encoder::calculate_rpm() {
+float SpeedCalculator::calculate_rpm() {
     int32_t delta_count = count_ - last_count_;
     int32_t delta_time_us = 125;  // 8 kHz
     
     // BUG: Intermediate overflow!
+    // 1000 * 60 * 1000000 = 60 billion (exceeds int32_t max)
     int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
     
     return (float)rpm;
@@ -918,14 +958,17 @@ float Encoder::calculate_rpm() {
 
 **Your Task:**
 
-**Step 1:** Use Copilot to detect overflow
+**Step 1:** Use Copilot Chat to detect overflow
+1. Open `demo_buggy.cpp`, scroll to SpeedCalculator class (line 85)
+2. Select lines 96-106 (the `calculate_rpm` function)
+3. Open Chat (`Ctrl+Alt+I`) and type:
 ```
-Select function → "/fix potential integer overflow"
+/explain why this gives wrong values at high speeds
 ```
 
 **Step 2:** Understand the problem
 ```
-"Show me the math for when this overflows"
+Show me the math for when (delta_count * 60 * 1000000) overflows int32_t
 ```
 
 **Step 3:** Apply the fix

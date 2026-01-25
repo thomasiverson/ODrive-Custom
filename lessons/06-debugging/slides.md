@@ -158,26 +158,28 @@ but not defined. Check:
 ### Slide 9: What is /fix?
 **Visual:** Before/after code example
 
+**File:** `demo_buggy.cpp` — FaultLogger class
+
 **Before:**
 ```cpp
 void log_fault(uint32_t error) {
     fault_history_[fault_idx_] = error;
     fault_idx_++;
-    if (fault_idx_ > HISTORY_SIZE) {  // BUG!
+    if (fault_idx_ > FAULT_HISTORY_SIZE) {  // BUG!
         fault_idx_ = 0;
     }
 }
 ```
 
-**After /fix:**
+**After /fix (in Chat mode):**
 ```cpp
-// Select function → Type: /fix boundary check
-if (fault_idx_ >= HISTORY_SIZE) {  // FIXED!
+// Select function → Chat: /fix boundary check
+if (fault_idx_ >= FAULT_HISTORY_SIZE) {  // FIXED!
     fault_idx_ = 0;
 }
 ```
 
-**Key Point:** AI understands the logic error
+**Key Point:** Chat mode explains WHY, inline just applies fix
 
 ---
 
@@ -241,14 +243,14 @@ Need tests for fix? ──YES──→ @ODrive-QA
 
 **✅ DO:**
 - Select the buggy function/block
-- Describe expected behavior
+- Use **Chat mode** for detailed explanations
 - Add platform constraints
-- Specify what's wrong
+- Describe expected behavior
 
 **❌ DON'T:**
 - Say "fix this" without context
+- Use inline (`Ctrl+I`) when you need explanation
 - Select entire file
-- Ignore safety implications
 - Blindly accept first suggestion
 
 ---
@@ -288,11 +290,13 @@ float rpm = ((float)delta / (float)cpr) * (60.0f / dt_seconds);
 **Text:**
 > 🎬 **LIVE DEMO: /fix for Logic Bugs**
 > 
-> **Scenarios:**
-> 1. Off-by-one error in circular buffer
-> 2. Race condition in encoder ISR
+> **File:** `demo_buggy.cpp`
 > 
-> Watch how /fix:
+> **Scenarios:**
+> 1. Off-by-one error in circular buffer (FaultLogger class)
+> 2. Race condition in encoder ISR (Encoder class)
+> 
+> Watch how /fix in **Chat mode**:
 > - Identifies the root cause
 > - Suggests multiple solutions
 > - Explains trade-offs
@@ -518,9 +522,11 @@ float get_position() const {  // Now const-correct
 **Text:**
 > 🎬 **LIVE DEMO: Full Debug Workflow**
 > 
+> **File:** `demo_buggy.cpp` — SpeedCalculator class
+> 
 > **Scenario:** Integer overflow in RPM calculation
 > 
-> Complete workflow:
+> Complete workflow (all in **Chat mode**):
 > 1. Use /explain to understand bug
 > 2. Use /fix to get solution
 > 3. Use @terminal to verify compilation
@@ -539,21 +545,21 @@ float get_position() const {  // Now const-correct
 ### Slide 23: Debugging Exercises
 **Layout:** Exercise list
 
-**Fix 3 bugs in 15 minutes:**
+**Fix 3 bugs in `demo_buggy.cpp` in 15 minutes:**
 
-1. **⭐⭐ Circular Buffer (5 min)**
-   - Off-by-one boundary check
-   - Use /fix to identify and correct
+1. **⭐⭐ Circular Buffer (5 min)** — FaultLogger class
+   - Off-by-one boundary check (lines 29-37)
+   - Use /fix in Chat mode
 
-2. **⭐⭐⭐ Race Condition (5 min)**
-   - ISR writes, main loop reads
+2. **⭐⭐⭐ Race Condition (5 min)** — Encoder class
+   - ISR writes, main loop reads (lines 63-80)
    - Evaluate multiple solutions
 
-3. **⭐⭐ Integer Overflow (5 min)**
-   - RPM calculation overflow
+3. **⭐⭐ Integer Overflow (5 min)** — SpeedCalculator class
+   - RPM calculation overflow (lines 96-106)
    - Use /explain then /fix
 
-**Files:** See `hands-on-exercises.md`
+**Files:** `demo_buggy.cpp` + `hands-on-exercises.md`
 
 ---
 
