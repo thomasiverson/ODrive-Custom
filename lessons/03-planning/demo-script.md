@@ -47,8 +47,15 @@ Create a header file for a motor controller class
 
 **Type in Chat:**
 ```
-Create a C++ class to manage encoder readings
+Add a method to #file:Firmware/Drivers/STM32/stm32_gpio.cpp that checks if the GPIO pin is currently high.
+
+The method should:
+- Return a boolean
+- Be named following our conventions
+- Include brief documentation
 ```
+
+✅ **Check References panel** → `cpp_coding_standards.instructions.md` should appear
 
 **Expected Output - Copilot follows `cpp_coding_standards.instructions.md`:**
 
@@ -59,7 +66,9 @@ Create a C++ class to manage encoder readings
 > - ✅ `is`/`has` prefixes for booleans (`isCalibrated()`, `hasError()`)
 > - ✅ Trailing underscore for private members (`position_`, `velocity_`)
 > - ✅ `kPascalCase` for constants (`kMaxPosition`, `kDefaultTimeout`)
-> - ✅ `enum class` with PascalCase values"
+> - ✅ `enum class` with PascalCase values
+>
+> And notice in the References panel - our instruction file is loaded!"
 
 ---
 
@@ -105,26 +114,6 @@ Create a Python script to log motor temperature
 ---
 
 ### Additional Prompts to Try
-
-**Header Files:**
-```
-Create a header file for an SPI driver
-Add a new header file for CAN message parsing
-```
-
-**C++ Source Files:**
-```
-Implement a velocity controller in C++
-Create a .cpp file with a function to calculate motor torque
-```
-
-**Python Files:**
-```
-Write a Python class to configure ODrive parameters
-Create a Python function to validate motor configuration
-```
-
-**Explicit File References (Shows Instructions in References Panel):**
 
 > 💡 **Tip:** Using `#file:` syntax lets you verify which instructions are applied by checking the References panel!
 

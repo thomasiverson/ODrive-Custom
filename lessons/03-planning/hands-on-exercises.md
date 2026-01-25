@@ -135,7 +135,19 @@ description: 'C++ coding standards for embedded firmware'
 
 ### 🧪 Test It: Try This Prompt
 
-**Test: Create a C++ Class**
+**Test 1: Add a Method to Existing File**
+```
+Add a method to #file:Firmware/Drivers/STM32/stm32_gpio.cpp that checks if the GPIO pin is currently high.
+
+The method should:
+- Return a boolean
+- Be named following our conventions
+- Include Doxygen documentation
+```
+
+✅ **Check References panel** → `cpp_coding_standards.instructions.md` should appear
+
+**Test 2: Create a New Class**
 ```
 Create a C++ class to manage motor temperature readings.
 
