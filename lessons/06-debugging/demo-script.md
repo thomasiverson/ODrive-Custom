@@ -201,8 +201,9 @@ Or if you don't need this function yet, remove the declaration from motor.hpp.
 ## Demo 2: /fix for Bug Resolution (8 min)
 
 ### Setup
-- Have a file with buggy code ready
-- Could use a test file or modify existing ODrive code in `src-ODrive/` temporarily
+- Open the pre-created demo file: `src-ODrive/Firmware/MotorControl/demo_buggy.cpp`
+- This file contains three intentional bugs for demonstration
+- No build required - we're demonstrating /fix on logic bugs
 
 ### Demo Flow
 
@@ -213,12 +214,14 @@ Or if you don't need this function yet, remove the declaration from motor.hpp.
 
 ### Off-By-One Error
 
-**Step 1: Show buggy code**
+**Step 1: Open the demo file**
 
-**Create or open a file with this code:**
+Open `src-ODrive/Firmware/MotorControl/demo_buggy.cpp` and scroll to the `FaultLogger` class (around line 23).
+
+**The buggy code (lines 29-37):**
 ```cpp
-// Circular buffer for fault logging
-void Motor::log_fault(uint32_t error_code) {
+// BUG: Can you spot the off-by-one error?
+void log_fault(uint32_t error_code) {
     fault_history_[fault_idx_] = error_code;
     fault_idx_++;
     
@@ -240,20 +243,12 @@ void Motor::log_fault(uint32_t error_code) {
 
 **Step 2: Use /fix**
 
-**Select the entire function** (highlight lines)
-
-**Type in Copilot Chat:**
-```
-/fix the circular buffer logic
-```
-
-**Or use Inline Chat:**
-- Keep code selected
-- Press `Ctrl+I` (or `Cmd+I` on Mac)
-- Type `/fix off-by-one error in array bounds`
+1. **Select lines 29-37** (the entire `log_fault` function)
+2. Press `Ctrl+I` to open inline chat
+3. Type: `/fix the circular buffer boundary check`
 
 **Presenter Says:**
-> "I've selected the function and asked /fix to check the circular buffer logic."
+> "I've selected the function and asked /fix to check the circular buffer logic. Notice I'm being specific about what to fix."
 
 *[Wait for AI response]*
 
@@ -296,30 +291,37 @@ Explanation:
 
 **Step 4: Show threading bug**
 
-**Present this code:**
+**In the same file (`demo_buggy.cpp`), scroll to the `Encoder` class (around line 52).**
+
+**The buggy code (lines 63-76):**
 ```cpp
 // Called from 8 kHz interrupt
-void Encoder::update_isr() {
-    count_ += get_delta();
-    position_ = (float)count_ / (float)cpr_;  // RACE!
+void update_isr() {
+    int32_t delta = 10;  // Simulated hardware read
+    count_ += delta;
+    last_count_ = count_ - delta;
+    
+    // RACE: Main loop reads these while ISR writes!
+    position_estimate_ = (float)count_ / (float)cpr_;
+    velocity_estimate_ = (float)delta / (float)cpr_ * 8000.0f;
 }
 
 // Called from main loop (1 kHz)
-float Axis::get_position() {
-    return encoder_.position_;  // RACE!
+float get_position() {
+    return position_estimate_;  // RACE: ISR writes this!
 }
 ```
 
 **Presenter Says:**
-> "This is trickier - a race condition. The ISR writes `position_` at 8 kHz while the main loop reads it at 1 kHz. On ARM, float assignment isn't atomic, so we can get corrupted reads."
+> "This is trickier - a race condition. The ISR writes `position_estimate_` at 8 kHz while the main loop reads it at 1 kHz. On ARM, float assignment isn't atomic, so we can get corrupted reads."
 
 ---
 
 **Step 5: Ask /fix for solutions**
 
-**Select both functions** (or select just the ISR and explain the context)
-
-**Type:**
+1. **Select lines 63-80** (both `update_isr()` and `get_position()` functions)
+2. Press `Ctrl+I` to open inline chat
+3. Type:
 ```
 /fix thread safety issue - ISR writes position_, main loop reads it
 
@@ -383,8 +385,8 @@ Recommendation for 8 kHz ISR: Option 1 (interrupt disable) - only ~10 cycles.
 ## Demo 3: Real-World Debug Session (9 min)
 
 ### Setup
-- Have a file with a realistic bug (integer overflow in calculation)
-- This demonstrates the full workflow
+- Continue using `demo_buggy.cpp` - scroll to the `SpeedCalculator` class (around line 85)
+- This demonstrates the full /explain → /fix → test workflow
 
 ### Demo Flow
 
@@ -395,15 +397,19 @@ Recommendation for 8 kHz ISR: Option 1 (interrupt disable) - only ~10 cycles.
 
 **Step 1: Show the buggy code**
 
-**Present this code:**
+**In `demo_buggy.cpp`, scroll to the `SpeedCalculator` class (line 85). The buggy code is lines 96-106:**
+
 ```cpp
-float Encoder::calculate_rpm() {
+// BUG: Integer overflow at high speeds!
+float calculate_rpm() {
     int32_t delta_count = count_ - last_count_;
     int32_t delta_time_us = 125;  // 8 kHz = 125 μs
-    
-    // Calculate RPM: (delta_count / cpr) * (60,000,000 / delta_time_us)
+
+    // BUG: This intermediate calculation overflows int32_t at high speeds!
+    // At 10,000 RPM: delta_count ≈ 1000
+    // 1000 * 60 * 1000000 = 60,000,000,000 (exceeds int32_t max of 2,147,483,647)
     int32_t rpm = (delta_count * 60 * 1000000) / (cpr_ * delta_time_us);
-    
+
     return (float)rpm;
 }
 ```
@@ -415,10 +421,9 @@ float Encoder::calculate_rpm() {
 
 **Step 2: Ask for explanation**
 
-**Select the function, type:**
-```
-/explain why this might give wrong values at high speeds
-```
+1. **Select lines 96-106** (the `calculate_rpm` function)
+2. Press `Ctrl+I` to open inline chat
+3. Type: `/explain why this might give wrong values at high speeds`
 
 **Expected AI Response:**
 ```
@@ -442,7 +447,7 @@ divided by (cpr_ * delta_time_us), producing garbage.
 
 **Step 3: Get the fix**
 
-**Type:**
+**With the same code still selected, type:**
 ```
 /fix integer overflow - use float math
 ```
