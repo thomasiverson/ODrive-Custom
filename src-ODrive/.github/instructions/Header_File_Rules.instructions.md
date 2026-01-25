@@ -1,9 +1,13 @@
 ---
-applyTo: '**/*.{h,hpp}'
-description: 'Header file rules for C/C++ headers. Apply when creating or reviewing header files (.h, .hpp).'
+applyTo: "**/*.h,**/*.hpp"
+description: "C++ header file standards for ODrive firmware. Apply when writing or reviewing header files (.h, .hpp)."
 ---
 
-# Header File Rules
+# C++ Header File Standards
+
+This document defines coding standards for C++ header files (`.hpp`, `.h`).
+
+---
 
 ## Include Guards
 

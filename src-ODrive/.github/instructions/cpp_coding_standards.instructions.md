@@ -1,9 +1,11 @@
 ---
-applyTo: '**/*.{cpp,c,hpp,h,cc}'
-description: 'C++ coding standards for ODrive firmware. Apply when writing, reviewing, or discussing C++, C, or header files (.cpp, .c, .hpp, .h, .cc).'
+applyTo: "**/*.cpp,**/*.c,**/*.cc"
+description: "C++ source file standards for ODrive firmware. Apply when writing or reviewing implementation files (.cpp, .c, .cc)."
 ---
 
-# C++ Coding Practices and Guidelines
+# C++ Source File Standards
+
+This document defines coding standards for C++ source/implementation files.
 
 ---
 
