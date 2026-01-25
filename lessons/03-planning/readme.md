@@ -884,19 +884,9 @@ Plan Mode helps you manage project planning using GitHub Issues with Copilot. Yo
 
 ### Plan Mode Workflow
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│     Legacy      │────▶│  GHCP reviews   │────▶│    Verifies     │
-│   Application   │     │  and documents  │     │  documentation  │
-│                 │     │    codebase     │     │   complete      │
-└─────────────────┘     └─────────────────┘     └────────┬────────┘
-                                                         │
-┌─────────────────┐     ┌─────────────────┐     ┌────────▼────────┐
-│   Agent mode    │◀────│  GHCP in Plan   │◀────│   Works with    │
-│    follows      │     │  Mode generates │     │   GHCP to       │
-│ plan to implement│     │  plan for PRD   │     │ generate PRD    │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
+![Migrating Apps with GitHub Copilot](.\images\planning-process.png)
+
+*Plan Mode workflow: Legacy application → GHCP documents codebase → Verify & refine → Generate PRD → Plan Mode creates structured plan → Agent mode implements.*
 
 ### When to Use Plan Mode
 
