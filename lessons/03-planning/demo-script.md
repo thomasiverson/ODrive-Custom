@@ -185,7 +185,7 @@ The method should:
 
 **Create file:** `.github/prompts/add-doxygen.prompt.md`
 
-```markdown
+````markdown
 ---
 mode: edit
 description: Add Doxygen documentation to selected code
@@ -228,7 +228,7 @@ Add comprehensive Doxygen documentation to the selected code following these rul
 ```
 
 Apply this documentation style to the selected code.
-```
+````
 
 **Presenter Says:**
 > "Now I can use this prompt anytime with a slash command."
@@ -260,7 +260,7 @@ Apply this documentation style to the selected code.
 
 **Create file:** `.github/prompts/generate-test.prompt.md`
 
-```markdown
+````markdown
 ---
 mode: edit
 description: Generate unit tests for selected code
@@ -294,7 +294,7 @@ TEST(TestSuite, FunctionName_Scenario_Expected) {
 ```
 
 Generate comprehensive tests for the selected code.
-```
+````
 
 **Presenter Says:**
 > "See `${input:framework}`? This creates an input variable. When I use the prompt, Copilot asks for the value."
@@ -324,68 +324,54 @@ Generate comprehensive tests for the selected code.
 **Presenter Says:**
 > "Custom agents are specialized personas with specific expertise and tools. Let me create one."
 
-**Create file:** `.github/agents/firmware-reviewer.agent.md`
+**Create file:** `.github/agents/firmware-engineer.agent.md`
 
-```markdown
+````markdown
 ---
-name: Firmware Reviewer
-description: Reviews embedded C++ code for quality, safety, and best practices
+name: 'Firmware Engineer'
+description: 'Embedded C++ developer for motor control firmware'
 tools: ['codebase', 'file', 'terminal']
 ---
 
-# Firmware Code Reviewer
+# Firmware Engineer
 
-You are an expert embedded systems engineer specializing in code review for motor control firmware. You focus on safety-critical code quality.
+You are an embedded systems engineer specializing in motor control firmware.
 
 ## Your Expertise
-- MISRA C++ compliance
-- Real-time systems constraints
-- Memory safety (no dynamic allocation)
-- Interrupt-safe programming
-- Motor control algorithms (FOC, sensorless, etc.)
+- STM32 microcontrollers (F4/H7 series)
+- Field-Oriented Control (FOC) algorithms
+- Real-time systems and FreeRTOS
+- Communication protocols (USB, CAN, UART, SPI)
 
-## Review Checklist
+## Coding Standards
 
-When reviewing code, always check:
+Follow these conventions:
+- **Classes**: PascalCase (e.g., `MotorController`)
+- **Methods**: camelCase (e.g., `getPosition()`)
+- **Constants**: kPascalCase (e.g., `kMaxVoltage`)
+- **Private members**: trailing underscore (e.g., `position_`)
 
-### Safety
-- [ ] No dynamic memory allocation
-- [ ] No exceptions in interrupt context
-- [ ] Proper volatile usage for hardware registers
-- [ ] Correct interrupt enable/disable patterns
-- [ ] No race conditions in shared data
-
-### Quality
-- [ ] Functions under 50 lines
-- [ ] Cyclomatic complexity under 10
-- [ ] Proper const correctness
-- [ ] Meaningful variable names
-- [ ] Complete documentation
-
-### Performance
-- [ ] No unnecessary copies
-- [ ] Appropriate use of inline
-- [ ] Consider cache effects
-- [ ] Minimize ISR execution time
+## Embedded Constraints
+- No dynamic memory allocation
+- No exceptions (use error codes)
+- Use volatile for hardware registers
+- Keep ISRs short
 
 ## Output Format
 
-For each issue found:
-1. **Severity**: Critical / Major / Minor
-2. **Location**: File and line
-3. **Issue**: Description
-4. **Fix**: Suggested solution
-5. **Why**: Explanation of the risk
-
-Always end with a summary: issues found, risk assessment, and approval recommendation.
-```
+When reviewing code:
+1. **Issue**: Description of the problem
+2. **Location**: File and line number  
+3. **Fix**: Suggested solution
+4. **Why**: Explanation of the risk
+````
 
 **Presenter Says:**
 > "This agent has:
-> - A specific **persona** (firmware reviewer)
+> - A specific **persona** (firmware engineer)
 > - Defined **expertise** areas
-> - A **checklist** to follow
-> - An **output format** to use
+> - **Coding standards** to follow
+> - An **output format** for consistency
 >
 > Let's try it!"
 
@@ -393,30 +379,35 @@ Always end with a summary: issues found, risk assessment, and approval recommend
 
 **Open a code file**
 
-**In Chat, select the agent dropdown → Choose "Firmware Reviewer"**
+**In Chat, select the agent dropdown → Choose "Firmware Engineer"**
 
 **Or type:**
 ```
-@firmware-reviewer Review this file for safety and quality issues: #file:Firmware/MotorControl/motor.cpp
+@firmware-engineer Review #file:Firmware/Drivers/STM32/stm32_gpio.cpp
+
+Check for:
+- Proper volatile usage
+- Interrupt safety  
+- Naming convention compliance
 ```
 
 **Presenter Says:**
 > "Watch how the agent:
-> - Follows its checklist
-> - Uses its expertise
+> - Uses its embedded expertise
+> - Applies coding standards
 > - Formats output consistently
 >
-> Every team member gets the same thorough review!"
+> Every team member gets the same quality review!"
 
 **Show the structured output:**
 
 > "Notice the consistent format:
-> - Severity ratings
-> - Specific locations
+> - Clear issue descriptions
+> - Specific file locations
 > - Actionable fixes
 > - Risk explanations
 >
-> This is far more useful than generic feedback!"
+> This is institutional knowledge, available to everyone!"
 
 ### Part C: Agent with Tool Access (2 min)
 
@@ -456,103 +447,75 @@ tools: ['codebase', 'file', 'terminal']
 **Show folder structure:**
 ```
 .github/skills/
-└── misra-compliance/
+└── build-toolchain/
     ├── SKILL.md              # Main skill definition
-    ├── rules/
-    │   └── misra-rules.md    # Reference material
-    ├── examples/
-    │   └── compliant-code.cpp
-    └── scripts/
-        └── check-misra.py
+    ├── scripts/
+    │   ├── build_firmware.py  # Build script
+    │   └── search_symbol.py   # Symbol search
+    └── configs/
+        └── board-configs.md   # Board configuration reference
 ```
 
 **Presenter Says:**
 > "A skill is a folder with:
 > - `SKILL.md` - The main instructions
-> - `references/` - Documentation the AI can read
-> - `templates/` - Code patterns to follow
-> - `scripts/` - Tools the AI can run"
+> - `scripts/` - Tools the AI can run
+> - `configs/` - Reference documentation
+>
+> The AI can read these files and use the scripts!"
 
 ### Part B: Create a Skill (3 min)
 
-**Create folder:** `.github/skills/misra-compliance/`
+**Create folder:** `.github/skills/build-toolchain/`
 
-**Create file:** `.github/skills/misra-compliance/SKILL.md`
+**Create file:** `.github/skills/build-toolchain/SKILL.md`
 
-```markdown
+````markdown
 ---
-name: MISRA Compliance
-description: Check and fix MISRA C++ violations in embedded code
+name: 'Build Toolchain'
+description: 'Build firmware and run tests for embedded projects'
+status: production
 ---
 
-# MISRA C++ Compliance Skill
+# Build Toolchain Skill
 
-This skill helps ensure code follows MISRA C++ 2008/2023 guidelines for safety-critical embedded systems.
+Build, test, and inspect firmware projects.
 
 ## Capabilities
 
-1. **Analyze** - Identify MISRA violations in code
-2. **Fix** - Suggest compliant alternatives
-3. **Explain** - Describe why rules exist
+| Command | Purpose |
+|---------|---------|  
+| Build firmware | Compile for target board |
+| Run tests | Execute unit test suite |
+| Search symbols | Find functions and classes |
+| List configs | Show available board configurations |
 
-## Key MISRA Rules Reference
+## Usage Examples
 
-### Required Rules (Must Fix)
-- **Rule 0-1-1**: No unreachable code
-- **Rule 5-0-3**: No implicit integral conversions
-- **Rule 6-4-2**: All if...else chains need final else
-- **Rule 7-5-4**: Functions must have single exit point
-
-### Advisory Rules (Should Fix)
-- **Rule 3-9-2**: Use typedefs for all basic types
-- **Rule 5-0-9**: Avoid explicit casts when possible
-
-## When to Apply
-
-Use this skill when:
-- Reviewing safety-critical code
-- Preparing for certification (ISO 26262, IEC 61508)
-- Analyzing motor control or power electronics code
-
-## Output Format
-
-For each violation:
-```
-MISRA Violation: Rule X-Y-Z (Required/Advisory)
-Location: file.cpp:line
-Issue: Description
-Fix: Suggested compliant code
-```
+### Build Firmware
+```powershell
+make CONFIG=board-v3.6-56V
+make clean
+make --list-configs
 ```
 
-**Create reference file:** `.github/skills/misra-compliance/rules/quick-reference.md`
-
-```markdown
-# MISRA C++ Quick Reference
-
-## Most Common Violations in Embedded Code
-
-### 1. Implicit Conversions (Rule 5-0-3)
-```cpp
-// ❌ Violation
-int32_t a = some_float;
-
-// ✅ Compliant
-int32_t a = static_cast<int32_t>(some_float);
+### Run Tests
+```powershell
+python tools/run_tests.py
+python tools/run_tests.py --filter encoder
 ```
 
-### 2. Missing Final Else (Rule 6-4-2)
-```cpp
-// ❌ Violation
-if (x > 0) { ... }
-else if (x < 0) { ... }
+### Search Symbols
+```powershell
+grep -r "class Encoder" Firmware/
+grep -r "ERROR_" Firmware/
+```
 
-// ✅ Compliant
-if (x > 0) { ... }
-else if (x < 0) { ... }
-else { /* x == 0 */ }
-```
-```
+## Safety
+
+✅ **Safe**: Build and test operations are local  
+⚠️ **Confirm first**: Flash firmware to hardware
+````
 
 ### Part C: Use the Skill (2 min)
 
@@ -561,16 +524,22 @@ else { /* x == 0 */ }
 
 **Type in Chat:**
 ```
-Check this code for MISRA compliance violations:
-#file:Firmware/MotorControl/foc.cpp
+Build the firmware for board-v3.6-56V.
+
+What command should I run?
 ```
 
 **Presenter Says:**
-> "Notice I didn't explicitly call the skill. Copilot matched my request to the skill description and loaded it automatically. The skill's rules, examples, and references are all available to the AI."
+> "Notice I didn't explicitly call the skill. Copilot matched my request to the skill description and loaded it automatically. The skill's commands, examples, and safety warnings are all available."
 
 **Show the output:**
 
-> "The response follows the skill's output format and references the actual MISRA rules. This is institutional knowledge packaged for AI consumption!"
+> "The response includes:
+> - The correct build command
+> - Available configuration options
+> - Safety warnings about flashing
+>
+> This is institutional knowledge packaged for AI consumption!"
 
 ---
 

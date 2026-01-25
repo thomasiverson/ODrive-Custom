@@ -215,137 +215,161 @@ Add comprehensive Doxygen documentation to the selected code:
 
 > 💡 **Quick Creation:** Click **gear icon (⚙️)** → **Custom Agents** → **New Custom Agent**
 
-1. Create `.github/agents/safety-reviewer.agent.md`:
+1. Create `.github/agents/code-reviewer.agent.md`:
 
-```markdown
+````markdown
 ---
-name: Safety Reviewer
-description: Reviews embedded C++ code for safety issues
+name: 'Code Reviewer'
+description: 'Reviews code for quality, readability, and best practices'
 tools: ['codebase', 'file']
 ---
 
-# Safety-Critical Code Reviewer
+# Code Reviewer
 
-You review embedded code for safety-critical systems.
+You are a senior software engineer who reviews code for quality and best practices.
 
-## Review Checklist
+## Review Focus
 
-### Memory Safety
-- [ ] No buffer overflows
-- [ ] No null pointer dereferences
-- [ ] No dynamic allocation in ISRs
+### Code Quality
+- Clear, descriptive names
+- Functions do one thing
+- No magic numbers
+- Proper error handling
 
-### Concurrency Safety
-- [ ] No race conditions
-- [ ] Proper volatile usage
-- [ ] ISR-safe data access
+### Readability
+- Consistent formatting
+- Helpful comments (why, not what)
+- Logical organization
 
-### Arithmetic Safety
-- [ ] No integer overflow
-- [ ] No division by zero
+### Best Practices
+- DRY (Don't Repeat Yourself)
+- SOLID principles
+- Appropriate abstractions
 
 ## Output Format
 
-For each issue:
-- **Severity:** Critical/High/Medium/Low
-- **Location:** file:line
-- **Issue:** Description
-- **Fix:** Recommended solution
-```
+For each issue found:
+- **Category**: Quality / Readability / Best Practice
+- **Location**: File and line
+- **Issue**: What's wrong
+- **Suggestion**: How to improve
 
-### 🧪 Test It: Review Real Code
+End with: ✅ Approved, ⚠️ Needs Changes, or ❌ Requires Rework
+````
+
+### 🧪 Test It: Use the Agent
 
 **Test 1: Select Agent and Review**
-1. Select "Safety Reviewer" from agents dropdown
+1. Select "Code Reviewer" from agents dropdown
 2. Type:
 ```
-Review #file:Firmware/Drivers/STM32/stm32_gpio.cpp for safety issues.
+Review this code for quality and best practices:
 
-Focus on:
-- Interrupt safety
-- Race conditions
-- Null pointer handling
+#file:Firmware/Drivers/STM32/stm32_gpio.cpp
 ```
 
-**Test 2: Architecture Analysis**
+**Test 2: Quick Code Review**
 ```
-Analyze the design of the GPIO subscription system in #file:Firmware/Drivers/STM32/stm32_gpio.cpp
-
-What patterns are used? Are there any architectural improvements?
+@code-reviewer What improvements would you suggest for the config() method in #file:Firmware/Drivers/STM32/stm32_gpio.cpp?
 ```
 
 ### Success Criteria
 - ✅ Agent appears in dropdown
-- ✅ Uses defined checklist
-- ✅ Output follows structured format
+- ✅ Reviews follow the defined format
+- ✅ Provides actionable suggestions
 
 ---
 
 ## Exercise 4: Create an Agent Skill (5 min)
 
-### Task: Create a MISRA compliance skill
+### Task: Create a documentation standards skill
 
 > 📝 **Note:** Skills are created manually as folder structures (no gear icon).
 
-1. Create folder: `.github/skills/misra-check/`
+1. Create folder: `.github/skills/doc-standards/`
 
-2. Create `.github/skills/misra-check/SKILL.md`:
+2. Create `.github/skills/doc-standards/SKILL.md`:
 
-```markdown
+````markdown
 ---
-name: MISRA Check
-description: Check code for MISRA C++ compliance violations
+name: 'Documentation Standards'
+description: 'Enforce consistent documentation across the codebase'
 ---
 
-# MISRA C++ Compliance Checker
+# Documentation Standards Skill
 
-Check embedded code for MISRA C++ 2008 violations.
+Ensure all code follows consistent documentation practices.
 
-## Key Rules
+## Required Documentation
 
-### Required Rules
-- **Rule 5-0-3**: No implicit integral conversions
-- **Rule 6-4-2**: All if...else chains need final else
-- **Rule 0-1-1**: No unreachable code
+### For Functions
+- Brief description (one line)
+- Parameters with types and purpose
+- Return value description
+- Example usage (for complex functions)
 
-### Common Violations
+### For Classes
+- Purpose and responsibility
+- Key methods overview
+- Usage example
+
+### For Files
+- File header with purpose
+- Author and date (optional)
+- Dependencies and requirements
+
+## Documentation Style
+
+**C++ (Doxygen):**
 ```cpp
-// ❌ Implicit conversion (Rule 5-0-3)
-int32_t a = some_float;
-
-// ✅ Compliant
-int32_t a = static_cast<int32_t>(some_float);
+/**
+ * @brief One-line description.
+ * @param name Description of parameter
+ * @return What the function returns
+ */
 ```
 
-## Output Format
+**Python (Google-style):**
+```python
+def function(arg):
+    """One-line description.
+    
+    Args:
+        arg: Description of argument
+        
+    Returns:
+        What the function returns
+    """
+```
 
-For each violation:
-```
-MISRA Violation: Rule X-Y-Z
-Location: file.cpp:line
-Issue: Description
-Fix: Suggested fix
-```
-```
+## Common Issues
+- Missing parameter descriptions
+- Outdated documentation
+- No examples for complex APIs
+````
 
 ### 🧪 Test It: Trigger the Skill
 
-**Test: MISRA Check (Skill Auto-Discovery)**
+**Test: Documentation Review (Skill Auto-Discovery)**
 ```
-Check #file:Firmware/Drivers/STM32/stm32_gpio.cpp for MISRA C++ compliance violations.
+Review the documentation in #file:Firmware/Drivers/STM32/stm32_gpio.cpp
 
-Focus on:
-- Implicit type conversions
-- Missing else clauses
-- Pointer safety
+Check if it follows documentation standards and suggest improvements.
+```
+
+**Test: Generate Documentation**
+```
+Add proper documentation to the config() method following our documentation standards.
+
+#file:Firmware/Drivers/STM32/stm32_gpio.cpp
 ```
 
 ✅ **Check:** References section shows skill was loaded
 
 ### Success Criteria
 - ✅ Skill folder created with SKILL.md
-- ✅ Skill auto-loads when "MISRA" mentioned
-- ✅ Output follows defined format
+- ✅ Skill auto-loads when "documentation" mentioned
+- ✅ Provides style-specific suggestions
 
 ---
 
@@ -353,12 +377,12 @@ Focus on:
 
 | Exercise | What You Created | How You Tested |
 |----------|-----------------|----------------|
-| 1. Instructions | Coding standards file | `#file:` prompts, checked References |
-| 2. Prompt Files | Reusable task template | `/prompt-name` with file context |
-| 3. Custom Agents | Specialized persona | Agent + `#file:` for review |
-| 4. Agent Skills | Bundled resources | Keyword triggers skill loading |
+| 1. Instructions | C++ coding standards file | Created class, checked naming conventions |
+| 2. Prompt Files | Doxygen documentation template | `/add-doxygen` with file context |
+| 3. Custom Agents | Code Reviewer persona | Agent + `#file:` for code review |
+| 4. Agent Skills | Documentation Standards skill | Keyword triggers skill loading |
 
-**Key Takeaway:** Always use `#file:` references and check the **References panel** to verify your customizations are being applied!
+**Key Takeaway:** Always check the **References panel** to verify your customizations are being applied!
 
 ---
 
