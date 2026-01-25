@@ -1,4 +1,21 @@
+---
+project: ODrive Hackathon
+languages: [C++, C, Ada]
+editor: VS Code
+audience: intermediate-advanced
+last_updated: 2026-01-25
+maintainers: [TM, TI, GB]
+---
+
 # Copilot Instructions for Hackathon Planning
+
+## TL;DR
+
+- **Audience**: 100 intermediate+ embedded C++/C/Ada developers
+- **Focus**: Agentic workflows, not Copilot basics
+- **Constraints**: VS Code only, static allocation, no exceptions, MISRA-friendly
+- **Reference repos**: ODrive, Marlin
+- **Lesson format**: Hands-on first, clear acceptance criteria
 
 ## Project Overview
 
@@ -35,16 +52,31 @@ Working guide for instructors to design and deliver the planned lessons. Use thi
 - **Reference repos**: [ODrive](https://github.com/odriverobotics/ODrive), [Marlin](https://github.com/MarlinFirmware/Marlin)
 - **Recordable**: Day 1 sessions can be recorded for playback
 
-## Lesson Content Guidelines
+### Exclusions (Don't Include)
 
-Each lesson should follow a **hands-on first** approach:
-- **Focus on key concepts** - Bullet points, simple explanations for complex topics.
-- **Prioritize examples** - Show, don't tell; use [ODrive repo](https://github.com/odriverobotics/ODrive) when applicable
-- **Hands-on activity** - Some of lesson time is participant practice
-- **Clear success criteria** - What should they accomplish by end of lesson?
-- Always link a official Microsoft Learn site where appropriate for deeper study.
+- Azure web app development
+- Basic Copilot intro content (audience is intermediate+)
+- Git/GitHub fundamentals (assumed knowledge)
+- Long prose explanations
 
-> **Note**: Instructors are not C++ developers. Keep C++ specifics to common patterns participants already know. Focus on Copilot techniques, not teaching C++.
+## Lesson Authoring Guidelines
+
+Each lesson should follow a **hands-on first** approach.
+
+### Content Principles
+- Focus on key concepts (bullet points, not prose)
+- Prioritize examples from [ODrive](https://github.com/odriverobotics/ODrive) or [Marlin](https://github.com/MarlinFirmware/Marlin)
+- Include participant practice time with clear success criteria
+- Link one Microsoft Learn page per lesson
+
+### Checklist (per lesson)
+- [ ] 2-3 objectives, 3-5 key concepts
+- [ ] Code sample (C++17/20, static allocation, no exceptions)
+- [ ] Hands-on steps with copy-paste commands
+- [ ] Success criteria with validation method
+- [ ] At least one agent-friendly prompt with `#file:` context
+
+> **Note**: Instructors are not C++ developers. Focus on Copilot techniques, not teaching C++.
 
 ## Agent Focus Constraints
 
@@ -116,48 +148,20 @@ lessons/XX-topic-name/
 ## Reference Links (optional)
 ```
 
-## Authoring Checklist (per lesson)
-- Set 2-3 objectives and 3-5 key concepts (no prose walls).
-- Pick a concrete code sample from ODrive/Marlin; keep to C++17/20, static allocation, no exceptions.
-- Write hands-on steps with commands attendees can copy; call out prerequisites.
-- Define success criteria and how to validate (build/test output, diff, or runtime check).
-- Add one Microsoft Learn link and any repo-specific references.
-- Provide at least one agent-friendly prompt including `#file:` context and acceptance criteria.
+## Prompt Pattern Template
 
-## Ready-to-Use Prompt Patterns (embedded)
-Drop these into exercises and adjust file names as needed.
+Use this structure for all agent prompts:
 
 ```
-// Generate bounds-checked SPI read helper
+// [Task description]
 You are generating embedded C++17 code. Requirements:
 - Static allocation only; no exceptions; return error codes.
 - Mark hardware registers volatile; ensure const correctness.
-- Add unit-testable pure functions where possible.
-Context: #file:Firmware/Drivers/spi_driver.cpp
-Acceptance: function returns status enum; buffers checked for length; no dynamic memory; MISRA-friendly naming.
+Context: #file:[path/to/file]
+Acceptance: [specific criteria for "done"]
 ```
 
-```
-// Refactor ISR-safe ring buffer
-Goal: make ring buffer lock-free for ISR use.
-Constraints: C++17, no exceptions, static storage, wrap indices safely, volatile head/tail, bounds check writes.
-Context: #file:Firmware/MotorControl/ring_buffer.h
-Acceptance: preserves existing public API; adds overflow handling; unit test sketch included.
-```
-
-```
-// HAL state machine skeleton
-Generate a state machine for motor startup → calibrate → run → fault.
-Constraints: RAII guard for peripherals, no dynamic alloc, no exceptions, constexpr state table where possible.
-Context: #file:Firmware/MotorControl/motor_controller.cpp
-Acceptance: clearly separated states/events, fault-safe default, logging hook, compile without warnings.
-```
-
-## The agenda is built.
-
-DO NOT modify the agenda without getting explicit approval from the author.
-
-To request changes, annotate or comment in [lessons/01-welcome-agenda/agenda.md](lessons/01-welcome-agenda/agenda.md) and confirm with TM/TI/GB before editing.
+**Additional prompt examples**: See `lessons/04-agentic-patterns/` for ISR-safe ring buffer, HAL state machine, and SPI driver patterns.
 
 ## Time Budget
 
@@ -165,13 +169,6 @@ To request changes, annotate or comment in [lessons/01-welcome-agenda/agenda.md]
 - Morning sessions: ~4 hours
 - Afternoon sessions: ~2.5 hours
 - Include 15-min breaks and 45-min lunch
-
-## Don't Include
-
-- Azure web app development (excluded per customer request)
-- Basic Copilot intro content (audience is intermediate+)
-- Git/GitHub fundamentals (assumed knowledge)
-- Long prose explanations (keep it concise and clear, hands-on focused)
 
 ## Ownership
 Maintainers: TM, TI, GB. Submit updates via PR or tracked change with their approval.

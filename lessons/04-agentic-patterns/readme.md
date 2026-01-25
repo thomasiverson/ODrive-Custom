@@ -102,6 +102,14 @@ The shift from traditional development to agentic development represents a funda
 
 ---
 
+## Agentic Development Flow
+
+![Agentic Development Flow](.\images\request_journeyV2.png)
+
+*The agentic workflow: Developer provides context and constraints → Agent orchestrates skills → Iterative refinement produces production code.*
+
+---
+
 ## Learning Path
 
 This lesson covers five key areas. Work through them sequentially or jump to specific topics as needed.
