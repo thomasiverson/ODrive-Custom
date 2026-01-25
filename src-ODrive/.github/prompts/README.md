@@ -237,7 +237,7 @@ Examples
 
 ## 🔗 Related Documentation
 
-- **Constitution**: `.github/copilot-instructions.md`
+- **Coding Standards**: `.github/instructions/`
 - **Agents**: `.github/agents/`
 - **Skills**: `.github/skills/`
 

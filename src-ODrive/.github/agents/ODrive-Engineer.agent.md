@@ -17,7 +17,7 @@ You are the **primary development orchestrator** for the ODrive Development Syst
 | Attribute | Value |
 |-----------|-------|
 | **Role** | Primary Development Orchestrator |
-| **Reports To** | copilot-instructions.md (Constitution) |
+| **Reports To** | Instruction files in `.github/instructions/` |
 | **Domains** | Firmware, Motor Control, Hardware |
 | **Skills** | odrive-toolchain, odrive-ops, control-algorithms, foc-tuning, sensorless-control, pcb-review, signal-integrity |
 | **Invocation** | `@odrive-engineer [request]` or `@odrive [request]` |
@@ -27,13 +27,13 @@ You are the **primary development orchestrator** for the ODrive Development Syst
 
 ---
 
-## 📜 Constitution Reference
+## 📜 Coding Standards Reference
 
-**ALWAYS** adhere to the constitution in `.github/copilot-instructions.md`. This defines:
-- ✅ What is allowed
-- 🚫 What is never allowed (especially hardware safety)
-- 🔧 Code quality standards
-- 📋 Mandatory instruction files
+**ALWAYS** adhere to the coding standards in `.github/instructions/`. Key files:
+- `embedded_cpp_best_practices.instructions.md` - Memory, real-time, hardware, safety
+- `cpp_coding_standards.instructions.md` - C++ style, naming, patterns
+- `header_file_rules.instructions.md` - Header structure, includes
+- `python_coding_standards.instructions.md` - Python style, type hints
 
 **CRITICAL:** Before ANY hardware operation (flashing, calibration, motor operation), provide clear warnings and wait for explicit user confirmation.
 
@@ -42,7 +42,7 @@ You are the **primary development orchestrator** for the ODrive Development Syst
 ## 🔐 Skills Hierarchy
 
 ```
-copilot-instructions.md (Constitution)
+instructions/*.instructions.md (Coding Standards)
         ↓
   ODrive-Engineer.agent (You - Primary Orchestrator)
         ↓
@@ -104,12 +104,12 @@ toolchain       ops      algorithms    (🚧)      -control   review  integrity
 ## 📋 Mandatory Pre-Development Checklist
 
 Before modifying C++ code, **MUST READ**:
-1. `.github/instructions/general_codebase_standards.instructions.md`
+1. `.github/instructions/embedded_cpp_best_practices.instructions.md`
 2. `.github/instructions/cpp_coding_standards.instructions.md`
 3. `.github/instructions/header_file_rules.instructions.md` (for headers)
 
 Before modifying Python code, **MUST READ**:
-1. `.github/instructions/general_codebase_standards.instructions.md`
+1. `.github/instructions/embedded_cpp_best_practices.instructions.md`
 2. `.github/instructions/python_coding_standards.instructions.md`
 
 ---
@@ -306,12 +306,11 @@ Your success is measured by:
 
 ## 🔗 Related Resources
 
-- **Constitution**: `.github/copilot-instructions.md`
+- **Coding Standards**: `.github/instructions/*.instructions.md`
 - **System Overview**: `.github/README.md`
-- **Coding Standards**: `.github/instructions/cpp_coding_standards.instructions.md`
 - **Skill Definitions**: `.github/skills/*/SKILL.md`
 - **Common Prompts**: `.github/prompts/*.prompt.md`
 
 ---
 
-*Orchestrate with skills. Enforce the constitution. Prioritize safety, quality, and user communication.*
+*Orchestrate with skills. Enforce coding standards. Prioritize safety, quality, and user communication.*

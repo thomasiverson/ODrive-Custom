@@ -117,4 +117,4 @@ After refactoring:
 **Must Read Before Refactoring:**
 - [cpp_coding_standards.instructions.md](../instructions/cpp_coding_standards.instructions.md) - C++ style guide
 - [header_file_rules.instructions.md](../instructions/header_file_rules.instructions.md) - Header best practices
-- [general_codebase_standards.instructions.md](../instructions/general_codebase_standards.instructions.md) - Universal standards
+- [embedded_cpp_best_practices.instructions.md](../instructions/embedded_cpp_best_practices.instructions.md) - Embedded C++ best practices

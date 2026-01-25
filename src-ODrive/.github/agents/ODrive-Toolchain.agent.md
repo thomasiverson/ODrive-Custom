@@ -59,5 +59,5 @@ This adds tup and ARM GCC to PATH for the session.
 
 - **Prompt**: `.github/prompts/toolchain.prompt.md`
 - **Skill**: `.github/skills/odrive-toolchain/`
-- **Constitution**: `.github/copilot-instructions.md`
+- **Coding Standards**: `.github/instructions/*.instructions.md`
 - **Partner Agent**: `ODrive-Ops.agent.md` (CI/CD, releases)

@@ -61,5 +61,5 @@ User Request → ODrive-Ops Agent → odrive-ops skill → GitHub CLI / Scripts
 
 - **Prompt**: `.github/prompts/ops.prompt.md`
 - **Skill**: `.github/skills/odrive-ops/`
-- **Constitution**: `.github/copilot-instructions.md`
+- **Coding Standards**: `.github/instructions/*.instructions.md`
 - **Partner Agent**: `ODrive-Toolchain.agent.md` (build, test)

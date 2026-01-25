@@ -9,7 +9,7 @@ Use the **odrive-toolchain** skill to build firmware with proper board configura
 ### Workflow Hierarchy
 
 ```
-copilot-instructions.md (Constitution)
+instructions/*.instructions.md (Coding Standards)
         ↓
   ODrive-Toolchain.agent (Orchestrator)
         ↓

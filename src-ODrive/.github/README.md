@@ -9,7 +9,7 @@ This directory contains the intelligent agent system for ODrive firmware and too
 ## 🏗️ System Architecture
 
 ```
-📋 copilot-instructions.md (Constitution)
+📋 instructions/*.instructions.md (Coding Standards)
         ↓
   🤖 [Primary Orchestrator - GitHub Copilot]
         ↓
@@ -33,8 +33,6 @@ Skills:      Skill:             Skill:
 
 ```
 .github/
-├── copilot-instructions.md          # 📋 Constitution - Core rules & boundaries
-│
 ├── agents/                           # 🤖 Orchestrator agents (3)
 │   ├── ODrive-Engineer.agent.md        # Development orchestrator
 │   ├── ODrive-Toolchain.agent.md       # Build/test/search agent
@@ -55,7 +53,7 @@ Skills:      Skill:             Skill:
 ├── instructions/                     # 📖 Coding standards & guidelines
 │   ├── cpp_coding_standards.instructions.md
 │   ├── header_file_rules.instructions.md
-│   ├── general_codebase_standards.instructions.md
+│   ├── embedded_cpp_best_practices.instructions.md
 │   └── python_coding_standards.instructions.md
 │
 ├── prompts/                          # 💡 Common development workflows
@@ -209,7 +207,7 @@ Foundational coding standards and guidelines that all agents must follow.
 |-----------------|------------|---------|
 | `cpp_coding_standards.instructions.md` | `**/*.{cpp,c,hpp,h,cc}` | C++ style, naming, modern practices |
 | `header_file_rules.instructions.md` | `**/*.{h,hpp}` | Header structure, includes, pragmas |
-| `general_codebase_standards.instructions.md` | `**` | Encoding, comments, security, naming |
+| `embedded_cpp_best_practices.instructions.md` | `**` | Embedded C++ memory, real-time, hardware, safety patterns |
 | `python_coding_standards.instructions.md` | `**/*.py` | Python style, PEP 8, testing |
 
 **Mandatory:** Agents MUST read applicable instruction files before generating or modifying code.
@@ -299,7 +297,7 @@ Reusable workflow prompts for common development tasks.
 1. Create agent file: `.github/agents/{name}.agent.md`
 2. Follow existing agent template structure
 3. Update this README's hierarchy diagram
-4. Update `copilot-instructions.md` routing table
+4. Update agent routing in relevant agent files
 5. Document responsibilities and skills used
 
 ### Adding a New Skill
@@ -307,7 +305,7 @@ Reusable workflow prompts for common development tasks.
 1. Create skill directory: `.github/skills/{name}/`
 2. Create skill file: `.github/skills/{name}/SKILL.md`
 3. Update this README's skills table
-4. Update `copilot-instructions.md` hierarchy
+4. Update relevant agent files to reference new skill
 5. Tag with status: ✅ (production) or 🚧 (development)
 
 ### Adding a New Instruction
