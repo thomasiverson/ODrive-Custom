@@ -95,14 +95,31 @@ After cleanup, your `.github/` folder should look like:
 
 ### Task: Create a C++ coding standards file
 
-> 💡 **Quick Creation:** Click **gear icon (⚙️)** → **Chat Instructions** → **New Instruction File**
+> 💡 **Quick Creation:** In Chat view, click **Configure Chat (⚙️)** → **Chat Instructions** → **New instruction file**
 
 1. Create `.github/instructions/cpp_coding_standards.instructions.md` with:
 
 ```markdown
 ---
+name: C++ Coding Standards
+description: C++ coding standards for embedded firmware
 applyTo: '**/*.{cpp,c,cc}'
-description: 'C++ coding standards for embedded firmware'
+---
+```
+
+> 📝 **Glob Pattern Tips:**
+> - `**/*.cpp` → All `.cpp` files recursively
+> - `Firmware/**/*.cpp` → Only `.cpp` files under `Firmware/`
+> - `**/*.{cpp,c,cc}` → Multiple extensions with braces
+> - Separate multiple patterns with commas: `'**/*.ts,**/*.tsx'`
+
+**Full file content:**
+
+```markdown
+---
+name: C++ Coding Standards
+description: C++ coding standards for embedded firmware
+applyTo: '**/*.{cpp,c,cc}'
 ---
 
 # C++ Coding Standards
@@ -175,14 +192,15 @@ The class should:
 
 ### Task: Create a reusable documentation prompt
 
-> 💡 **Quick Creation:** Click **gear icon (⚙️)** → **Prompt Files** → **New Prompt File**
+> 💡 **Quick Creation:** In Chat view, click **Configure Chat (⚙️)** → **Prompt Files** → **New prompt file**
 
 1. Create `.github/prompts/add-doxygen.prompt.md`:
 
 ```markdown
 ---
-mode: edit
+name: add-doxygen
 description: Add Doxygen documentation to selected code
+mode: edit
 ---
 
 # Add Doxygen Documentation
@@ -225,15 +243,15 @@ Add comprehensive Doxygen documentation to the selected code:
 
 ### Task: Create a code reviewer agent
 
-> 💡 **Quick Creation:** Click **gear icon (⚙️)** → **Custom Agents** → **New Custom Agent**
+> 💡 **Quick Creation:** In agents dropdown, click **Configure Custom Agents** → **Create new custom agent**
 
 1. Create `.github/agents/code-reviewer.agent.md`:
 
 ````markdown
 ---
-name: 'Code Reviewer'
-description: 'Reviews code for quality, readability, and best practices'
-tools: ['codebase', 'file']
+name: Code Reviewer
+description: Reviews code for quality, readability, and best practices
+tools: ['search', 'fetch', 'usages']
 ---
 
 # Code Reviewer
@@ -304,8 +322,8 @@ Review this code for quality and best practices:
 
 ````markdown
 ---
-name: 'Documentation Standards'
-description: 'Enforce consistent documentation across the codebase'
+name: doc-standards
+description: Enforce consistent documentation across the codebase
 ---
 
 # Documentation Standards Skill
@@ -402,10 +420,10 @@ Add proper documentation to the config() method following our documentation stan
 
 | Issue | Solution |
 |-------|----------|
-| Instructions not loading | Check `useInstructionFiles` setting is enabled |
+| Instructions not loading | Enable `github.copilot.chat.codeGeneration.useInstructionFiles` setting |
 | Prompt not in menu | Verify file is in `.github/prompts/` with `.prompt.md` extension |
 | Agent not in dropdown | Check file is in `.github/agents/` with `.agent.md` extension |
-| Skill not auto-loading | Enable `chat.useAgentSkills` setting |
+| Skill not auto-loading | Enable `chat.useAgentSkills` setting (preview feature) |
 | Wrong instruction file | Check `applyTo` glob pattern matches file type |
 
 ---

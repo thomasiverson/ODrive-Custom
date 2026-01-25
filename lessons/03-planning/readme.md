@@ -78,9 +78,8 @@ Before starting this session, ensure you have:
 
 2. **Enable customization features:**
    - Open VS Code Settings (Ctrl+,)
-   - Make sure custom instructions is enabled
-   ![alt text](image.png)
-   - Search for `chat.useAgentSkills` and enable it for agent skills.
+   - Search for `github.copilot.chat.codeGeneration.useInstructionFiles` and enable it
+   - Search for `chat.useAgentSkills` and enable it for agent skills (preview)
 
 3. **Test basic functionality:**
    - Open Chat view (Ctrl+Alt+I)
@@ -238,12 +237,71 @@ Custom instructions enable you to define common guidelines and rules that automa
 - Multiple files for different contexts
 - Stored in workspace or user profile
 
+### Creating Path-Specific Custom Instructions
+
+1. **Create the directory** if it doesn't exist:
+   ```
+   .github/instructions/
+   ```
+
+2. **Create instruction files** with the naming pattern `NAME.instructions.md`
+
+3. **Add frontmatter** with `applyTo` glob pattern:
+
+```markdown
+---
+applyTo: 'app/models/**/*.rb'
+---
+```
+
+4. **Specify multiple patterns** by separating with commas:
+
+```markdown
+---
+applyTo: '**/*.ts,**/*.tsx'
+---
+```
+
+### Glob Pattern Reference
+
+| Pattern | Matches |
+|---------|---------|
+| `*` | All files in current directory |
+| `**` or `**/*` | All files in all directories (recursive) |
+| `*.py` | All `.py` files in current directory |
+| `**/*.py` | All `.py` files recursively in all directories |
+| `src/*.py` | `.py` files in `src/` only (e.g., `src/foo.py`, not `src/foo/bar.py`) |
+| `src/**/*.py` | `.py` files recursively under `src/` (e.g., `src/foo.py`, `src/foo/bar.py`) |
+| `**/subdir/**/*.py` | `.py` files in any `subdir/` at any depth |
+| `Firmware/**/*.{cpp,c,h,hpp}` | C/C++ files recursively under `Firmware/` |
+
+### Exclude from Specific Agents (Optional)
+
+Use `excludeAgent` to prevent instructions from being used by specific agents:
+
+```markdown
+---
+applyTo: '**'
+excludeAgent: 'code-review'
+---
+# These instructions are only used by Copilot coding agent
+```
+
+| Value | Effect |
+|-------|--------|
+| `code-review` | Excluded from Copilot code review |
+| `coding-agent` | Excluded from Copilot coding agent |
+| *(not specified)* | Used by both agents |
+
+---
+
 **Example: Python Instructions**
 
 ```markdown
 ---
-applyTo: "**/*.py"
-description: Python coding standards
+name: Python Coding Standards
+description: Python coding standards for project scripts
+applyTo: '**/*.py'
 ---
 
 # Python Coding Standards
@@ -257,8 +315,9 @@ description: Python coding standards
 
 ```markdown
 ---
-applyTo: "Firmware/**/*.{c,h,cpp,hpp}"
-description: Embedded C/C++ coding standards
+name: Embedded C/C++ Standards
+description: Embedded C/C++ coding standards for firmware
+applyTo: 'Firmware/**/*.{c,h,cpp,hpp}'
 ---
 
 # Embedded C/C++ Standards
@@ -354,8 +413,8 @@ Prompt files are Markdown files that define reusable prompts for common developm
 
 ```markdown
 ---
-description: Brief description of what this prompt does
 name: prompt-name
+description: Brief description of what this prompt does
 argument-hint: Optional hint text for users
 agent: ask|edit|agent|custom-agent-name
 model: Claude Sonnet 4
@@ -506,7 +565,7 @@ Output a Markdown report with a "Risk Level" (Low/Medium/High) for each finding.
 ### Create a Prompt File
 
 1. **In Chat view:**
-   - Select Configure Chat (gear icon) > Prompt Files > New prompt file
+   - Click **Configure Chat (⚙️)** > **Prompt Files** > **New prompt file**
    - Or use Command Palette: `Chat: New Prompt File`
 
 2. **Choose location:**
@@ -532,10 +591,10 @@ Custom agents enable you to configure the AI to adopt different personas tailore
 
 ```markdown
 ---
-description: Brief description shown in chat input
 name: agent-name
+description: Brief description shown in chat input
 argument-hint: Optional hint text
-tools: ['search', 'fetch', 'edit_files']
+tools: ['search', 'fetch', 'usages', 'terminal']
 model: Claude Sonnet 4
 infer: true
 handoffs:
@@ -558,9 +617,9 @@ The primary development orchestrator for ODrive firmware.
 
 ```markdown
 ---
-name: 'ODrive Engineer'
-description: 'Primary orchestrator agent for ODrive development. Invokes specialized skills for firmware, motor control, and hardware tasks.'
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'agent', 'todo']
+name: ODrive Engineer
+description: Primary orchestrator agent for ODrive development. Invokes specialized skills for firmware, motor control, and hardware tasks.
+tools: ['search', 'fetch', 'usages', 'githubRepo', 'terminal']
 ---
 
 # ODrive Engineer (Primary Development Orchestrator)
@@ -608,9 +667,9 @@ Handles build, test, and code navigation operations.
 
 ```markdown
 ---
-name: 'ODrive Toolchain'
-description: 'Build, compile, test, and code navigation for ODrive firmware development'
-tools: ['execute', 'read', 'search']
+name: ODrive Toolchain
+description: Build, compile, test, and code navigation for ODrive firmware development
+tools: ['search', 'fetch', 'terminal']
 ---
 
 # ODrive Toolchain Agent
@@ -646,7 +705,7 @@ You handle **build, test, and code navigation** for ODrive firmware.
 ### Create a Custom Agent
 
 1. **In Chat view:**
-   - Select Configure Chat (gear icon) > Custom Agents > Create new custom agent
+   - In agents dropdown, select **Configure Custom Agents** > **Create new custom agent**
    - Or use Command Palette: `Chat: New Custom Agent`
 
 2. **Choose location:**
@@ -699,8 +758,8 @@ Example from the ODrive toolchain skill:
 
 ```markdown
 ---
-name: 'ODrive Toolchain'
-description: 'Build, test, search, and error inspection for ODrive firmware'
+name: odrive-toolchain
+description: Build, test, search, and error inspection for ODrive firmware
 status: production
 version: 1.0.0
 ---
@@ -796,7 +855,9 @@ This skill will provide automated tuning procedures for Field-Oriented Control (
    ```
 
 3. **Author SKILL.md:**
-   - Fill in YAML frontmatter (name, description)
+   - Fill in YAML frontmatter:
+     - `name`: lowercase with hyphens (e.g., `my-skill`)
+     - `description`: Clear description of what the skill does and when to use it
    - Write detailed instructions
    - Reference any bundled resources
 
@@ -1697,14 +1758,18 @@ Create multiple `.instructions.md` files with different patterns:
 
 ```markdown
 ---
-applyTo: "Firmware/**/*.cpp"
+name: Firmware C++ Rules
+description: C++ rules specific to firmware code
+applyTo: 'Firmware/**/*.cpp'
 ---
 # Firmware C++ Rules
 ```
 
 ```markdown
 ---
-applyTo: "Tools/**/*.py"
+name: Python Tool Rules
+description: Python rules for tooling scripts
+applyTo: 'Tools/**/*.py'
 ---
 # Python Tool Rules
 ```
