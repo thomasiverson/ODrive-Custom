@@ -516,9 +516,11 @@ Benefits:
 **Presenter Says:**
 > "Now I'd rebuild and test on hardware. But let me also ask Copilot for a unit test to prevent regression."
 
+First select @ODrive-QA in chat.
+
 **Type:**
 ```
-@ODrive-QA Generate a unit test for calculate_rpm that tests high speed values to catch integer overflow
+Generate a unit test for calculate_rpm that tests high speed values to catch integer overflow
 ```
 
 > **Note:** Using `@ODrive-QA` invokes the `odrive-qa-assistant` skill which is specialized for test generation.
