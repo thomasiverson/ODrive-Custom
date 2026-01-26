@@ -107,7 +107,7 @@ Questions:
 ```
 @ODrive-QA Create test plan for encoder calibration.
 
-Task Context: Testing & validation (invokes odrive-qa-assistant skill)
+Task Context: Testing & validation (invokes cpp-testing skill)
 
 Context:
 - New feature: AXIS_STATE_ENCODER_CALIBRATION

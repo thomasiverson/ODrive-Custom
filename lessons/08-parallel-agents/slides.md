@@ -78,7 +78,7 @@ Regular Copilot → Python tools
 **Pattern 3: Dev + QA Split**
 ```
 @ODrive-Engineer → motor.cpp changes
-@ODrive-Engineer → can.cpp changes
+@ODrive-Engineer → odrive_can.cpp changes
 @ODrive-QA → Build verification
 @ODrive-QA → Test generation
 ```
@@ -129,13 +129,13 @@ Phase 4: Integration (5 min)
 
 1. **Code Review Automation**
    - PR opened → @ODrive-QA reviews → Comments
-   - Invokes `odrive-qa-assistant` skill
+   - Invokes `cpp-testing` skill
 
 2. **Continuous Refactoring**
    - Nightly: @ODrive-Engineer adds docs, modernizes code
 
 3. **Build & Test Automation**
-   - @ODrive-QA invokes `devops-engineer` skill
+   - @ODrive-QA invokes `odrive-ops` skill
 
 4. **Multi-Repo Updates**
    - Coordinated changes across repos
@@ -196,7 +196,7 @@ Developer ──→ Define Task
 > 1. @ODrive-Engineer (hardware focus) → Electrical specs
 > 2. @ODrive-Engineer (firmware focus) → Implementation
 > 3. @ODrive-Engineer (control focus) → Control strategy
-> 4. @ODrive-QA → Test plan (invokes qa-assistant skill)
+> 4. @ODrive-QA → Test plan (invokes cpp-testing skill)
 > 
 > **Watch:** All 4 windows working simultaneously!
 > 

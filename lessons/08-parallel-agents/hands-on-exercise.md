@@ -48,7 +48,7 @@ Questions:
 Task Context: Firmware implementation
 
 Context:
-- File: src-ODrive/Firmware/communication/can.cpp, can.hpp
+- File: src-ODrive/Firmware/communication/can/odrive_can.cpp, odrive_can.hpp
 - Need to track: message counters, error counters, bus state
 - Accessible via USB/CAN for remote debugging
 
@@ -67,10 +67,10 @@ Show me the diagnostics struct definition.
 ```
 @ODrive-QA Create test plan for CAN bus diagnostics.
 
-Task Context: Testing & validation (invokes odrive-qa-assistant skill)
+Task Context: Testing & validation (invokes cpp-testing skill)
 
 Feature: Track CAN errors and statistics
-Files: src-ODrive/Firmware/communication/can.cpp
+Files: src-ODrive/Firmware/communication/can/odrive_can.cpp
 
 Test scenarios:
 1. Normal operation (count messages, no errors)
@@ -137,7 +137,7 @@ Testing requirements (from @ODrive-QA window):
 - Diagnostic reset doesn't affect active communication
 - Timestamps for debugging
 
-Files: src-ODrive/Firmware/communication/can.cpp, can.hpp
+Files: src-ODrive/Firmware/communication/can/odrive_can.cpp, odrive_can.hpp
 
 Implement:
 1. CANDiagnostics struct
@@ -198,10 +198,10 @@ By the end of 5 minutes, you should have:
 ```
 @copilot @ODrive-QA
 
-Based on the CAN diagnostics implementation in src-ODrive/Firmware/communication/can.cpp,
+Based on the CAN diagnostics implementation in src-ODrive/Firmware/communication/can/odrive_can.cpp,
 generate a complete test suite in src-ODrive/Firmware/Tests/test_can_diagnostics.cpp
 
-Task Context: Testing & automation (invokes odrive-qa-assistant skill)
+Task Context: Testing & automation (invokes cpp-testing skill)
 
 Requirements:
 - Use doctest framework (existing ODrive tests)

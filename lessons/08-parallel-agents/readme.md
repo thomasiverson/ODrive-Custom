@@ -76,7 +76,7 @@ Before starting this session, ensure you have:
    - Window 2: Select `@ODrive-QA`
    - Send a test message in each simultaneously
 
-> **Note:** The ODrive system uses 2 orchestrator agents that invoke specialized **skills** (e.g., `odrive-qa-assistant`, `devops-engineer`). Parallel workflows involve running multiple instances with different task contexts.
+> **Note:** The ODrive system uses 2 orchestrator agents that invoke specialized **skills** (e.g., `cpp-testing`, `odrive-ops`). Parallel workflows involve running multiple instances with different task contexts.
 
 ---
 
@@ -171,7 +171,7 @@ This lesson covers three main topics in sequence:
 | 1 | `@ODrive-Engineer` | Design the control algorithm (control-algorithms skill) |
 | 2 | `@ODrive-Engineer` | Design embedded implementation (firmware focus) |
 | 3 | `@ODrive-Engineer` | Validate electrical constraints (pcb-review skill) |
-| 4 | `@ODrive-QA` | Create test plan and fixtures (qa-assistant skill) |
+| 4 | `@ODrive-QA` | Create test plan and fixtures (cpp-testing skill) |
 
 > **Note:** The same agent can be used in multiple windows with different task contexts. The agent will invoke the appropriate skill based on your request.
 
@@ -201,7 +201,7 @@ Window 4 - @ODrive-QA (Testing):
 **🤖 Agent Mode Prompts (Parallel):**
 ```
 Window 1: "Refactor Firmware/MotorControl/motor.cpp to modern C++17"
-Window 2: "Improve error handling in Firmware/communication/can.cpp"
+Window 2: "Improve error handling in Firmware/communication/can/odrive_can.cpp"
 Window 3: "Add type hints to tools/odrive/*.py"
 Window 4: "Regenerate API docs and update examples"
 ```
@@ -300,7 +300,7 @@ jobs:
              - Test coverage"
 ```
 
-**Result:** Agent invokes `odrive-qa-assistant` skill to analyze the PR
+**Result:** Agent invokes `cpp-testing` skill to analyze the PR
 
 #### Use Case 2: Continuous Refactoring
 
@@ -477,7 +477,7 @@ What to test:
 - Error cases (stall, overvoltage, etc.)
 - Calibration data persistence (survives reboot)
 
-(This invokes the odrive-qa-assistant skill)
+(This invokes the cpp-testing skill)
 ```
 
 #### Step 3: Review Outputs (1.5 min)
@@ -693,7 +693,7 @@ Context from parallel analysis:
 - Tests: Need boot message, timeout detection, recovery, multi-node support
 
 Files:
-#file:src-ODrive/Firmware/communication/can.cpp
+#file:src-ODrive/Firmware/communication/can/odrive_can.cpp
 #file:src-ODrive/Firmware/MotorControl/axis.hpp
 
 Requirements:
@@ -907,11 +907,11 @@ Implement sensorless startup state with I/F current injection.
 
 | Domain | Agent | Skill Invoked |
 |--------|-------|---------------|
-| Low-level firmware | `@ODrive-Engineer` | Direct implementation + odrive-qa-assistant for builds |
+| Low-level firmware | `@ODrive-Engineer` | Direct implementation + odrive-toolchain for builds |
 | Control algorithms | `@ODrive-Engineer` | control-algorithms (🚧), foc-tuning (🚧) |
 | Hardware specs | `@ODrive-Engineer` | pcb-review (🚧), signal-integrity (🚧) |
-| Testing | `@ODrive-QA` | odrive-qa-assistant, test-automation (🚧) |
-| CI/CD & releases | `@ODrive-QA` | devops-engineer |
+| Testing | `@ODrive-QA` | cpp-testing |
+| CI/CD & releases | `@ODrive-Ops` | odrive-ops |
 
 > **Legend:** 🚧 = Planned skill (not yet implemented)
 >
