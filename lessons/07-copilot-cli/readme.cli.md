@@ -57,7 +57,6 @@ GitHub Copilot CLI is an AI agent that operates directly from your terminal. It 
 - [7. Hands-On Exercises](#7-hands-on-exercises)
 - [Quick Reference](#quick-reference)
 - [Troubleshooting](#troubleshooting)
-- [GitHub Copilot SDK](#github-copilot-sdk)
 - [Additional Resources](#additional-resources)
 
 ---
@@ -359,6 +358,7 @@ Commit the staged changes with a descriptive message
 | Tool not approved | Use `--allow-tool` or approve when prompted |
 
 ---
+
 ## Additional Resources
 
 ### Microsoft Learn Documentation
