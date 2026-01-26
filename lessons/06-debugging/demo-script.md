@@ -254,8 +254,19 @@ void log_fault(uint32_t error_code) {
 **Step 2: Use /fix in Chat**
 
 1. **Select lines 29-37** (the entire `log_fault` function)
-2. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
-3. Type: `/fix the circular buffer boundary check`
+2. Open **Inline Chat** panel (`Ctrl+I`) first
+3. Type: 
+```
+/fix the circular buffer boundary check
+```
+4. look at the fix and then disgard changes
+5. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
+6. Type: 
+```
+/fix the circular buffer boundary check
+```
+7. Note the difference in details here, chat can give you explainations
+
 
 > **Note:** Use Chat mode (not inline `Ctrl+I`) to get the detailed explanation. Inline chat gives a quick fix but less explanation.
 
