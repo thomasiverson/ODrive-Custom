@@ -140,17 +140,27 @@ tup
 
 **Step 6: Introduce a linker error**
 
+> **Important:** Simply adding a function declaration without implementation won't cause a linker error - the linker only looks for symbols that are actually *called*. We need to both declare AND call the function.
+
 **In motor.hpp (around line 78), add a declaration after the existing method declarations:**
 ```cpp
     bool apply_config();
     bool setup();
 
-    void reset_phase_calibration();  // ADD THIS LINE - Declaration only, no implementation!
+    void trigger_linker_error_demo();  // ADD THIS LINE - Declaration only!
 
     void update_current_controller_gains();
 ```
 
-**But don't add the implementation in motor.cpp**
+**Then in motor.cpp, inside the `Motor::update()` function (around line 515), add a call to this function:**
+```cpp
+void Motor::update(uint32_t timestamp) {
+    trigger_linker_error_demo();  // ADD THIS LINE - Call the unimplemented function!
+    
+    // ... rest of existing code
+```
+
+**But don't add the implementation of `trigger_linker_error_demo()` in motor.cpp**
 
 **Rebuild:**
 ```powershell
@@ -159,35 +169,42 @@ tup
 
 **Expected Error:**
 ```
-undefined reference to `Motor::reset_phase_calibration()'
+undefined reference to `Motor::trigger_linker_error_demo()'
 ```
+
+**Presenter Says:**
+> "Notice we had to CALL the function, not just declare it. The linker only complains about missing symbols that are actually used in the code."
 
 **In Copilot Chat:**
 ```
-@terminal shows linker error: undefined reference to Motor::reset_phase_calibration()
+@terminal shows linker error: undefined reference to Motor::trigger_linker_error_demo()
 
-The function is declared in motor.hpp but I'm getting a linker error. What's wrong?
+The function is declared in motor.hpp and called in motor.cpp but I'm getting a linker error. What's wrong?
 ```
 
 **Expected AI Response:**
 ```
-Linker error indicates the function is declared but not defined.
+Linker error indicates the function is declared and called, but not defined.
 
 You have the declaration in motor.hpp:
-    void reset_phase_calibration();
+    void trigger_linker_error_demo();
+
+And a call in motor.cpp:
+    trigger_linker_error_demo();
 
 But the implementation is missing from motor.cpp.
 
 Add this to motor.cpp:
-    void Motor::reset_phase_calibration() {
+    void Motor::trigger_linker_error_demo() {
         // Implementation here
     }
 
-Or if you don't need this function yet, remove the declaration from motor.hpp.
+Or if you don't need this function, remove both the declaration from motor.hpp
+and the call from motor.cpp.
 ```
 
 **Presenter Says:**
-> "Again, @terminal immediately identified the issue: declaration without implementation. This would have taken me several minutes to debug manually."
+> "Again, @terminal immediately identified the issue: declaration and call without implementation. This would have taken me several minutes to debug manually."
 
 ---
 
