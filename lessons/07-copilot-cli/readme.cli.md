@@ -98,6 +98,15 @@ winget install GitHub.Copilot
 brew install github/copilot-cli/copilot
 ```
 
+### Linux / WSL
+
+```bash
+# Download latest release
+curl -fsSL https://github.com/github/copilot-cli/releases/latest/download/copilot-linux-amd64 -o copilot
+chmod +x copilot
+sudo mv copilot /usr/local/bin/
+```
+
 ### Verify Installation
 
 ```powershell
@@ -291,14 +300,6 @@ List my open PRs
 List all open issues assigned to me in <your-repo>
 Check the changes in PR https://github.com/<owner>/<repo>/pull/<number>
 ```
-
-### Exercise 4: Code Generation (4 min)
-
-```
-Add a function to @src\utils.c that calculates factorial
-Create @src\logger.c with debug, info, error logging functions
-```
-> Review and approve/reject proposed changes
 
 ### Exercise 4: Code Generation (4 min)
 
