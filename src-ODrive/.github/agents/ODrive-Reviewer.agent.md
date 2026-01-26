@@ -1,6 +1,7 @@
 ---
 name: 'ODrive Code Reviewer'
 description: 'Reviews code changes for ODrive firmware - checks style, safety, and embedded best practices'
+model: Claude Sonnet 4.5 (copilot)
 tools: ['read', 'search']
 ---
 
