@@ -68,18 +68,11 @@ motor.cpp:514:30: error: 'motor_current_limit' was not declared in this scope
 
 **In Copilot Chat, type:**
 ```
-@terminal shows compile error: 'motor_current_limit' was not declared in this scope in motor.cpp:514
-
-I'm trying to access the motor current limit configuration. What's the correct variable name?
+@terminal can you tell me why this build is failing?
 ```
 
 **Presenter Says:**
-> "Notice I'm giving @terminal context:
-> - What I was trying to do (access current limit config)
-> - Which file (motor.cpp)
-> - What line (514)
-> 
-> This helps the AI give me a targeted answer."
+> "Notice I'm letting @terminal do all the heavy lifting!"
 
 *[Wait for AI response]*
 
