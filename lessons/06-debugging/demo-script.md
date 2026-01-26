@@ -448,8 +448,10 @@ float calculate_rpm() {
 
 1. **Select lines 96-106** (the `calculate_rpm` function)
 2. Open **Copilot Chat** panel (`Ctrl+Alt+I`)
-3. Type: `/explain why this might give wrong values at high speeds`
-
+3. Type: 
+```
+/explain why this might give wrong values at high speeds
+```
 > **Note:** `/explain` works best in Chat mode for detailed analysis.
 
 **Expected AI Response:**
