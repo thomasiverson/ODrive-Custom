@@ -74,6 +74,8 @@ This lets you show 2 chats responding simultaneously on screen.
 
 **Chat Panel 1 (Hardware Focus):**
 ```
+## Hardware Analysis
+
 @ODrive-Engineer What are the electrical requirements for encoder 
 calibration on ODrive v3.6?
 
@@ -93,6 +95,8 @@ Questions:
 
 **Chat Panel 2 (Firmware Focus):**
 ```
+## Firmware Implementation
+
 @ODrive-Engineer Design the encoder calibration routine structure.
 
 Task Context: Firmware implementation
@@ -114,6 +118,8 @@ Show me:
 
 **Chat Panel 3 (Control Focus):**
 ```
+## Control Strategy
+
 @ODrive-Engineer What's the optimal control strategy during 
 encoder calibration?
 
@@ -133,6 +139,8 @@ Questions:
 
 **Chat Panel 4 (QA/Testing):**
 ```
+## QA/Testing
+
 @ODrive-QA Create test plan for encoder calibration.
 
 Task Context: Testing & validation (invokes cpp-testing skill)
