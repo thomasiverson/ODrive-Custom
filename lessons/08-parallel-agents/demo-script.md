@@ -8,17 +8,45 @@
 ## Demo Setup (Before Session)
 
 ### VS Code Preparation
+
+#### 1. Open the Workspace
 - [ ] Open ODrive workspace in VS Code
-- [ ] Open 4 separate Copilot Chat panels (View → Chat, multiple times)
-  - Label them: "Hardware", "Firmware", "Control", "QA"
-- [ ] Clear chat history in all panels
 - [ ] Have these files ready to reference:
   - `src-ODrive/Firmware/MotorControl/encoder.cpp`
   - `src-ODrive/Firmware/MotorControl/encoder.hpp`
   - `src-ODrive/Firmware/MotorControl/motor.cpp`
-- [ ] Test that agents are available: `@ODrive-Engineer`, `@ODrive-QA`
 
-> **Note:** We use 2 orchestrator agents with different task contexts. The same `@ODrive-Engineer` can handle hardware, firmware, and control tasks based on prompt context.
+#### 2. Set Up Multiple Chat Threads
+VS Code doesn't support multiple labeled chat panels, but you can simulate parallel agents using **multiple chat threads**:
+
+1. **Open the Chat panel:** Press `Ctrl+Alt+I` (Windows) or `Cmd+Alt+I` (Mac)
+2. **Create 4 new chat threads:**
+   - Click the **"+" button** (New Chat) in the Chat panel header
+   - Repeat to create 4 separate threads
+3. **"Label" each thread** by making the first line of your prompt descriptive:
+   - Thread 1: Start prompt with `## Hardware Analysis`
+   - Thread 2: Start prompt with `## Firmware Implementation`
+   - Thread 3: Start prompt with `## Control Strategy`
+   - Thread 4: Start prompt with `## QA/Testing`
+4. **Switch between threads** using the chat history dropdown (clock icon) or by clicking previous conversations
+
+#### 3. Alternative: Side-by-Side Chat Windows
+For a more visual demo showing parallel execution:
+1. Open Chat panel (`Ctrl+Alt+I`)
+2. **Drag the Chat tab** from the sidebar into the main editor area
+3. Open Chat again (`Ctrl+Alt+I`) - now you have 2 visible chat areas
+4. Use **"+" (New Chat)** in each area for additional threads
+
+This lets you show 2 chats responding simultaneously on screen.
+
+#### 4. Clear Chat History
+- [ ] Click the **"..." menu** in the Chat panel → **Clear All Chats** (or start fresh threads)
+
+#### 5. Test Agent Availability (if using custom agents)
+- [ ] If you have custom agents installed: Test `@ODrive-Engineer`, `@ODrive-QA`
+- [ ] If not using custom agents: Use `@workspace` and include the role context in your prompt (e.g., "Acting as a hardware engineer...")
+
+> **Note:** We use 2 orchestrator agents with different task contexts. The same `@ODrive-Engineer` can handle hardware, firmware, and control tasks based on prompt context. If custom agents aren't available, provide the role context directly in your prompts.
 
 ### Backup Plan
 - [ ] Take screenshots of expected agent responses
