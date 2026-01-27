@@ -41,8 +41,11 @@ Add overcurrent protection to the motor
 > "Now watch the difference when I provide rich context. I'll use our ODrive-Engineer agent and give it everything it needs."
 
 **Type in Chat:**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Add overcurrent protection to the motor driver.
+Add overcurrent protection to the motor driver.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/motor.cpp
@@ -72,7 +75,7 @@ Please show me the code to add to motor.cpp
 > - Uses our coding standards
 > - Fits exactly where it needs to go
 >
-> The agent can also invoke the `odrive-qa-assistant` skill to verify the build!
+> The agent can also invoke the `cpp-testing` skill to verify the build!
 > 
 > **Key Lesson:** The quality of AI output is directly proportional to the quality of your context!"
 
@@ -96,8 +99,11 @@ Please show me the code to add to motor.cpp
 > "First, I'll consult the ODrive-Engineer agent with a hardware focus about the CAN message format."
 
 **Type in Chat:**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer We need to add 64-bit microsecond timestamps to CAN messages.
+We need to add 64-bit microsecond timestamps to CAN messages.
 
 Context:
 - ODrive uses CAN 2.0B (29-bit extended IDs)
@@ -120,8 +126,11 @@ Questions:
 **Step 2: Firmware Implementation**
 
 **Type in Chat:**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Based on the hardware spec, implement CAN-FD timestamp support.
+Based on the hardware spec, implement CAN-FD timestamp support.
 
 Context:
 - Files: src-ODrive/Firmware/communication/can.cpp, src-ODrive/Firmware/communication/can.hpp
@@ -146,8 +155,11 @@ Start with the message structure and function signature.
 **Step 3: Refine with Specifics**
 
 **Type in Chat:**
+
+> With **ODrive Engineer** still selected, paste:
+
 ```
-@ODrive-Engineer Looking good! A few refinements:
+Looking good! A few refinements:
 
 1. Use TIM5 for microsecond counter (it's 32-bit, we need to extend to 64-bit)
 2. Add overflow handling for the timer
@@ -192,8 +204,11 @@ Show me the updated parse function.
 **Step 5: Testing Strategy**
 
 **Type in Chat:**
+
+> Select **ODrive QA** from agent dropdown, then paste:
+
 ```
-@ODrive-QA Create a test plan for the CAN timestamp feature.
+Create a test plan for the CAN timestamp feature.
 
 Context:
 - Firmware: src-ODrive/Firmware/communication/can.cpp
@@ -210,11 +225,11 @@ Please provide:
 ```
 
 **Presenter Says:**
-> "The QA agent invokes the `odrive-qa-assistant` skill to provide a complete test strategy. Now we have:
-> - Hardware specification (@ODrive-Engineer with hardware focus)
-> - Firmware implementation (@ODrive-Engineer with firmware focus)
+> "The QA agent invokes the `cpp-testing` skill to provide a complete test strategy. Now we have:
+> - Hardware specification (ODrive Engineer with hardware focus)
+> - Firmware implementation (ODrive Engineer with firmware focus)
 > - Python tools update (Regular Copilot)
-> - Test plan (@ODrive-QA)
+> - Test plan (ODrive QA)
 > 
 > All from proper task decomposition and using the right agent/context for each domain!"
 
@@ -226,14 +241,14 @@ Please provide:
 > "This demonstrates the power of decomposition:
 > 
 > ✅ **Complex task** broken into domain-specific subtasks  
-> ✅ **Same agents, different contexts** - @ODrive-Engineer handles firmware, hardware, and control via different prompts  
-> ✅ **@ODrive-QA** for testing - invokes specialized skills automatically  
+> ✅ **Same agents, different contexts** - ODrive Engineer handles firmware, hardware, and control via different prompts  
+> ✅ **ODrive QA** for testing - invokes specialized skills automatically  
 > ✅ **Iterative refinement** to get details right  
 > ✅ **End-to-end feature** implemented collaboratively  
 > 
 > You couldn't do this in one prompt - but with decomposition, you can orchestrate AI agents to build complete features.
 >
-> **Key insight:** Two agents (`@ODrive-Engineer` + `@ODrive-QA`) with skills can handle all domains!"
+> **Key insight:** Two agents (**ODrive Engineer** + **ODrive QA**) with skills can handle all domains!"
 
 ---
 
@@ -243,13 +258,13 @@ Please provide:
 - [ ] Test all prompts with actual ODrive repo
 - [ ] Have files pre-opened for quick navigation
 - [ ] Clear Chat history for clean demo
-- [ ] Verify agents are available (`@ODrive-Engineer`, `@ODrive-QA`)
+- [ ] Verify agents are available (**ODrive Engineer**, **ODrive QA**)
 - [ ] Have backup screenshots in case of network issues
 
 ### During the Demo
 - **Pause after each response** - Let audience read the output
 - **Highlight key parts** - Point out how context affected the result
-- **Explain your thinking** - "I'm using @ODrive-Engineer with a hardware focus because..."
+- **Explain your thinking** - "I'm using ODrive Engineer with a hardware focus because..."
 - **Show the iteration** - Don't pretend it's perfect first time
 - **Acknowledge limitations** - "Sometimes it needs refinement..."
 
@@ -282,10 +297,10 @@ Please provide:
 A: "Initially, yes - you're learning. But once proficient, you'll move faster than writing manually. Think of it like learning Git - upfront cost, long-term gain."
 
 **Q: "What if I don't have custom agents?"**
-A: "You can still use decomposition with regular Copilot. Our ODrive setup uses two orchestrator agents (`@ODrive-Engineer` and `@ODrive-QA`) that invoke skills. I'll show you how to create agents in the workshop materials."
+A: "You can still use decomposition with regular Copilot. Our ODrive setup uses two orchestrator agents (**ODrive Engineer** and **ODrive QA**) that invoke skills. I'll show you how to create agents in the workshop materials."
 
 **Q: "Why only 2 agents instead of 4 domain-specific ones?"**
-A: "Orchestrator agents are more flexible. `@ODrive-Engineer` can handle firmware, control, or hardware based on your prompt context. Skills provide the specialization. This simplifies agent management while maintaining expertise."
+A: "Orchestrator agents are more flexible. **ODrive Engineer** can handle firmware, control, or hardware based on your prompt context. Skills provide the specialization. This simplifies agent management while maintaining expertise."
 
 **Q: "Can agents access proprietary internal documentation?"**
 A: "Agents work with what's in your workspace. For proprietary docs, put them in `.github/` folders or reference them in copilot-instructions.md."

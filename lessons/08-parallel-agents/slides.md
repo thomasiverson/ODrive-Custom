@@ -28,15 +28,16 @@ Total: 6 minutes
 
 **Parallel (NEW):**
 ```
-@ODrive-Engineer (firmware) ████████
-@ODrive-Engineer (control)  ████████  (all running together!)
-@ODrive-QA (testing)        ████████
+ODrive Engineer (firmware)  ████████
+ODrive Toolchain (build)    ████████  (all running together!)
+ODrive QA (testing)         ████████
+ODrive Reviewer (review)    ████████
 Total: 2 minutes
 ```
 
-**Impact:** 3x faster! ⚡
+**How:** Select each agent from the dropdown in separate chat windows
 
-**Note:** Same agent, different task contexts!
+**Impact:** 4x faster! ⚡
 
 ---
 
@@ -59,31 +60,31 @@ Total: 2 minutes
 ### Slide 4: Parallel Agent Patterns
 **Layout:** 3 pattern boxes
 
-**Pattern 1: Domain Separation (Same Agent, Different Contexts)**
+**Pattern 1: Multi-Agent Domain Coverage**
 ```
-@ODrive-Engineer (control focus) → Algorithm
-@ODrive-Engineer (firmware focus) → Implementation  
-@ODrive-Engineer (hardware focus) → Electrical specs
-@ODrive-QA (testing focus) → Test plan
+Window 1: ODrive Engineer  → Algorithm design & firmware
+Window 2: ODrive Toolchain → Build & validation
+Window 3: ODrive Reviewer  → Code review
+Window 4: ODrive QA        → Test plan & quality
 ```
 
 **Pattern 2: Multi-Module**
 ```
-@ODrive-Engineer → Module A
-@ODrive-Engineer → Module B
-@ODrive-Engineer → Module C
-Regular Copilot → Python tools
+Window 1: ODrive Engineer  → Module A
+Window 2: ODrive Engineer  → Module B
+Window 3: ODrive Toolchain → Build all modules
+Window 4: ODrive QA        → Test generation
 ```
 
-**Pattern 3: Dev + QA Split**
+**Pattern 3: Dev + QA + Ops Split**
 ```
-@ODrive-Engineer → motor.cpp changes
-@ODrive-Engineer → odrive_can.cpp changes
-@ODrive-QA → Build verification
-@ODrive-QA → Test generation
+Window 1: ODrive Engineer → motor.cpp changes
+Window 2: ODrive Engineer → odrive_can.cpp changes
+Window 3: ODrive QA       → Test generation
+Window 4: ODrive Ops      → CI/CD verification
 ```
 
-**Key:** Agents invoke skills automatically based on task!
+**Key:** Select the appropriate agent from dropdown in each window!
 
 ---
 
@@ -92,9 +93,10 @@ Regular Copilot → Python tools
 
 ```
 Phase 1: Parallel Design (5 min)
-  ├─ @ODrive-Engineer (control focus): Algorithm
-  ├─ @ODrive-Engineer (hardware focus): Electrical specs
-  └─ @ODrive-QA: Test planning
+  ├─ Window 1: ODrive Engineer  → Algorithm & firmware design
+  ├─ Window 2: ODrive Toolchain → Build environment check
+  ├─ Window 3: ODrive Reviewer  → Architecture review
+  └─ Window 4: ODrive QA        → Test planning
          ↓
 Phase 2: Review & Align (5 min)
   └─ Identify integration points
@@ -103,10 +105,10 @@ Phase 3: Parallel Implementation (10 min)
   └─ Each window implements their part
          ↓
 Phase 4: Integration (5 min)
-  └─ Combine and test via @ODrive-QA
+  └─ Combine and test (use ODrive QA)
 ```
 
-**Note:** Same agent can handle multiple domains via different prompts!
+**Note:** Select each agent from the dropdown in its chat window!
 
 ---
 
@@ -128,17 +130,18 @@ Phase 4: Integration (5 min)
 **Layout:** 4 boxes
 
 1. **Code Review Automation**
-   - PR opened → @ODrive-QA reviews → Comments
-   - Invokes `cpp-testing` skill
+   - PR opened → ODrive Reviewer reviews → Comments
+   - Or ODrive QA invokes `cpp-testing` skill
 
 2. **Continuous Refactoring**
-   - Nightly: @ODrive-Engineer adds docs, modernizes code
+   - Nightly: ODrive Engineer adds docs, modernizes code
 
 3. **Build & Test Automation**
-   - @ODrive-QA invokes `odrive-ops` skill
+   - ODrive Ops invokes `odrive-ops` skill
+   - ODrive Toolchain runs build verification
 
-4. **Multi-Repo Updates**
-   - Coordinated changes across repos
+4. **Ada Migration Projects**
+   - Ada to C++ Migrator for legacy migration tasks
 
 ---
 
@@ -192,11 +195,11 @@ Developer ──→ Define Task
 > 
 > Feature: Encoder Calibration
 > 
-> **Windows (Same Agents, Different Contexts):**
-> 1. @ODrive-Engineer (hardware focus) → Electrical specs
-> 2. @ODrive-Engineer (firmware focus) → Implementation
-> 3. @ODrive-Engineer (control focus) → Control strategy
-> 4. @ODrive-QA → Test plan (invokes cpp-testing skill)
+> **Windows (Different Specialized Agents):**
+> 1. ODrive Engineer (firmware focus) → Implementation
+> 2. ODrive Engineer (control focus) → Control strategy
+> 3. ODrive Toolchain → Build verification
+> 4. ODrive QA → Test plan (invokes cpp-testing skill)
 > 
 > **Watch:** All 4 windows working simultaneously!
 > 
@@ -214,10 +217,10 @@ Developer ──→ Define Task
 **Layout:** Summary bullets
 
 **Section 8: Parallel Agents**
-✅ 3x faster with parallel workflows  
-✅ 2 agents: `@ODrive-Engineer` + `@ODrive-QA`  
-✅ Same agent, different task contexts  
-✅ Skills invoked automatically  
+✅ 4x faster with parallel workflows  
+✅ 6 agents: **ODrive Engineer**, **ODrive QA**, **ODrive Ops**, **ODrive Reviewer**, **ODrive Toolchain**, **Ada to C++ Migrator**  
+✅ 9 specialized skills invoked automatically  
+✅ Different agents for different domains  
 ✅ Orchestration is the skill  
 ✅ Background agents for scale  
 
@@ -230,11 +233,11 @@ Developer ──→ Define Task
 > **Task:** CAN Bus Diagnostics
 > 
 > Use 3 parallel windows:
-> - @ODrive-Engineer (hardware focus)
-> - @ODrive-Engineer (firmware focus)  
-> - @ODrive-QA (testing)
+> - ODrive Engineer (firmware implementation)
+> - ODrive Toolchain (build verification)  
+> - ODrive QA (testing)
 > 
-> **Note:** Same agent handles multiple domains!
+> **Note:** Use specialized agents for each domain!
 > 
 > See: `hands-on-exercise.md`
 
@@ -246,8 +249,8 @@ Developer ──→ Define Task
 **Common Questions:**
 - How many windows can I run in parallel?
 - What if agents give contradictory advice?
-- Can I use the same agent in multiple windows?
-  - **Yes!** Different task contexts, same agent.
+- Which agent should I use for what task?
+  - **See the 6-agent guide in readme.md**
 - Do parallel agents cost more?
 - Can I use this in air-gapped environments?
 
