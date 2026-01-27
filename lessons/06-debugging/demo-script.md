@@ -516,14 +516,13 @@ Benefits:
 **Presenter Says:**
 > "Now I'd rebuild and test on hardware. But let me also ask Copilot for a unit test to prevent regression."
 
-First select @ODrive-QA in chat.
+> Select **ODrive QA** from the agent dropdown, then type:
 
-**Type:**
 ```
 Generate a unit test for calculate_rpm that tests high speed values to catch integer overflow
 ```
 
-> **Note:** Using `@ODrive-QA` invokes the `odrive-qa-assistant` skill which is specialized for test generation.
+> **Note:** **ODrive QA** invokes the `cpp-testing` skill which is specialized for test generation.
 
 **Expected AI Response:**
 ```cpp
@@ -559,7 +558,7 @@ TEST_CASE("Encoder RPM calculation at high speed") {
 ```
 
 **Presenter Says:**
-> "Excellent! `@ODrive-QA` generated a unit test that specifically checks high-speed values where overflow would occur. This ensures the bug stays fixed. The agent invoked the `odrive-qa-assistant` skill to create comprehensive tests."
+> "Excellent! **ODrive QA** generated a unit test that specifically checks high-speed values where overflow would occur. This ensures the bug stays fixed. The agent invoked the `cpp-testing` skill to create comprehensive tests."
 
 ---
 

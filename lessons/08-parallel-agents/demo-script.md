@@ -43,10 +43,16 @@ This lets you show 2 chats responding simultaneously on screen.
 - [ ] Click the **"..." menu** in the Chat panel → **Clear All Chats** (or start fresh threads)
 
 #### 5. Test Agent Availability (if using custom agents)
-- [ ] If you have custom agents installed: Test `@ODrive-Engineer`, `@ODrive-QA`
-- [ ] If not using custom agents: Use `@workspace` and include the role context in your prompt (e.g., "Acting as a hardware engineer...")
+- [ ] If you have custom agents installed: Click the agent dropdown in Chat and verify all 6 agents appear:
+  - **ODrive Engineer** (primary development)
+  - **ODrive QA** (testing & QA)
+  - **ODrive Ops** (CI/CD & releases)
+  - **ODrive Reviewer** (code review)
+  - **ODrive Toolchain** (build & test)
+  - **Ada to C++ Migrator** (Ada migration)
+- [ ] If custom agents don't appear: Ensure `.github/agents/` folder exists in the workspace
 
-> **Note:** We use 2 orchestrator agents with different task contexts. The same `@ODrive-Engineer` can handle hardware, firmware, and control tasks based on prompt context. If custom agents aren't available, provide the role context directly in your prompts.
+> **Note:** Custom agents are selected from the **dropdown menu** at the top of the Copilot Chat panel, NOT via @mention syntax. Select the agent first, then type your prompt.
 
 ### Backup Plan
 - [ ] Take screenshots of expected agent responses
@@ -63,7 +69,7 @@ This lets you show 2 chats responding simultaneously on screen.
 > "We're going to implement encoder calibration - a feature that requires expertise in hardware, firmware, control theory, and testing. Instead of doing these sequentially, watch how we use parallel agents to work on all aspects simultaneously."
 
 **Show the 4 Chat Panels:**
-> "I've opened 4 separate chat panels. Each will use the same agents but with different task contexts. We'll use `@ODrive-Engineer` for hardware, firmware, and control tasks, and `@ODrive-QA` for testing. The key is that the same agent can handle multiple domains based on the prompt!"
+> "I've opened 4 separate chat panels. Each will use different specialized agents selected from the dropdown menu. We'll select **ODrive Engineer** for firmware and control tasks, and **ODrive QA** for testing. The key is that we have 6 agents available in the dropdown, each specialized for different domains!"
 
 ---
 
@@ -73,10 +79,11 @@ This lets you show 2 chats responding simultaneously on screen.
 > "I'm going to fire off 4 questions to 4 different agents - all at once. Watch the timing."
 
 **Chat Panel 1 (Hardware Focus):**
-```
-## Hardware Analysis
 
-@ODrive-Engineer What are the electrical requirements for encoder 
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
+```
+What are the electrical requirements for encoder 
 calibration on ODrive v3.6?
 
 Task Context: Hardware/electrical analysis (will invoke pcb-review skill)
@@ -94,10 +101,11 @@ Questions:
 ```
 
 **Chat Panel 2 (Firmware Focus):**
-```
-## Firmware Implementation
 
-@ODrive-Engineer Design the encoder calibration routine structure.
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
+```
+Design the encoder calibration routine structure.
 
 Task Context: Firmware implementation
 
@@ -117,10 +125,11 @@ Show me:
 ```
 
 **Chat Panel 3 (Control Focus):**
-```
-## Control Strategy
 
-@ODrive-Engineer What's the optimal control strategy during 
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
+```
+What's the optimal control strategy during 
 encoder calibration?
 
 Task Context: Control algorithms (will invoke control-algorithms skill)
@@ -138,10 +147,11 @@ Questions:
 ```
 
 **Chat Panel 4 (QA/Testing):**
-```
-## QA/Testing
 
-@ODrive-QA Create test plan for encoder calibration.
+> Select **ODrive QA** from agent dropdown, then paste:
+
+```
+Create test plan for encoder calibration.
 
 Task Context: Testing & validation (invokes cpp-testing skill)
 
@@ -172,7 +182,7 @@ Provide test cases and acceptance criteria.
 **Presenter Says:**
 > "Let's review what each agent came up with. I'll go through them quickly."
 
-**Panel 1 - @ODrive-Engineer (Hardware Focus) Response:**
+**Panel 1 - ODrive Engineer (Hardware Focus) Response:**
 > "The agent (with hardware context) tells me:
 > - Max calibration current: 10A (safe for continuous operation)
 > - Max speed: 2 rev/sec (to avoid back-EMF issues)
@@ -181,7 +191,7 @@ Provide test cases and acceptance criteria.
 > 
 > Great! Now I know the electrical constraints."
 
-**Panel 2 - @ODrive-Engineer (Firmware Focus) Response:**
+**Panel 2 - ODrive Engineer (Firmware Focus) Response:**
 > "The agent (with firmware context) provided:
 > - Function signature: `bool Encoder::calibrate(float current_A, float speed_revs)`
 > - Algorithm steps: Initialize → Ramp up → Constant velocity → Record data → Detect index → Store → Stop
@@ -190,7 +200,7 @@ Provide test cases and acceptance criteria.
 > 
 > Perfect! I have the implementation structure."
 
-**Panel 3 - @ODrive-Engineer (Control Focus) Response:**
+**Panel 3 - ODrive Engineer (Control Focus) Response:**
 > "The agent (with control context) recommends:
 > - Use open-loop current control (Iq command)
 > - Constant current setpoint (e.g., 5A in Q-axis)
@@ -199,7 +209,7 @@ Provide test cases and acceptance criteria.
 > 
 > This answers the 'how to control' question."
 
-**Panel 4 - @ODrive-QA Response:**
+**Panel 4 - ODrive QA Response:**
 > "The QA agent created:
 > - 8 detailed test cases covering happy path and edge cases
 > - Test rig configuration (test-rig-calibration.yaml)
@@ -209,7 +219,7 @@ Provide test cases and acceptance criteria.
 > Excellent! We have a complete test strategy."
 
 **Presenter Says:**
-> "In about 90 seconds, we gathered expertise from 4 different domains. If I had done this sequentially, it would have taken 5-10 minutes. Now let's integrate their knowledge."
+> "In about 90 seconds, we gathered expertise from 4 different domains using specialized agents. If I had done this sequentially, it would have taken 5-10 minutes. Now let's integrate their knowledge."
 
 ---
 
@@ -221,8 +231,11 @@ Provide test cases and acceptance criteria.
 > "Now I'll take all this expert input and ask for the full implementation. I'll reference what we learned from the parallel agents."
 
 **Chat Panel 5:**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement the encoder calibration routine.
+Implement the encoder calibration routine.
 
 Context from Parallel Agent Windows:
 ✅ Hardware constraints (from hardware-focused window):
@@ -246,7 +259,7 @@ Context from Parallel Agent Windows:
    - Encoder disconnect (no pulses)
    - Index not found (encoder doesn't have index)
 
-✅ Testing criteria (from @ODrive-QA window):
+✅ Testing criteria (from ODrive QA window):
    - Repeatability within 0.5 electrical degrees
    - Complete in < 5 seconds
 
@@ -265,9 +278,9 @@ Please implement the complete calibration routine with all safety checks.
 > - Respects hardware limits from the hardware-focused window
 > - Uses the control strategy from the control-focused window
 > - Handles all error cases identified by the firmware-focused window
-> - Meets the test criteria from the `@ODrive-QA` window
+> - Meets the test criteria from the **ODrive QA** window
 > 
-> This is the power of parallel agents - using the same 2 agents with different task contexts to gather multi-domain expertise quickly and synthesize it into working code."
+> This is the power of parallel agents - using **6 specialized agents** and **9 skills** to gather multi-domain expertise quickly and synthesize it into working code."
 
 ---
 
@@ -286,8 +299,8 @@ Please implement the complete calibration routine with all safety checks.
 > 
 > **The Key Insight:** You become an orchestrator. Your job is to:
 > 1. Identify the domains needed (hardware, firmware, control, QA)
-> 2. Use `@ODrive-Engineer` or `@ODrive-QA` with the right task context
-> 3. Same agent, different prompts = different domain expertise
+> 2. Use the right agent for each domain: **ODrive Engineer**, **ODrive QA**, **ODrive Ops**, **ODrive Reviewer**, **ODrive Toolchain**, or **Ada to C++ Migrator**
+> 3. 6 specialized agents + 9 skills = comprehensive expertise
 > 4. Synthesize the answers into a coherent implementation
 > 
 > This is modern software engineering with AI assistance!"
