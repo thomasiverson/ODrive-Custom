@@ -19,6 +19,10 @@ Follow this workflow to take an idea from concept to implementation:
 - Ask Copilot to refine specific sections: *"Expand on the testing strategy"* or *"Simplify the data model"*
 - Identify dependencies and potential blockers
 - Break down into smaller, actionable tasks
+- **Build your Copilot customizations:**
+    - Create a `copilot-instructions.md` file to guide Copilot's behavior for your project
+    - Define custom agents tailored to your app's domain (e.g., a "manufacturing expert" or "test generator")
+    - Set up reusable skills for common tasks like generating test stubs or validating SOPs
 
 ### Step 4: Implement
 
