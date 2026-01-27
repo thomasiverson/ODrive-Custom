@@ -246,12 +246,11 @@ Change the code based on Copilot's suggestion.
 
 **Step 3: Verify (2 min)**
 
-Ask Copilot to generate a test:
-```
-@ODrive-QA Generate a unit test that logs 15 faults and verifies no crash
-```
+> Select **ODrive QA** from agent dropdown, then ask for a test:
 
-> **Note:** Using `@ODrive-QA` invokes the `odrive-qa-assistant` skill for test generation.
+```
+Generate a unit test that logs 15 faults and verifies no crash
+```
 
 Run the test mentally or with a simple main():
 ```cpp
@@ -363,7 +362,7 @@ Context:
 - What can go wrong when main loop reads during ISR write?
 - Which Copilot suggestion has the lowest overhead?
 
-> **Tip:** For complex race conditions spanning multiple files, use `@ODrive-Engineer` for deeper codebase analysis.
+> **Tip:** For complex race conditions spanning multiple files, select **ODrive Engineer** from the dropdown for deeper codebase analysis.
 
 **Step 2: Evaluate Solutions (2 min)**
 
@@ -530,12 +529,11 @@ With the same code selected, type:
 
 **Step 4: Verify with Test (1 min)**
 
-Ask:
-```
-@ODrive-QA Generate a unit test for calculate_rpm that tests speeds from 100 to 50,000 RPM
-```
+> Select **ODrive QA** from agent dropdown, then ask:
 
-> **Note:** `@ODrive-QA` will invoke the `odrive-qa-assistant` skill to create comprehensive test cases.
+```
+Generate a unit test for calculate_rpm that tests speeds from 100 to 50,000 RPM
+```
 
 ### Success Criteria
 - ✅ Understand intermediate overflow concept
@@ -659,8 +657,11 @@ Context: [constraints, platform, timing]
 ```
 
 **For Complex Multi-File Bugs:**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer analyze this bug:
+Analyze this bug:
 [description]
 Context: [files involved, expected vs actual behavior]
 ```
@@ -671,12 +672,18 @@ Context: [files involved, expected vs actual behavior]
 ```
 
 **For Testing & Build Verification:**
+
+> Select **ODrive QA** from agent dropdown for test generation and build verification:
+
 ```
-@ODrive-QA Generate a unit test that would catch this bug
-@ODrive-QA Verify the fix compiles correctly
+Generate a unit test that would catch this bug
 ```
 
-> **Note:** `@ODrive-QA` invokes the `odrive-qa-assistant` skill for builds and tests.
+or:
+
+```
+Verify the fix compiles correctly
+```
 
 ### Context is Key
 
@@ -713,10 +720,10 @@ Always provide:
 
 **"My code doesn't compile"**
 → Use `@terminal` to debug the compile error!
-→ Or use `@ODrive-QA` to invoke build skill for verification
+→ Or select **ODrive QA** to invoke build skill for verification
 
 **"Bug spans multiple files"**
-→ Use `@ODrive-Engineer` for multi-file analysis instead of `/fix`
+→ Select **ODrive Engineer** for multi-file analysis instead of `/fix`
 
 ### Debrief Questions (After Exercise)
 
@@ -757,8 +764,8 @@ See `solutions/section6-debugging/` folder for:
 After this exercise, you should be able to:
 - ✅ Use @terminal for build errors
 - ✅ Use /fix for single-file logic bugs
-- ✅ Use `@ODrive-Engineer` for complex multi-file bugs
-- ✅ Use `@ODrive-QA` for test generation and build verification
+- ✅ Use **ODrive Engineer** for complex multi-file bugs
+- ✅ Use **ODrive QA** for test generation and build verification
 - ✅ Provide effective context to Copilot
 - ✅ Evaluate multiple fix suggestions
 - ✅ Generate tests to verify fixes

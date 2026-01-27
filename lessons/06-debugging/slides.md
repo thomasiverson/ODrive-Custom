@@ -124,8 +124,11 @@ but not defined. Check:
    ```
 
 5. **Use agents for complex issues** - Multi-file analysis
+   
+   > Select **ODrive Engineer** from agent dropdown, then paste:
+   
    ```
-   @ODrive-Engineer analyze this linker error across the codebase
+   Analyze this linker error across the codebase
    ```
 
 ---
@@ -717,8 +720,8 @@ float get_position() const {  // Now const-correct
 | `/explain` | Understand code | `/explain why this crashes` |
 | `/tests` | Generate tests | `/tests for this function` |
 | `@workspace` | Find patterns | `@workspace how are ISRs handled?` |
-| `@ODrive-Engineer` | Multi-file bugs | `@ODrive-Engineer analyze this crash` |
-| `@ODrive-QA` | Build & test | `@ODrive-QA verify fix compiles` |
+| **ODrive Engineer** | Multi-file bugs | Select from dropdown, describe bug |
+| **ODrive QA** | Build & test | Select from dropdown, request verification |
 
 ---
 
