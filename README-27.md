@@ -21,12 +21,6 @@ A hands-on hackathon teaching embedded C++ and C# developers how to leverage Git
 - Apply agentic development patterns to real-world codebases
 - Modernize legacy embedded code using AI-assisted workflows
 
-### We Will Not Cover
-
-- Copilot usage statistics and satisfaction insights
-- Customer success case studies
-- Enterprise and organization administrator interfaces
-
 ## 🎓 Key Learning Outcomes
 
 ### Copilot Features
@@ -61,8 +55,6 @@ A hands-on hackathon teaching embedded C++ and C# developers how to leverage Git
 
 ```
 ODriveHack/
-├── .github/
-│   ├── copilot-instructions.md    # Repo-level coding standards
 ├── lessons/
 │   ├── 01-welcome-agenda/         # Day 1 agenda and objectives
 │   ├── 02-basic features/         # Copilot modes and commands
@@ -83,10 +75,10 @@ ODriveHack/
 
 | # | Lesson | Duration | Topics |
 |---|--------|----------|--------|
-| 1 | [Welcome & Setup](lessons/01-welcome-agenda/agenda.md) | 40 min | Objectives, workspace setup, Copilot architecture |
+| 1 | [Welcome & Setup]
 | 2 | [Basic Features](lessons/02-basic%20features/readme.md) | 45 min | Chat modes, @workspace, /fix, /explain, inline chat |
-| 3 | [Planning & Steering](lessons/03-planning/readme.md) | 60 min | spec driven development, copilot-instructions.md, prompt files, custom agents, skills |
-| 4 | [Agentic Patterns](lessons/04-agentic-patterns/readme.md) | 45 min | Context engineering, decomposition, iterative refinement |
+| 3 | [Planning & Steering](lessons/03-planning/readme.md) | 60 min | spec driven development, plan mode |
+| 4 | [Agentic Patterns](lessons/04-agentic-patterns/readme.md) | 45 min | Context engineering, copilot-instructions.md, prompt files, custom agents, skills |
 | 5 | [Best Practices](lessons/05-best-practices/readme.md) | 50 min | RAII, templates, const correctness, embedded patterns, unit tests| 
 | 6 | [Debugging](lessons/06-debugging/readme.md) | 45 min | @terminal, /fix, common bugs |
 | 7 | [Copilot CLI](lessons/07-copilot-cli/readme.md) | 45 min | Using the cli and a first look at the GHCP SDK |
