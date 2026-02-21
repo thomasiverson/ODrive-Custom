@@ -1,7 +1,6 @@
 ---
 name: control-algorithms
 description: 🚧 STUB - Common motor control algorithm implementations and patterns
-status: in-development
 ---
 
 # Control Algorithms Skill (🚧 In Development)

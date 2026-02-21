@@ -1,8 +1,6 @@
 ---
-name: 'ODrive Toolchain'
+name: 'odrive-toolchain'
 description: 'Build, test, search, and error inspection for ODrive firmware'
-status: production
-version: 1.0.0
 ---
 
 # ODrive Toolchain Skill

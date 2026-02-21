@@ -1,7 +1,6 @@
 ---
 name: foc-tuning
 description: 🚧 STUB - Automated FOC parameter tuning procedures and optimization
-status: in-development
 ---
 
 # FOC Tuning Skill (🚧 In Development)

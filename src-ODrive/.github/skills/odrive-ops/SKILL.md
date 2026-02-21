@@ -1,8 +1,6 @@
 ---
-name: 'ODrive Ops'
+name: 'odrive-ops'
 description: 'CI/CD, releases, and deployment operations for ODrive'
-status: production
-version: 1.0.0
 ---
 
 # ODrive Ops Skill

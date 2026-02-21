@@ -1,7 +1,6 @@
 ---
 name: sensorless-control
 description: 🚧 STUB - Sensorless FOC observer implementations and estimation algorithms
-status: in-development
 ---
 
 # Sensorless Control Skill (🚧 In Development)

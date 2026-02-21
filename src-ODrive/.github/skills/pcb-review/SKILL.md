@@ -1,7 +1,6 @@
 ---
 name: pcb-review
 description: 🚧 STUB - Automated PCB schematic and layout review assistance
-status: in-development
 ---
 
 # PCB Review Skill (🚧 In Development)

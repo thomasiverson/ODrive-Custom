@@ -1,7 +1,6 @@
 ---
 name: signal-integrity
 description: 🚧 STUB - Signal integrity and EMI analysis tools for hardware debugging
-status: in-development
 ---
 
 # Signal Integrity Skill (🚧 In Development)

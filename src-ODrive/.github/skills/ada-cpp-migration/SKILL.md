@@ -1,9 +1,6 @@
-# Ada to C++ Migration Skill
-
-**Skill Name:** ada-cpp-migration  
-**Version:** 1.0.0  
-**Purpose:** Migrate Ada embedded systems to Modern C++ (C++20/23) with safety preservation
-
+---
+name: ada-cpp-migration
+description: Migrate Ada embedded systems to Modern C++ (C++20/23) with safety
 ---
 
 ## Overview
