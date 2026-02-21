@@ -762,7 +762,7 @@ while (dma1->SR & DMA_BUSY) {
 ### Debugging Strategy with Copilot
 **🎯 Copilot Modes: Chat + Agent**
 
-> **Tip:** For complex debugging involving multiple files or domain expertise, use `@ODrive-Engineer` for firmware issues or `@ODrive-QA` for test-related debugging. The agents can invoke specialized skills like `odrive-qa-assistant` to build and verify fixes.
+> **Tip:** For complex debugging involving multiple files or domain expertise, select **ODrive Engineer** for firmware issues or **ODrive QA** for test-related debugging. The agents can invoke specialized skills like `cpp-testing` to build and verify fixes.
 
 **Step 1: Reproduce the Bug**
 - Can you trigger it consistently?
@@ -775,9 +775,10 @@ while (dma1->SR & DMA_BUSY) {
 @workspace find all places where motor_current_limit is written
 ```
 
-Or for more context-aware search:
+Or for more context-aware search, select **ODrive Engineer** from dropdown:
+
 ```
-@ODrive-Engineer Find all writes to motor_current_limit and explain the data flow
+Find all writes to motor_current_limit and explain the data flow
 ```
 
 **Step 3: Examine Suspicious Code**
@@ -1184,7 +1185,7 @@ float Encoder::calculate_rpm() {
 
 ---
 
-### Exercise 5: Multi-File Debugging with @ODrive-Engineer
+### Exercise 5: Multi-File Debugging with ODrive Engineer
 
 **Goal:** Use the agent for bugs that span multiple files.
 
@@ -1192,9 +1193,9 @@ float Encoder::calculate_rpm() {
 
 **Steps:**
 
-1. **Describe the symptom to the agent:**
+1. **Select ODrive Engineer from agent dropdown, then describe the symptom:**
    ```
-   @ODrive-Engineer The motor oscillates during startup calibration.
+   The motor oscillates during startup calibration.
    
    Symptoms:
    - Oscillation frequency ~50Hz
@@ -1211,9 +1212,9 @@ float Encoder::calculate_rpm() {
 
 2. **Follow the agent's analysis** - it will search across files.
 
-3. **Ask for verification:**
+3. **Select ODrive QA from agent dropdown, then ask for verification:**
    ```
-   @ODrive-QA After I apply this fix, how can I verify it worked?
+   After I apply this fix, how can I verify it worked?
    ```
 
 **Key Learning:** Use `@ODrive-Engineer` when bugs span multiple files or require codebase-wide understanding. Use `@ODrive-QA` to verify fixes and generate tests.

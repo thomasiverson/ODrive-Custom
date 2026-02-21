@@ -24,8 +24,11 @@ Use **3 parallel agents** to design and implement this feature in **5 minutes**.
 Open **3 separate Copilot Chat panels** and send these prompts simultaneously:
 
 ### Chat Panel 1: Hardware Focus
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer What CAN bus hardware diagnostics are available on ODrive?
+What CAN bus hardware diagnostics are available on ODrive?
 
 Task Context: Hardware/electrical analysis (will invoke pcb-review skill)
 
@@ -42,8 +45,11 @@ Questions:
 ```
 
 ### Chat Panel 2: Firmware Focus
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Design a CAN diagnostics module for ODrive.
+Design a CAN diagnostics module for ODrive.
 
 Task Context: Firmware implementation
 
@@ -64,8 +70,11 @@ Show me the diagnostics struct definition.
 ```
 
 ### Chat Panel 3: QA/Testing
+
+> Select **ODrive QA** from agent dropdown, then paste:
+
 ```
-@ODrive-QA Create test plan for CAN bus diagnostics.
+Create test plan for CAN bus diagnostics.
 
 Task Context: Testing & validation (invokes cpp-testing skill)
 
@@ -90,19 +99,19 @@ What test equipment needed? How to verify accuracy?
 
 Quickly scan each agent's response:
 
-**@ODrive-Engineer (Hardware Focus) should provide:**
+**ODrive Engineer (Hardware Focus) should provide:**
 - ✅ Hardware error registers (TEC, REC counters)
 - ✅ Error types detectable
 - ✅ Bus state definitions
 - ✅ Recovery procedures
 
-**@ODrive-Engineer (Firmware Focus) should provide:**
+**ODrive Engineer (Firmware Focus) should provide:**
 - ✅ Diagnostics struct layout
 - ✅ Where to hook error callbacks
 - ✅ Storage considerations
 - ✅ Performance impact assessment
 
-**@ODrive-QA should provide:**
+**ODrive QA should provide:**
 - ✅ Test scenarios
 - ✅ Required test equipment (CAN analyzer, resistor for faults)
 - ✅ Acceptance criteria
@@ -119,8 +128,10 @@ Quickly scan each agent's response:
 
 **Open a new Chat Panel (Panel 4):**
 
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement CAN diagnostics based on expert input.
+Implement CAN diagnostics based on expert input.
 
 Hardware constraints (from hardware-focused window):
 - Use STM32 CAN error registers (ESR, TEC, REC)
@@ -132,7 +143,7 @@ Design (from firmware-focused window):
 - Hook into CAN interrupt handlers
 - Minimal performance overhead
 
-Testing requirements (from @ODrive-QA window):
+Testing requirements (from ODrive QA window):
 - Must handle counter overflow gracefully
 - Diagnostic reset doesn't affect active communication
 - Timestamps for debugging
@@ -170,9 +181,9 @@ Show the implementation for can.hpp first.
 ## Success Criteria
 
 By the end of 5 minutes, you should have:
-- ✅ Hardware constraints understood (from @ODrive-Engineer with hardware context)
-- ✅ Implementation design (from @ODrive-Engineer with firmware context)
-- ✅ Test strategy (from @ODrive-QA)
+- ✅ Hardware constraints understood (from ODrive Engineer with hardware context)
+- ✅ Implementation design (from ODrive Engineer with firmware context)
+- ✅ Test strategy (from ODrive QA)
 - ✅ Working code structure (synthesized implementation)
 
 ---
@@ -181,10 +192,10 @@ By the end of 5 minutes, you should have:
 
 **Key Takeaways:**
 1. **Speed:** 3 parallel windows vs. 3 sequential queries = 3x faster
-2. **Coverage:** Different task contexts produced unique domain insights
+2. **Coverage:** Different specialized agents produced unique domain insights
 3. **Quality:** Better implementation because all angles covered
-4. **Orchestration:** You coordinated 2 agents with different contexts - that's the skill!
-5. **Key Insight:** Same agent (`@ODrive-Engineer`) handles multiple domains via prompt context!
+4. **Orchestration:** You coordinated multiple agents - that's the skill!
+5. **Key Insight:** Use the right agent for the domain: **ODrive Engineer** for firmware, **ODrive QA** for testing, **ODrive Ops** for CI/CD!
 
 ---
 
@@ -196,7 +207,7 @@ By the end of 5 minutes, you should have:
 
 **GitHub Issue (if GitHub integration available):**
 ```
-@copilot @ODrive-QA
+@copilot ODrive QA
 
 Based on the CAN diagnostics implementation in src-ODrive/Firmware/communication/can/odrive_can.cpp,
 generate a complete test suite in src-ODrive/Firmware/Tests/test_can_diagnostics.cpp
@@ -264,12 +275,16 @@ Look for:
 
 **"Which agent do I ask this to?"**
 → Use the guide:
-- Hardware/electrical = @ODrive-Engineer (with hardware context in prompt)
-- Implementation = @ODrive-Engineer (with firmware context in prompt)
-- Algorithm/math = @ODrive-Engineer (with control context in prompt)
-- Testing/QA = @ODrive-QA
+- Hardware/electrical = ODrive Engineer (with hardware context in prompt)
+- Implementation = ODrive Engineer (with firmware context in prompt)
+- Algorithm/math = ODrive Engineer (with control context in prompt)
+- Testing/QA = ODrive QA
+- Build/compile = ODrive Toolchain
+- CI/CD/releases = ODrive Ops
+- Code review = ODrive Reviewer
+- Ada migration = Ada to C++ Migrator
 
-> **Key:** Same agent, different task contexts!
+> **Key:** 6 specialized agents + 9 skills!
 
 ### Debrief Questions (After Exercise)
 
@@ -321,9 +336,10 @@ Build a Python tool that:
 
 ### Activity 3: Documentation Sprint
 Use parallel agents to:
-- @ODrive-Engineer (firmware context): Generate API docs for CAN module
-- Regular Copilot: Create user guide with examples
-- @ODrive-QA: Generate test report template
+- ODrive Engineer (firmware context): Generate API docs for CAN module
+- ODrive Reviewer: Review documentation for completeness
+- ODrive QA: Generate test report template
+- ODrive Ops: Set up docs CI/CD workflow
 
 ---
 

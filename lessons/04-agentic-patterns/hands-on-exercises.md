@@ -50,9 +50,10 @@ Your customer wants telemetry data for predictive maintenance. Add a diagnostics
 
 **Step 1: Design the Data Structure (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Design a diagnostics data structure for the Motor class.
+Design a diagnostics data structure for the Motor class.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/motor.hpp
@@ -69,9 +70,10 @@ Show me:
 
 **Step 2: Implement Runtime Tracking (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement runtime tracking in the motor control loop.
+Implement runtime tracking in the motor control loop.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/motor.cpp
@@ -85,9 +87,10 @@ Where should this code go in motor.cpp? Show me the implementation.
 
 **Step 3: Add Fault Logging (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement fault history logging.
+Implement fault history logging.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/axis.cpp
@@ -104,18 +107,23 @@ Show me:
 
 **Step 4: Verify and Document (3 min)**
 
-Prompt:
+> Select **ODrive QA** from agent dropdown, then paste:
+
 ```
-@ODrive-QA Review the motor diagnostics implementation for:
+Review the motor diagnostics implementation for:
 1. Race conditions in interrupt context
 2. Potential integer overflows
 3. Memory safety
 4. Suggest unit tests
-
-Then @ODrive-Engineer add Doxygen comments to all public methods.
 ```
 
-> **Note:** @ODrive-QA will invoke the `odrive-qa-assistant` skill to analyze code and suggest tests.
+Then select **ODrive Engineer** and paste:
+
+```
+Add Doxygen comments to all public methods.
+```
+
+> **Note:** ODrive QA will invoke the `cpp-testing` skill to analyze code and suggest tests.
 
 ### Success Criteria
 - ✅ Diagnostics struct compiles without warnings
@@ -157,9 +165,10 @@ Implement a safety watchdog that monitors motor operation and triggers emergency
 
 **Step 1: Design the Watchdog Interface (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Design a SafetyWatchdog class for motor protection.
+Design a SafetyWatchdog class for motor protection.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/safety_watchdog.hpp
@@ -176,9 +185,10 @@ Show me:
 
 **Step 2: Implement Fault Detection (4 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement the fault detection logic in SafetyWatchdog::update()
+Implement the fault detection logic in SafetyWatchdog::update()
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/safety_watchdog.cpp
@@ -198,26 +208,32 @@ Show implementation of update() method.
 
 **Step 3: Integration and Testing (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Show me how to integrate SafetyWatchdog into axis.cpp
+Show me how to integrate SafetyWatchdog into axis.cpp
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/axis.cpp
+```
 
-Then @ODrive-QA suggest:
+Then select **ODrive QA** from dropdown and paste:
+
+```
+Suggest:
 1. Unit tests for each fault condition
 2. Test rig configuration
 3. How to verify watchdog timing (doesn't exceed 100us)
 ```
 
-> **Note:** @ODrive-QA invokes `odrive-qa-assistant` skill to generate comprehensive test suggestions.
+> **Note:** ODrive QA invokes `cpp-testing` skill to generate comprehensive test suggestions.
 
 **Step 4: Configuration Interface (2 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Add watchdog configuration to axis.config_
+Add watchdog configuration to axis.config_
 
 Context:
 - File: src-ODrive/Firmware/odrive-interface.yaml
@@ -268,9 +284,10 @@ ODrive configuration is scattered across multiple files. Create a unified config
 
 **Step 1: Design Configuration Schema (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Design a ConfigManager class for ODrive.
+Design a ConfigManager class for ODrive.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/config_manager.hpp
@@ -288,9 +305,10 @@ Show me:
 
 **Step 2: Implement Validation Logic (4 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement configuration validation.
+Implement configuration validation.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/config_manager.cpp
@@ -310,9 +328,10 @@ Show:
 
 **Step 3: Persistence Layer (3 min)**
 
-Prompt:
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement save/load to NVM.
+Implement save/load to NVM.
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/config_manager.cpp
@@ -330,7 +349,8 @@ Show:
 
 **Step 4: Python Tooling (2 min)**
 
-Prompt:
+> With regular Copilot (not custom agent) since this is Python tooling, paste:
+
 ```
 Update src-ODrive/tools/odrive/configuration.py to support JSON import/export.
 
@@ -342,8 +362,6 @@ Requirements:
 
 Show the Python implementation.
 ```
-
-> **Note:** Use regular Copilot for Python tooling since it's not embedded firmware.
 
 ### Success Criteria
 - ✅ All validation rules enforce correctly
@@ -371,11 +389,11 @@ Show the Python implementation.
 5. Add tests and documentation
 
 ### Agent Selection Guide
-- **@ODrive-Engineer** - Firmware, hardware, control algorithms (routes to appropriate skills)
-- **@ODrive-QA** - Testing strategy, bug verification, build validation (invokes odrive-qa-assistant)
+- **ODrive Engineer** - Firmware, hardware, control algorithms (routes to appropriate skills)
+- **ODrive QA** - Testing strategy, bug verification, build validation (invokes cpp-testing)
 - **Regular Copilot** - Python tools, documentation, non-embedded code
 
-> **Key Insight:** Same agent (`@ODrive-Engineer`) handles multiple domains based on your prompt context. Add focus (e.g., "hardware constraints", "control theory", "firmware implementation") to guide the response.
+> **Key Insight:** Same agent (**ODrive Engineer**) handles multiple domains based on your prompt context. Add focus (e.g., "hardware constraints", "control theory", "firmware implementation") to guide the response.
 
 ### Iterative Refinement
 - Don't expect perfect code on first generation
@@ -398,10 +416,10 @@ Show the Python implementation.
 
 ### Common Issues
 **"My code doesn't compile"**
-→ Use `/fix` or provide more context about the error. Or ask `@ODrive-QA` to verify the build.
+→ Use `/fix` or provide more context about the error. Or ask **ODrive QA** to verify the build.
 
 **"I don't know which agent to use"**
-→ Use `@ODrive-Engineer` for development tasks and `@ODrive-QA` for testing/validation. Add context to specify the domain focus (firmware, hardware, control).
+→ Use **ODrive Engineer** for development tasks and **ODrive QA** for testing/validation. Add context to specify the domain focus (firmware, hardware, control).
 
 **"This is taking too long"**
 → Focus on Steps 1-2, skip the rest. The goal is learning the process.

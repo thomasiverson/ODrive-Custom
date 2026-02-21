@@ -19,8 +19,8 @@ This lesson teaches you how to become an **agentic developer**—someone who orc
 - Iterative refinement: polishing AI output into production-ready code
 
 **Key Concepts:**
-- **2 Orchestrator Agents:** `@ODrive-Engineer` (development) and `@ODrive-QA` (testing)
-- **Skills:** Specialized capabilities agents invoke automatically (e.g., `odrive-qa-assistant`)
+- **6 Specialized Agents:** ODrive Engineer, ODrive QA, ODrive Ops, ODrive Reviewer, ODrive Toolchain, Ada to C++ Migrator
+- **9 Skills:** Specialized capabilities agents invoke automatically (e.g., `cpp-testing`, `odrive-toolchain`, `odrive-ops`)
 - **Context Layering:** Building prompts with constitution → agent → files → constraints → acceptance criteria
 
 ---
@@ -59,11 +59,17 @@ Before starting this session, ensure you have:
 
 1. **Check custom agents are available:**
    - Open Chat view (Ctrl+Alt+I)
-   - Click agents dropdown (should see @ODrive-Engineer, @ODrive-QA)
+   - Click agents dropdown - should see all 6 agents:
+     - **ODrive Engineer** (primary development)
+     - **ODrive QA** (testing & quality)
+     - **ODrive Ops** (CI/CD & releases)
+     - **ODrive Reviewer** (code review)
+     - **ODrive Toolchain** (build & test)
+     - **Ada to C++ Migrator** (legacy migration)
    - If missing, verify `src-ODrive/.github/agents/*.agent.md` files exist
 
 2. **Test agent selection:**
-   - Select `@ODrive-Engineer` from dropdown
+   - Select **ODrive Engineer** from dropdown
    - Send a test message: "What's your specialty?"
    - Confirm specialized response mentioning firmware, motor control, or hardware
 
@@ -157,7 +163,7 @@ Developer thinks: "I need to add temperature monitoring to the motor"
 
 **🤖 Agent Mode Prompt (Agentic Approach):**
 ```
-@ODrive-Engineer Add temperature monitoring with NTC thermistor support
+ODrive Engineer Add temperature monitoring with NTC thermistor support
 
 Context: #file:src-ODrive/Firmware/MotorControl/motor.hpp
          #file:src-ODrive/Firmware/MotorControl/thermistor.cpp
@@ -175,37 +181,38 @@ Acceptance Criteria:
 ```
 Result: **15 minutes with review** (vs 2-4 hours manual)
 
-> **Note:** The ODrive-Engineer agent will automatically invoke the appropriate **skill** (e.g., `odrive-qa-assistant` for building) based on your request.
+> **Note:** The ODrive Engineer agent will automatically invoke the appropriate **skill** (e.g., `odrive-toolchain` for building, `cpp-testing` for tests) based on your request.
 
 ### Custom Agents & Skills in ODrive
 
-We have **2 orchestrator agents** that invoke **specialized skills**:
+We have **6 specialized agents** that invoke **9 skills**:
 
-| Agent | Role | Invokes Skills |
+| Agent | Role | Primary Skills |
 |-------|------|----------------|
-| `@ODrive-Engineer` | Primary development orchestrator | odrive-qa-assistant, devops-engineer, control-algorithms*, foc-tuning*, sensorless-control*, pcb-review*, signal-integrity* |
-| `@ODrive-QA` | Testing & DevOps orchestrator | odrive-qa-assistant, test-automation*, devops-engineer |
+| **ODrive Engineer** | Primary development orchestrator | odrive-toolchain, control-algorithms (🚧), foc-tuning (🚧), sensorless-control (🚧), pcb-review (🚧), signal-integrity (🚧) |
+| **ODrive QA** | Testing & quality assurance | cpp-testing, odrive-toolchain |
+| **ODrive Ops** | CI/CD & release operations | odrive-ops |
+| **ODrive Reviewer** | Code review specialist | N/A (reads and reviews only) |
+| **ODrive Toolchain** | Build & test operations | odrive-toolchain |
+| **Ada to C++ Migrator** | Legacy Ada migration | ada-cpp-migration |
 
-*Skills marked with * are planned (🚧)
+**Legend:** 🚧 = Planned skill (not yet fully implemented)
 
-#### Available Skills (Production ✅)
+#### Available Skills
 
-| Skill | Capabilities |
-|-------|-------------|
-| `odrive-qa-assistant` | Build firmware, run tests, symbol search, interface inspection |
-| `devops-engineer` | CI/CD workflows, releases, GitHub Actions, deployments |
+| Skill | Status | Capabilities |
+|-------|--------|-------------|
+| `odrive-toolchain` | ✅ | Build firmware, run tests, symbol search, workspace inspection |
+| `odrive-ops` | ✅ | CI/CD workflows, releases, GitHub Actions, deployments |
+| `cpp-testing` | ✅ | Unit test generation, test planning, code coverage |
+| `ada-cpp-migration` | ✅ | Ada to C++ migration patterns and methodology |
+| `control-algorithms` | 🚧 | PID controllers, observers, control transformations |
+| `foc-tuning` | 🚧 | Automated FOC parameter tuning, bandwidth measurement |
+| `sensorless-control` | 🚧 | Sliding mode observers, PLL, back-EMF estimation |
+| `pcb-review` | 🚧 | PCB schematic/layout review, design rule checking |
+| `signal-integrity` | 🚧 | Impedance calculation, EMI analysis, crosstalk |
 
-#### Planned Skills (🚧)
-
-| Skill | Capabilities |
-|-------|-------------|
-| `control-algorithms` | PID controllers, observers, control transformations |
-| `foc-tuning` | Automated FOC parameter tuning, bandwidth measurement |
-| `sensorless-control` | Sliding mode observers, PLL, back-EMF estimation |
-| `pcb-review` | PCB schematic/layout review, design rule checking |
-| `signal-integrity` | Impedance calculation, EMI analysis, crosstalk |
-
-**Key Point:** Agents orchestrate skills. Ask `@ODrive-Engineer` for any development task—it routes to the right skill automatically!
+**Key Point:** Agents orchestrate skills. Select the right agent from the dropdown—it routes to the appropriate skill automatically!
 
 ---
 
@@ -228,7 +235,7 @@ Result: Generic suggestions, may not match ODrive architecture
 
 **🤖 Agent Mode Prompt (Good Context - Specific):**
 ```
-@ODrive-Engineer The current control loop in foc.cpp is causing 
+ODrive Engineer The current control loop in foc.cpp is causing 
 oscillations at 50Hz when running at 3000 RPM.
 
 Task Context: Control algorithm debugging
@@ -258,7 +265,7 @@ Result: Targeted analysis with architecture-aware recommendations
 | **WHERE** | Which files/modules are relevant? | "#file:motor.cpp, #file:foc.cpp" |
 | **WHY** | What is the business/technical reason? | "Prevent motor damage from shorts" |
 | **WHEN** | What are timing constraints or conditions? | "Must work in 8kHz ISR context" |
-| **WHO** | Which agent has the right expertise? | "@ODrive-Engineer" or "@ODrive-QA" |
+| **WHO** | Which agent has the right expertise? | "ODrive Engineer" or "ODrive QA" |
 
 ---
 
@@ -276,7 +283,7 @@ the current control loop. Focus on reducing CPU cycles in the hot path.
 **🤖 Agent Mode Prompt:**
 ```
 @workspace Find all uses of thermistor calibration
-@ODrive-Engineer Refactor this into a reusable class following ODrive patterns
+ODrive Engineer Refactor this into a reusable class following ODrive patterns
 ```
 
 #### Technique 3: Code Selection + Inline Chat
@@ -300,7 +307,7 @@ Looking at these files, refactor the state machine to use a cleaner design patte
 @terminal shows this linker error: 
 undefined reference to `Motor::apply_pwm_timings'
 
-@ODrive-Engineer Fix the missing symbol. Check motor.hpp and motor.cpp for declaration/definition mismatch.
+ODrive Engineer Fix the missing symbol. Check motor.hpp and motor.cpp for declaration/definition mismatch.
 ```
 
 ---
@@ -310,7 +317,7 @@ undefined reference to `Motor::apply_pwm_timings'
 | Layer | Source | Content |
 |-------|--------|---------|
 | **Layer 1** | `src-ODrive/.github/copilot-instructions.md` | Constitution - coding standards, safety rules (always loaded) |
-| **Layer 2** | Agent Selection | Orchestrator expertise (`@ODrive-Engineer` for dev, `@ODrive-QA` for testing) |
+| **Layer 2** | Agent Selection | Orchestrator expertise (**ODrive Engineer** for dev, **ODrive QA** for testing) |
 | **Layer 3** | Specific Files | Exact files and line numbers referenced with `src-ODrive/` prefix |
 | **Layer 4** | Requirements | Constraints like "static allocation only", "MISRA compliant" |
 | **Layer 5** | Skills (Auto) | Agent automatically invokes appropriate skill based on task |
@@ -330,7 +337,7 @@ Result: Generic code, might not match ODrive architecture
 
 **🤖 Agent Mode Prompt (Rich Context):**
 ```
-@ODrive-Engineer Add overcurrent protection to the motor driver.
+ODrive Engineer Add overcurrent protection to the motor driver.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/motor.cpp
@@ -360,7 +367,7 @@ Acceptance Criteria:
 
 Result: Production-ready code that fits the architecture!
 
-> The agent will invoke the `odrive-qa-assistant` skill to verify the build after implementation.
+> The agent will invoke the `cpp-testing` skill to verify the build after implementation.
 
 ---
 
@@ -386,18 +393,18 @@ Result: Production-ready code that fits the architecture!
 **🤖 Agent Mode Prompts (Sequential):**
 
 ```
-Step 1: "@ODrive-Engineer Design the API for sensorless estimator"
+Step 1: "ODrive Engineer Design the API for sensorless estimator"
         → Define interfaces and data structures
         → Agent uses control-algorithms skill internally
 
-Step 2: "@ODrive-Engineer Implement Luenberger observer"
+Step 2: "ODrive Engineer Implement Luenberger observer"
         → Core algorithm implementation
 
-Step 3: "@ODrive-Engineer Integrate estimator with axis.cpp"
+Step 3: "ODrive Engineer Integrate estimator with axis.cpp"
         → Connect to existing control loop
 
-Step 4: "@ODrive-QA Create integration tests and verify build"
-        → Verification and validation via odrive-qa-assistant skill
+Step 4: "ODrive QA Create integration tests and verify build"
+        → Verification and validation via cpp-testing skill
 ```
 
 #### Pattern 2: Bottom-Up (Build Components)
@@ -470,10 +477,10 @@ graph TD
 
 **🤖 Agent Mode Execution Plan:**
 ```
-1. @ODrive-Engineer  - Define CAN message format (invokes pcb-review skill for electrical specs)
-2. @ODrive-Engineer  - Implement CAN driver and handlers
+1. ODrive Engineer  - Define CAN message format (invokes pcb-review skill for electrical specs)
+2. ODrive Engineer  - Implement CAN driver and handlers
 3. Regular Copilot   - Update Python tools
-4. @ODrive-QA        - Create comprehensive tests (invokes odrive-qa-assistant skill)
+4. ODrive QA        - Create comprehensive tests (invokes cpp-testing skill)
 ```
 
 ---
@@ -513,7 +520,7 @@ graph TD
 
 **🤖 Agent Mode Prompt:**
 ```
-@ODrive-Engineer Create a PID controller for velocity control
+ODrive Engineer Create a PID controller for velocity control
 ```
 - **Result:** Basic PID with p, i, d gains
 - **Review:** Missing anti-windup, no derivative filtering
@@ -623,9 +630,10 @@ Firmware/MotorControl/axis.hpp   - Error handling
 
 #### Step 2: Agent Selection & Initial Prompt (3 min)
 
-**🤖 Agent Mode Prompt:**
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer I need to add comprehensive diagnostics to the Motor class.
+I need to add comprehensive diagnostics to the Motor class.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/motor.hpp
@@ -660,7 +668,7 @@ Acceptance Criteria:
 Start by showing me the struct definition for the diagnostics data.
 ```
 
-> The ODrive-Engineer will orchestrate the implementation and can invoke `odrive-qa-assistant` to verify the build.
+> The ODrive-Engineer will orchestrate the implementation and can invoke `cpp-testing` to verify the build.
 
 #### Step 3: Review & Refine (3 min)
 
@@ -675,9 +683,10 @@ Start by showing me the struct definition for the diagnostics data.
 
 #### Step 4: Implementation Verification (2 min)
 
-**🤖 Agent Mode Prompt (QA Validation):**
+> Select **ODrive QA** from agent dropdown, then paste:
+
 ```
-@ODrive-QA Review the motor diagnostics implementation.
+Review the motor diagnostics implementation.
 
 Check for:
 - Potential race conditions between ISR and main loop
@@ -688,13 +697,14 @@ Check for:
 Suggest unit tests for the diagnostics module.
 ```
 
-> The QA agent will invoke `odrive-qa-assistant` skill to run builds and tests.
+> The QA agent will invoke `cpp-testing` skill to run builds and tests.
 
 #### Step 5: Documentation (2 min)
 
-**🤖 Agent Mode Prompt:**
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Add comprehensive documentation comments to the 
+Add comprehensive documentation comments to the 
 diagnostics struct and methods following Doxygen style.
 
 Include:
@@ -719,10 +729,10 @@ By the end of this exercise, you should have:
 ### Key Takeaways
 
 1. **Start with context** - Reference relevant files and constraints
-2. **Choose the right agent** - `@ODrive-Engineer` for development, `@ODrive-QA` for testing
+2. **Choose the right agent** - **ODrive Engineer** for development, **ODrive QA** for testing
 3. **Be iterative** - Get the interface right first, then implementation
 4. **Verify safety** - Always check interrupt and thread safety
-5. **Cross-validate** - Use `@ODrive-QA` to review and run tests
+5. **Cross-validate** - Use **ODrive QA** to review and run tests
 6. **Agents invoke skills** - The orchestrator agents automatically route to specialized skills
 
 ---
@@ -737,14 +747,14 @@ These exercises help you build agentic development skills. Try them on your own 
 
 | Scenario | Best Agent | Reason |
 |----------|------------|--------|
-| Add DMA-based ADC sampling | `@ODrive-Engineer` | Firmware/driver development |
-| Tune velocity control loop gains | `@ODrive-Engineer` | Control algorithm work (add "control focus" to prompt) |
-| Generate motor position unit tests | `@ODrive-QA` | Testing work (invokes `odrive-qa-assistant` skill) |
-| Check CI pipeline status | `@ODrive-QA` | DevOps work (invokes `devops-engineer` skill) |
-| Debug race condition in ISR | `@ODrive-Engineer` | Low-level firmware debugging |
-| Review hardware interface timing | `@ODrive-Engineer` | Hardware focus (add constraints in prompt) |
+| Add DMA-based ADC sampling | **ODrive Engineer** | Firmware/driver development |
+| Tune velocity control loop gains | **ODrive Engineer** | Control algorithm work (add "control focus" to prompt) |
+| Generate motor position unit tests | **ODrive QA** | Testing work (invokes `cpp-testing` skill) |
+| Check CI pipeline status | **ODrive QA** | DevOps work (invokes `odrive-ops` skill) |
+| Debug race condition in ISR | **ODrive Engineer** | Low-level firmware debugging |
+| Review hardware interface timing | **ODrive Engineer** | Hardware focus (add constraints in prompt) |
 
-**Key Insight:** The same agent (`@ODrive-Engineer`) handles different domains based on your prompt context. Add phrases like "hardware constraints", "control theory", or "firmware implementation" to guide the response.
+**Key Insight:** The same agent (**ODrive Engineer**) handles different domains based on your prompt context. Add phrases like "hardware constraints", "control theory", or "firmware implementation" to guide the response.
 
 ---
 
@@ -756,7 +766,7 @@ These exercises help you build agentic development skills. Try them on your own 
 
 **Your Solution Template:**
 ```
-@ODrive-Engineer [Specific problem with encoder]
+ODrive Engineer [Specific problem with encoder]
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/encoder.cpp
@@ -783,7 +793,7 @@ Acceptance Criteria:
 
 **Example Rich Prompt:**
 ```
-@ODrive-Engineer The encoder position has jitter of ±3 counts at standstill.
+ODrive Engineer The encoder position has jitter of ±3 counts at standstill.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/encoder.cpp
@@ -822,10 +832,10 @@ Acceptance Criteria:
 
 | Step | Agent | Subtask | Output |
 |------|-------|---------|--------|
-| 1 | `@ODrive-Engineer` | Design SSI protocol interface and timing requirements | Interface spec, timing diagram |
-| 2 | `@ODrive-Engineer` | Implement SPI-based SSI bit-banging driver | `ssi_encoder.cpp`, `ssi_encoder.hpp` |
-| 3 | `@ODrive-Engineer` | Integrate SSI encoder with existing encoder abstraction | Updates to `encoder.cpp` |
-| 4 | `@ODrive-QA` | Create test plan and hardware test rig config | Test cases, `test-rig-ssi.yaml` |
+| 1 | **ODrive Engineer** | Design SSI protocol interface and timing requirements | Interface spec, timing diagram |
+| 2 | **ODrive Engineer** | Implement SPI-based SSI bit-banging driver | `ssi_encoder.cpp`, `ssi_encoder.hpp` |
+| 3 | **ODrive Engineer** | Integrate SSI encoder with existing encoder abstraction | Updates to `encoder.cpp` |
+| 4 | **ODrive QA** | Create test plan and hardware test rig config | Test cases, `test-rig-ssi.yaml` |
 
 **Why This Decomposition Works:**
 - Each step has a clear, focused output
@@ -855,8 +865,11 @@ Acceptance Criteria:
 **Step-by-Step Approach:**
 
 **Step 1: Design the data structure**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Design a diagnostics struct for the Motor class.
+Design a diagnostics struct for the Motor class.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/motor.hpp
@@ -871,8 +884,11 @@ Show me the struct definition with size calculation.
 ```
 
 **Step 2: Implement tracking logic**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Implement runtime tracking in the motor control loop.
+Implement runtime tracking in the motor control loop.
 
 Context:
 #file:src-ODrive/Firmware/MotorControl/motor.cpp
@@ -886,8 +902,11 @@ Where should this code go? Show implementation.
 ```
 
 **Step 3: Verify with QA agent**
+
+> Select **ODrive QA** from agent dropdown, then paste:
+
 ```
-@ODrive-QA Review the motor diagnostics implementation for:
+Review the motor diagnostics implementation for:
 1. Race conditions between ISR and main loop
 2. Integer overflow in counters
 3. Memory safety in circular buffer
@@ -910,11 +929,11 @@ Suggest unit tests for the diagnostics module.
 
 | Task Type | Agent | Skill Invoked |
 |-----------|-------|---------------|
-| Low-level firmware | `@ODrive-Engineer` | (direct) + odrive-qa-assistant for builds |
-| Control algorithms | `@ODrive-Engineer` | control-algorithms (🚧), foc-tuning (🚧) |
-| Hardware interfaces | `@ODrive-Engineer` | pcb-review (🚧), signal-integrity (🚧) |
-| Testing & validation | `@ODrive-QA` | odrive-qa-assistant, test-automation (🚧) |
-| CI/CD & releases | `@ODrive-QA` | devops-engineer |
+| Low-level firmware | **ODrive Engineer** | (direct) + cpp-testing for builds |
+| Control algorithms | **ODrive Engineer** | control-algorithms (🚧), foc-tuning (🚧) |
+| Hardware interfaces | **ODrive Engineer** | pcb-review (🚧), signal-integrity (🚧) |
+| Testing & validation | **ODrive QA** | cpp-testing, cpp-testing (🚧) |
+| CI/CD & releases | **ODrive QA** | odrive-ops |
 
 > **Legend:** 🚧 = Planned skill (not yet implemented)
 
@@ -922,7 +941,7 @@ Suggest unit tests for the diagnostics module.
 
 | Element | Example |
 |---------|---------|
-| Agent selection | `@ODrive-Engineer` or `@ODrive-QA` |
+| Agent selection | **ODrive Engineer** or **ODrive QA** |
 | File references | `#file:src-ODrive/Firmware/MotorControl/motor.cpp` |
 | Problem description | "Current oscillation at 50Hz" |
 | Technical details | "PID gains: p=0.5, i=10, d=0.001" |
@@ -934,8 +953,8 @@ Suggest unit tests for the diagnostics module.
 ```
 Is the task complex? (>30 min manual work)
 ├── YES → Decompose
-│   ├── Development work? → @ODrive-Engineer (routes to skills)
-│   ├── Testing/CI work? → @ODrive-QA (routes to qa/devops skills)
+│   ├── Development work? → ODrive Engineer (routes to skills)
+│   ├── Testing/CI work? → ODrive QA (routes to qa/devops skills)
 │   └── Multiple files? → Break by module, iterate
 └── NO → Execute directly with appropriate agent
 ```
@@ -968,7 +987,7 @@ Is the task complex? (>30 min manual work)
 ### Debug Tips
 
 1. **Agent selection issues:**
-   - Check agents dropdown for available agents (`@ODrive-Engineer`, `@ODrive-QA`)
+   - Check agents dropdown for available agents (**ODrive Engineer**, **ODrive QA**)
    - Verify `.agent.md` file format is correct
    - Look at agent source in `src-ODrive/.github/agents/`
 
@@ -995,8 +1014,11 @@ Is the task complex? (>30 min manual work)
 Here are ready-to-use prompt templates for common embedded development tasks:
 
 **Template 1: Add New Feature**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Add [feature name] to [module name].
+Add [feature name] to [module name].
 
 Context:
 #file:src-ODrive/Firmware/[path/to/file.cpp]
@@ -1018,8 +1040,11 @@ Acceptance Criteria:
 ```
 
 **Template 2: Debug Issue**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Debug [symptom] in [module].
+Debug [symptom] in [module].
 
 Context:
 #file:src-ODrive/Firmware/[path/to/file.cpp]
@@ -1040,8 +1065,11 @@ Analyze the root cause and suggest a fix.
 ```
 
 **Template 3: Generate Tests**
+
+> Select **ODrive QA** from agent dropdown, then paste:
+
 ```
-@ODrive-QA Create test plan for [feature/module].
+Create test plan for [feature/module].
 
 Context:
 #file:src-ODrive/Firmware/[path/to/implementation.cpp]
@@ -1086,9 +1114,9 @@ Try these scenarios to build your agentic development skills:
 
 ## Frequently Asked Questions
 
-### When should I use @ODrive-Engineer vs @ODrive-QA?
+### When should I use ODrive Engineer vs ODrive QA?
 
-| Use `@ODrive-Engineer` for: | Use `@ODrive-QA` for: |
+| Use **ODrive Engineer** for: | Use **ODrive QA** for: |
 |----------------------------|----------------------|
 | Writing firmware code | Running builds and tests |
 | Implementing control algorithms | Generating test plans |
@@ -1096,7 +1124,7 @@ Try these scenarios to build your agentic development skills:
 | Designing data structures | CI/CD and deployment tasks |
 | Refactoring existing code | Performance validation |
 
-**Rule of thumb:** Development work → `@ODrive-Engineer`. Verification work → `@ODrive-QA`.
+**Rule of thumb:** Development work → **ODrive Engineer**. Verification work → **ODrive QA**.
 
 ### How do I know if I've provided enough context?
 
@@ -1113,7 +1141,7 @@ Your prompt has enough context when it includes:
 
 1. **Use `/fix`** - Paste the error and ask Copilot to fix it
 2. **Add more context** - Reference the file with the error
-3. **Ask `@ODrive-QA`** - It can invoke build skills to diagnose
+3. **Ask **ODrive QA**** - It can invoke build skills to diagnose
 4. **Check constraints** - You may have conflicting requirements
 
 ### Can agents modify multiple files at once?
@@ -1131,17 +1159,17 @@ Yes! Agents in "Agent Mode" can:
 | Agents | Skills |
 |--------|--------|
 | **Orchestrators** - Direct the conversation | **Capabilities** - Specific actions |
-| You select them (`@ODrive-Engineer`) | Agents invoke them automatically |
+| You select them (**ODrive Engineer**) | Agents invoke them automatically |
 | Defined in `.github/agents/` | Defined in `.github/skills/` |
 | 2 in ODrive system | Multiple per agent |
 
-**Example:** When you ask `@ODrive-QA` to run tests, it automatically invokes the `odrive-qa-assistant` skill.
+**Example:** When you ask **ODrive QA** to run tests, it automatically invokes the `cpp-testing` skill.
 
 ### Which skills are implemented vs planned?
 
 **Implemented (✅):**
-- `odrive-qa-assistant` - Build firmware, run tests, symbol search
-- `devops-engineer` - CI/CD workflows, releases, GitHub Actions
+- `cpp-testing` - Build firmware, run tests, symbol search
+- `odrive-ops` - CI/CD workflows, releases, GitHub Actions
 
 **Planned (🚧):**
 - `control-algorithms` - PID, observers, control theory
@@ -1156,7 +1184,7 @@ Yes! Agents in "Agent Mode" can:
 2. **Define interfaces first** - Get the API right before implementation
 3. **Iterate** - Small changes, frequent verification
 4. **Use Agent Mode** - It handles multi-file edits better than Chat
-5. **Verify with `@ODrive-QA`** - Run builds after each major change
+5. **Verify with **ODrive QA**** - Run builds after each major change
 
 ### Can I use this approach without custom agents?
 
@@ -1176,7 +1204,7 @@ Custom agents add domain expertise and consistency, but aren't required.
 3. **The 5 W's** - What, Where, Why, When, Who for every prompt
 4. **Decompose complexity** - Break big tasks into agent-sized pieces
 5. **Iterate to quality** - First output is rarely perfect
-6. **Two agents, many skills** - `@ODrive-Engineer` (dev) + `@ODrive-QA` (test)
+6. **Two agents, many skills** - **ODrive Engineer** (dev) + **ODrive QA** (test)
 7. **Skills are automatic** - Agents invoke them based on your request
 8. **Always verify** - Check safety, memory, interrupts for embedded code
 

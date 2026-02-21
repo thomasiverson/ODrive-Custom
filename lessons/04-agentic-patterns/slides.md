@@ -45,31 +45,35 @@ NEW: Developer → AI Agents → Review → Solution (30 minutes)
 ---
 
 ### Slide 4: ODrive Agents & Skills Architecture
-**Layout:** 2 orchestrators + skills diagram
+**Layout:** 6 agents + skills diagram
 
 ```
-┌─────────────────────────────────────────────────┐
-│           ORCHESTRATOR AGENTS                   │
-├────────────────────┬────────────────────────────┤
-│ 🔧 @ODrive-Engineer│ ✅ @ODrive-QA             │
-│ Development tasks  │ Testing & DevOps          │
-│ Routes to skills → │ Routes to skills →        │
-└────────────────────┴────────────────────────────┘
-              ↓                    ↓
-┌─────────────────────────────────────────────────┐
-│              SPECIALIZED SKILLS                 │
-├──────────────────┬──────────────────────────────┤
-│ ✅ odrive-qa-    │ ✅ devops-engineer          │
-│    assistant     │    CI/CD, releases          │
-│    Build, test   │                             │
-├──────────────────┼──────────────────────────────┤
-│ 🚧 control-      │ 🚧 pcb-review               │
-│    algorithms    │ 🚧 signal-integrity         │
-│ 🚧 foc-tuning    │ 🚧 sensorless-control       │
-└──────────────────┴──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    SPECIALIZED AGENTS (6)                       │
+├──────────────┬──────────────┬──────────────┬────────────────────┤
+│ 🔧 ODrive    │ ✅ ODrive    │ 🚀 ODrive    │ 👁️ ODrive         │
+│   Engineer   │    QA        │    Ops       │    Reviewer        │
+│ Development  │ Testing      │ CI/CD        │ Code Review        │
+├──────────────┴──────────────┴──────────────┴────────────────────┤
+│ 🔨 ODrive Toolchain        │ 🔄 Ada to C++ Migrator             │
+│   Build & Test             │   Legacy Migration                  │
+└────────────────────────────┴────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                   SPECIALIZED SKILLS (9)                        │
+├──────────────────┬──────────────────┬───────────────────────────┤
+│ ✅ odrive-       │ ✅ odrive-ops    │ ✅ cpp-testing            │
+│    toolchain     │    CI/CD         │    Test generation        │
+├──────────────────┼──────────────────┼───────────────────────────┤
+│ ✅ ada-cpp-      │ 🚧 control-      │ 🚧 foc-tuning             │
+│    migration     │    algorithms    │                           │
+├──────────────────┼──────────────────┼───────────────────────────┤
+│ 🚧 pcb-review    │ 🚧 sensorless-   │ 🚧 signal-integrity       │
+│                  │    control       │                           │
+└──────────────────┴──────────────────┴───────────────────────────┘
 ```
 
-**Speaker Notes:** "Agents orchestrate skills. Ask @ODrive-Engineer - it routes to the right skill automatically!"
+**Speaker Notes:** "6 agents, 9 skills. Select the right agent from dropdown - it routes to appropriate skills!"
 
 ---
 
@@ -100,8 +104,11 @@ NEW: Developer → AI Agents → Review → Solution (30 minutes)
 Result: Generic code, doesn't compile
 
 **✅ Rich:**
+
+> Select **ODrive Engineer** from agent dropdown, then paste:
+
 ```
-@ODrive-Engineer Add error handling to motor.cpp
+Add error handling to motor.cpp
 
 Context:
 - File: src-ODrive/Firmware/MotorControl/motor.cpp
@@ -112,7 +119,7 @@ Context:
 
 Handle: Overcurrent, overtemp, encoder disconnect
 ```
-Result: Production-ready code! Agent invokes `odrive-qa-assistant` to verify build.
+Result: Production-ready code! Agent invokes `odrive-toolchain` to verify build.
 
 ---
 
@@ -131,7 +138,7 @@ Result: Production-ready code! Agent invokes `odrive-qa-assistant` to verify bui
 2. **WHERE** - Files/modules (with `src-ODrive/` prefix)
 3. **WHY** - Business reason
 4. **WHEN** - Timing constraints
-5. **WHO** - Right agent (`@ODrive-Engineer` or `@ODrive-QA`)
+5. **WHO** - Right agent (ODrive Engineer, ODrive QA, ODrive Ops, etc.)
 
 ---
 
@@ -240,18 +247,18 @@ Result: Production-ready code! Agent invokes `odrive-qa-assistant` to verify bui
 
 ```
 CAN Timestamp Extension
-├── Protocol Definition (@ODrive-Engineer)
+├── Protocol Definition (ODrive Engineer)
 │   ├── Message format (pcb-review skill 🚧)
 │   └── DBC file update
-├── Firmware (@ODrive-Engineer)
+├── Firmware (ODrive Engineer)
 │   ├── CAN driver update
 │   ├── Timestamp generation
 │   └── Message handlers
 ├── Python Tools (Regular Copilot)
 │   ├── Parser
 │   └── ODrive API
-└── Testing (@ODrive-QA)
-    ├── Unit tests (odrive-qa-assistant skill)
+└── Testing (ODrive QA)
+    ├── Unit tests (cpp-testing skill)
     └── Integration tests
 ```
 
@@ -371,8 +378,8 @@ Multiple domains? ───NO──→ Consider decomposing
 
 💡 **Tips:**
 - Start with Step 1 prompts
-- Use `@ODrive-Engineer` for development
-- Use `@ODrive-QA` for testing/validation
+- Use **ODrive Engineer** for development
+- Use **ODrive QA** for testing/validation
 - Reference `prompt-library.md`
 - Don't worry about finishing
 - Goal: Practice the workflow!
@@ -392,7 +399,7 @@ Multiple domains? ───NO──→ Consider decomposing
 ✅ Iterate to perfection  
 ✅ You're the architect  
 ✅ Agents orchestrate skills automatically
-✅ 2 agents: `@ODrive-Engineer` + `@ODrive-QA`
+✅ 2 agents: **ODrive Engineer** + **ODrive QA**
 
 ---
 
@@ -427,11 +434,11 @@ Multiple domains? ───NO──→ Consider decomposing
 
 | Need | Agent | Skill Invoked |
 |------|-------|---------------|
-| Firmware, drivers | @ODrive-Engineer | (direct) + qa-assistant for builds |
-| Control algorithms | @ODrive-Engineer | control-algorithms (🚧) |
-| Hardware specs | @ODrive-Engineer | pcb-review (🚧) |
-| Tests, validation | @ODrive-QA | odrive-qa-assistant |
-| CI/CD, releases | @ODrive-QA | devops-engineer |
+| Firmware, drivers | ODrive Engineer | (direct) + qa-assistant for builds |
+| Control algorithms | ODrive Engineer | control-algorithms (🚧) |
+| Hardware specs | ODrive Engineer | pcb-review (🚧) |
+| Tests, validation | ODrive QA | cpp-testing |
+| CI/CD, releases | ODrive QA | odrive-ops |
 | Python, docs | Regular Copilot | - |
 
 **Legend:** 🚧 = Planned skill
