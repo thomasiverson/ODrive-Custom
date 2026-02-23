@@ -1,6 +1,9 @@
-# C++ Testing Skill
+---
+name: cpp-testing
+description: Expert in test-driven development for embedded C++ using doctest framework
+---
 
-> Expert in test-driven development for embedded C++ using doctest framework
+# C++ Testing Skill
 
 ## Description
 
