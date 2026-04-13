@@ -2,6 +2,7 @@
 name: 'ODrive Toolchain'
 description: 'Build, compile, test, and code navigation for ODrive firmware development'
 tools: ['execute', 'read', 'search']
+model: Claude Opus 4.5 (copilot)
 ---
 
 # ODrive Toolchain Agent

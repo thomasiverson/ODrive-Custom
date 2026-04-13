@@ -1,16 +1,43 @@
-
 #include "acim_estimator.hpp"
 #include <board.h>
 
 /**
- * @brief Updates the AC Induction Motor rotor flux and phase estimates
- * 
+ * @brief Updates the AC Induction Motor rotor flux and phase estimates.
+ *
  * Implements a simplified rotor flux observer for sensorless control of
  * AC induction motors. The estimator uses d-q axis currents and rotor
  * velocity to compute rotor flux magnitude, slip velocity, and stator
  * electrical phase angle.
- * 
- * @param timestamp Current time in HCLK ticks for delta-time calculation
+ *
+ * On the first active call (after inputs become available), the estimator
+ * initializes its internal state and returns without producing an output.
+ * Subsequent calls perform numerical integration of rotor flux and slip
+ * phase using a first-order lag model.
+ *
+ * If any required input source is unavailable, the estimator transitions
+ * to an inactive state and returns immediately.
+ *
+ * @param timestamp Current time in HCLK ticks (TIM_1_8_CLOCK_HZ resolution),
+ *                  used to compute the integration time step (dt). Must be
+ *                  monotonically increasing.
+ *
+ * @return void. Results are stored in member variables:
+ *         - rotor_flux_: estimated rotor flux magnitude [A-equivalent]
+ *         - slip_vel_: estimated slip velocity [rad/s]
+ *         - stator_phase_: estimated stator electrical angle [rad, -π to π]
+ *         - stator_phase_vel_: estimated stator electrical velocity [rad/s]
+ *
+ * @pre rotor_phase_src_, rotor_phase_vel_src_, and idq_src_ must be
+ *      connected to valid signal sources.
+ * @pre config_.slip_velocity must be configured to 1/Tr (inverse rotor
+ *      time constant) before calling.
+ *
+ * @note This function must be called at a fixed rate from the control loop
+ *       (typically once per PWM cycle). It is not thread-safe and must not
+ *       be called concurrently or from an ISR while another invocation is
+ *       in progress.
+ * @note Slip velocity is clamped to zero when rotor flux is near zero to
+ *       avoid division-by-zero or numerical instability.
  */
 void AcimEstimator::update(uint32_t timestamp)  {
     // Fetch all required inputs from connected ports

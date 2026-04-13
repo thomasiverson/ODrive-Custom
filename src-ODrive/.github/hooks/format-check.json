@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "python -c \"import sys, json; data=json.load(sys.stdin); tool=data.get('tool_name',''); inp=data.get('tool_input',{}); fp=inp.get('filePath','') or inp.get('file_path','') or ''; result={'continue':True}; (result.update({'hookSpecificOutput':{'hookEventName':'PostToolUse','additionalContext':'Reminder: This project uses .clang-format in Firmware/. Run clang-format to verify formatting if unsure.'}}) if any(fp.endswith(ext) for ext in ['.cpp','.c','.cc','.h','.hpp']) else None); print(json.dumps(result))\"",
+        "windows": "python -c \"import sys, json; data=json.load(sys.stdin); tool=data.get('tool_name',''); inp=data.get('tool_input',{}); fp=inp.get('filePath','') or inp.get('file_path','') or ''; result={'continue':True}; (result.update({'hookSpecificOutput':{'hookEventName':'PostToolUse','additionalContext':'Reminder: This project uses .clang-format in Firmware/. Run clang-format to verify formatting if unsure.'}}) if any(fp.endswith(ext) for ext in ['.cpp','.c','.cc','.h','.hpp']) else None); print(json.dumps(result))\"",
+        "timeout": 10
+      }
+    ]
+  }
+}

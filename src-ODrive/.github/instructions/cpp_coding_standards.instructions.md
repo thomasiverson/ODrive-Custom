@@ -1,11 +1,277 @@
 ---
-applyTo: "**/*.cpp,**/*.c,**/*.cc"
-description: "C++ source file standards for ODrive firmware. Apply when writing or reviewing implementation files (.cpp, .c, .cc)."
+applyTo: "**/*.cpp,**/*.c,**/*.cc,**/*.h,**/*.hpp"
+description: "C++ coding standards for ODrive embedded firmware — naming, style, modern C++, header structure, memory, ISR safety, real-time, and hardware patterns."
 ---
 
-# C++ Source File Standards
+# C++ Coding Standards for Embedded Firmware
 
-This document defines coding standards for C++ source/implementation files.
+Unified coding standards for all C/C++ code in the ODrive project (STM32 ARM Cortex-M4F, FreeRTOS).
+
+---
+
+## Naming Conventions
+
+| Element | Style | Example |
+|---------|-------|---------|
+| Classes/Structs | PascalCase | `MotorController`, `AxisConfig` |
+| Functions/Methods | camelCase | `calculatePosition()`, `isEnabled()` |
+| Variables | camelCase | `targetSpeed`, `encoderCount` |
+| Private members | camelCase + trailing `_` | `speed_`, `isCalibrated_` |
+| Constants | kPascalCase | `kMaxVoltage`, `kBufferSize` |
+| Enums | `enum class` PascalCase | `MotorState::Running` |
+| Namespaces | lowercase_with_underscores | `motor_control` |
+| Files | lowercase_with_underscores | `motor_controller.cpp` |
+| Macros (avoid) | UPPER_CASE | `#define MAX_VOLTAGE` — prefer `constexpr` |
+
+- Boolean getters: prefix with `is`, `has`, `can`, `should`
+- File extensions: `.hpp` for headers, `.cpp` for implementation
+
+---
+
+## Header File Rules
+
+### Include Guards
+Use `#pragma once` at the top of every header.
+
+### Header Structure Order
+1. `#pragma once`
+2. File header comment (`@file`, `@brief`)
+3. System includes (alphabetical)
+4. Third-party includes (alphabetical)
+5. Project includes (alphabetical)
+6. Forward declarations
+7. Namespace → constants → enums → class
+
+### Include What You Use (IWYU)
+- Forward-declare for pointers/references: `class Motor;`
+- Full include required for: value members, inheritance, method calls, `sizeof()`
+- **NEVER** `using namespace` at global scope in headers
+
+### Include Order (in .cpp files)
+1. Related header (first — tests self-containment)
+2. C system headers (`<cstdint>`)
+3. C++ standard library (`<vector>`)
+4. Third-party (`<arm_math.h>`)
+5. Project headers
+
+### Inline in Headers
+Only: templates, `constexpr`, trivial 1-2 line getters/setters.
+
+---
+
+## Code Formatting
+
+- **4 spaces** indentation (no tabs)
+- **120 char** max line length
+- Opening brace on **same line**
+- **Always use braces** for single-line conditionals
+- Space after keywords (`if (`, `for (`), no space for calls (`func(arg)`)
+- `++i` preferred over `i++`
+
+---
+
+## Modern C++ (C++17 minimum)
+
+- Use `auto` when type is obvious from context; explicit for primitives
+- Range-based `for` loops over index-based
+- `constexpr` for compile-time constants and functions
+- `enum class` over plain `enum`
+- `std::unique_ptr` / `std::shared_ptr` over raw owning pointers
+- `override` and `final` on virtual methods
+- `[[nodiscard]]` on functions where ignoring return is a bug
+- `explicit` on single-argument constructors
+- `using` over `typedef`
+- Structured bindings: `auto& [id, motor] = pair;`
+- Every class: explicitly declare copy/move semantics
+
+---
+
+## Documentation
+
+- **File headers**: `@file`, `@brief`, `@author`
+- **Classes**: `@brief`, thread-safety notes, usage example
+- **Methods**: `@brief`, `@param`, `@return`, `@note`/`@warning`
+- **Inline comments**: explain WHY, not WHAT
+
+---
+
+## Error Handling
+
+- **Embedded code**: use error codes (no exceptions — too much overhead)
+- **Non-embedded utilities**: exceptions acceptable for truly exceptional conditions
+- `std::optional` for values that may not exist
+- Always check return codes; use `[[nodiscard]]` to enforce
+
+```cpp
+enum class MotorError : uint8_t { None, OverVoltage, EncoderFault, Timeout };
+
+[[nodiscard]] MotorError Motor::initialize() {
+    if (!encoder_.detect()) return MotorError::EncoderFault;
+    return MotorError::None;
+}
+```
+
+---
+
+## Memory Management (Embedded)
+
+- **No `new`/`delete` in real-time code** — stack or static allocation only
+- `std::array` over `std::vector` (fixed-size, no heap fragmentation)
+- Heap allocation acceptable only during initialization
+- Use object pools for dynamic-like behavior without fragmentation
+- Beware static initialization order — use Meyers Singleton pattern
+
+```cpp
+// ✅ Stack/static allocation
+void processData() { uint8_t buffer[256]; }
+static MotorController motors[2];
+
+// ❌ NEVER in control loop or ISR
+void controlLoop() { auto* d = new SensorData(); }
+```
+
+---
+
+## Interrupt Safety (Embedded)
+
+### Volatile & Atomics
+- `volatile` for ISR-shared variables and hardware registers
+- `std::atomic` for shared counters/flags
+- Never do non-atomic read-modify-write on shared data
+
+### Critical Sections
+Use RAII pattern to disable/re-enable interrupts:
+
+```cpp
+class CriticalSection {
+public:
+    CriticalSection() { __disable_irq(); }
+    ~CriticalSection() { __enable_irq(); }
+    CriticalSection(const CriticalSection&) = delete;
+    CriticalSection& operator=(const CriticalSection&) = delete;
+};
+```
+
+### ISR Rules
+- Keep ISRs **SHORT** — read hardware, set flag, return
+- Defer heavy processing to main loop or FreeRTOS task
+- No floating-point math, no dynamic allocation, no blocking in ISRs
+
+---
+
+## Real-Time Constraints (Embedded)
+
+- **Bounded execution time** on all code paths — no unbounded loops
+- **No blocking waits** without timeouts
+- Watchdog timer for fault recovery
+- Fixed-point math when FPU is unavailable or determinism is critical
+- Cortex-M4F has hardware FPU — `float` operations are fast
+
+```cpp
+// ✅ Non-blocking with timeout
+bool waitForReady(uint32_t timeoutMs) {
+    uint32_t start = HAL_GetTick();
+    while (!isReady()) {
+        if (HAL_GetTick() - start > timeoutMs) return false;
+    }
+    return true;
+}
+```
+
+---
+
+## Hardware Abstraction (Embedded)
+
+- Encapsulate hardware access in classes (e.g., `Stm32Gpio`)
+- RAII for peripheral state (SPI chip-select, DMA lifecycle)
+- Memory barriers (`__DMB()`, `__ISB()`) before DMA/peripheral starts
+- Direct register access only in performance-critical paths (ISR, control loop)
+
+```cpp
+// RAII for SPI chip-select
+class SpiTransaction {
+public:
+    SpiTransaction(Stm32Gpio& cs) : cs_(cs) { cs_.write(false); }
+    ~SpiTransaction() { cs_.write(true); }
+    SpiTransaction(const SpiTransaction&) = delete;
+private:
+    Stm32Gpio& cs_;
+};
+```
+
+---
+
+## Safety-Critical Patterns (Embedded)
+
+- **Validate all inputs**: check for NaN, Inf, out-of-range
+- **Assert invariants** in debug builds
+- **State machine transitions**: validate explicitly, reject invalid transitions
+- **Fault handling**: disable PWM first, log error, notify host, enter fault state
+- **Watchdog**: initialize early, kick regularly in control loop
+
+```cpp
+bool Motor::setSpeed(float speed) {
+    if (std::isnan(speed) || std::isinf(speed)) return false;
+    if (speed < kMinSpeed || speed > kMaxSpeed) return false;
+    speed_ = speed;
+    return true;
+}
+```
+
+---
+
+## Performance
+
+- `constexpr` for compile-time computation
+- `__builtin_expect` for branch prediction hints
+- `__attribute__((always_inline))` for critical-path functions
+- Pass large objects by `const&`, small types by value
+- `emplace_back` over `push_back`
+- Profile before optimizing — optimize hot paths only
+
+---
+
+## General Design
+
+- **Single responsibility**: each class/function does one thing
+- **Composition over inheritance**: avoid deep hierarchies
+- **No magic numbers**: use named `constexpr` constants
+- **Functions under 50 lines**
+- **const correctness**: mark methods and variables `const` where possible
+
+---
+
+## Summary Checklist
+
+### Style
+- [ ] Naming follows conventions (PascalCase classes, camelCase functions)
+- [ ] Modern C++17 features used appropriately
+- [ ] Doxygen documentation for public APIs
+- [ ] All variables initialized, `const` applied
+- [ ] No magic numbers, no raw owning pointers
+
+### Headers
+- [ ] `#pragma once`, self-contained, IWYU
+- [ ] No `using namespace` at global scope
+- [ ] Forward declarations where possible
+
+### Embedded
+- [ ] No dynamic allocation in real-time paths
+- [ ] `volatile`/atomics for ISR-shared data
+- [ ] ISRs are short — defer work to main loop
+- [ ] All paths have bounded execution time
+- [ ] Inputs validated (NaN, range checks)
+- [ ] Error codes used (not exceptions)
+- [ ] RAII for hardware state management
+- [ ] Fault states defined and handled
+---
+applyTo: "**/*.cpp,**/*.c,**/*.cc,**/*.h,**/*.hpp"
+description: "C++ coding standards for ODrive firmware. Covers naming, style, modern C++ idioms, header structure, and includes for all C/C++ files."
+---
+
+# C++ Coding Standards
+
+This document defines coding standards for all C++ source and header files. For embedded-specific constraints (memory, ISR, real-time, hardware), see `embedded_cpp_best_practices.instructions.md`.
 
 ---
 
@@ -943,3 +1209,90 @@ public:
 ---
 
 *This guide should be followed for all C++ code in the project. Consistency is key to maintainability.*
+
+---
+
+## Header File Standards
+
+The following rules apply specifically to header files (`.h`, `.hpp`).
+
+### Include Guards
+
+Use `#pragma once` at the top of every header file. For compatibility, you may add traditional guards as a fallback:
+
+```cpp
+#pragma once
+#ifndef ODRIVE_MOTORCONTROL_ENCODER_HPP_
+#define ODRIVE_MOTORCONTROL_ENCODER_HPP_
+// ...
+#endif // ODRIVE_MOTORCONTROL_ENCODER_HPP_
+```
+
+Guard naming: `PROJECTNAME_PATH_FILENAME_HPP_` — all uppercase with underscores.
+
+### Header File Structure
+
+Follow this organization order:
+1. `#pragma once`
+2. File header comment (`@file`, `@brief`)
+3. System includes (alphabetical)
+4. Third-party includes (alphabetical)
+5. Project includes (alphabetical)
+6. Forward declarations
+7. Namespace
+8. Constants and type aliases
+9. Enumerations
+10. Class declarations
+
+### Include What You Use (IWYU)
+
+Only include headers necessary for declarations in the file. Use forward declarations where possible:
+
+| Use Case | Forward Declare? |
+|----------|------------------|
+| Pointer member (`Motor*`) | Yes |
+| Reference member (`Motor&`) | Yes |
+| Function parameter (`void foo(Motor*)`) | Yes |
+| Value member (`Motor motor_`) | No — need full include |
+| Inheritance (`class Foo : Motor`) | No — need full include |
+| Calling methods (`motor.update()`) | No — need full include |
+
+### Include Order
+
+1. Related header (for `.cpp` files — first include)
+2. C system headers (`<cstdint>`, `<cmath>`)
+3. C++ standard library (`<vector>`, `<memory>`)
+4. Third-party libraries
+5. Project headers
+
+Separate each group with a blank line. Alphabetize within groups.
+
+### Namespace Pollution
+
+**NEVER** use `using namespace` at global scope in a header file — it pollutes every includer. Acceptable: `using` declarations inside function bodies or class scope.
+
+### Inline Implementation
+
+Keep implementation **out of headers** unless:
+- It is a **template** (must be in header)
+- It is a **constexpr** function
+- It is a **trivial getter/setter** (1-2 lines)
+
+### Self-Contained Headers
+
+Every header must compile on its own. Include all dependencies. Test by making the header the first include in its `.cpp` file.
+
+### `[[nodiscard]]` for Return Values
+
+Use `[[nodiscard]]` on getters and functions where ignoring the return value is likely a bug.
+
+### Header Checklist
+
+- [ ] Uses `#pragma once`
+- [ ] Follows standard structure order
+- [ ] Includes only what is needed (IWYU)
+- [ ] Uses forward declarations where possible
+- [ ] No `using namespace` at global scope
+- [ ] Implementation in .cpp unless template/constexpr/trivial
+- [ ] Self-contained (compiles on its own)
+- [ ] Uses `[[nodiscard]]` for value-returning getters

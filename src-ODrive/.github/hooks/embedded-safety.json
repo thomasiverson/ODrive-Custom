@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "python -c \"import sys, json; data=json.load(sys.stdin); name=data.get('tool_name',''); inp=json.dumps(data.get('tool_input',{})); result={'continue':True}; (result.update({'systemMessage':'⚠️ You are editing an interrupt handler or ISR file. Ensure all changes follow embedded_cpp_best_practices: keep ISRs short, use volatile for shared variables, use atomics or critical sections for shared data.'}) if any(k in inp.lower() for k in ['irq','isr','interrupt','_handler','stm32f4xx_it']) else None); print(json.dumps(result))\"",
+        "windows": "python -c \"import sys, json; data=json.load(sys.stdin); name=data.get('tool_name',''); inp=json.dumps(data.get('tool_input',{})); result={'continue':True}; (result.update({'systemMessage':'⚠️ You are editing an interrupt handler or ISR file. Ensure all changes follow embedded_cpp_best_practices: keep ISRs short, use volatile for shared variables, use atomics or critical sections for shared data.'}) if any(k in inp.lower() for k in ['irq','isr','interrupt','_handler','stm32f4xx_it']) else None); print(json.dumps(result))\"",
+        "timeout": 10
+      }
+    ]
+  }
+}
