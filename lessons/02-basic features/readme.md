@@ -1,7 +1,7 @@
-# Lesson 2: Basic Feature Overview - GitHub Copilot in VS Code
+# Lesson 2: Copilot Fundamentals, Debugging & Refactoring for C++
 
-**Session Duration:** 45 minutes  
-**Audience:** Embedded/C++ Developers/Project Managers/QA engineers/Firmware Engineers  
+**Session Duration:** 2 hours 25 minutes (three sections)  
+**Audience:** Embedded/C++ Developers, Firmware Engineers, QA Engineers  
 **Environment:** Windows, VS Code  
 **Extensions:** GitHub Copilot  
 **Source Control:** GitHub/Bitbucket
@@ -10,13 +10,16 @@
 
 ## Overview
 
-This lesson introduces the core features of GitHub Copilot in VS Code. You'll learn the three primary interaction modes, how to leverage chat participants and slash commands, and how to maximize productivity with inline suggestions and multi-file editing.
+This lesson covers three progressive sections: workspace setup, core Copilot features tailored for C++ development, and practical debugging/refactoring workflows. You'll learn to use Copilot with real embedded C++ code — templates, macros, pointers, compiler errors, and runtime bugs.
 
 **What You'll Learn:**
-- The three Copilot modes (Ask, Edit, Agent) and when to use each
-- Chat participants (`@workspace`, `@terminal`, `@vscode`, `@github`) for domain-specific assistance
-- Slash commands (`/fix`, `/explain`, `/tests`, `/doc`) for common tasks
-- Inline suggestions and multi-file editing workflows
+- Inline code suggestions for C++ (comment-driven completions, templates, ISR code)
+- Using Copilot to understand unfamiliar C++ — templates, macros, pointers
+- Navigating large C++ repos with `#codebase` and `#file:` references
+- `/explain` and `/fix` with embedded C++ examples
+- Diagnosing compiler errors and linker errors with Copilot
+- Debugging runtime issues — null pointers, memory bugs, undefined behavior
+- Using `@terminal` for build commands and error analysis
 
 **Key Concepts:**
 
@@ -25,8 +28,9 @@ This lesson introduces the core features of GitHub Copilot in VS Code. You'll le
 | **Ask Mode** | Question-and-answer about code, architecture, debugging |
 | **Edit Mode** | Code generation, refactoring, documentation via Inline Chat |
 | **Agent Mode** | Autonomous multi-step tasks across files with planning |
-| **Chat Participants** | `@`-prefixed helpers for project, terminal, IDE, and GitHub |
-| **Slash Commands** | `/`-prefixed shortcuts for common operations |
+| **Chat Participants** | `@terminal`, `@vscode`, `@github` for domain-specific assistance |
+| **Slash Commands** | `/explain`, `/fix`, `/doc`, `/tests` for common operations |
+| **#codebase** | Semantic search across the entire project |
 
 ---
 
@@ -36,11 +40,10 @@ This lesson introduces the core features of GitHub Copilot in VS Code. You'll le
 - [Prerequisites](#prerequisites)
 - [Why Copilot Features Matter](#why-copilot-features-matter)
 - [Learning Path](#learning-path)
-- [Agenda](#agenda-basic-feature-overview-45-min)
-- [Get Started with Chat in VS Code](#1-get-started-with-chat-in-vs-code)
-- [Copilot Chat Modes](#2-copilot-chat-modes)
-- [Chat Participants & Slash Commands](#3-chat-participants--slash-commands)
-- [Inline Chat & Copilot Edits](#4-inline-chat--copilot-edits)
+- [Agenda](#agenda)
+- [Section 1: Welcome & Setup](#section-1-welcome--setup)
+- [Section 2: Copilot Fundamentals for C++ Development](#section-2-copilot-fundamentals-for-c-development)
+- [Section 3: Debugging and Refactoring C++ with Copilot](#section-3-debugging-and-refactoring-c-with-copilot)
 - [**Hands-On Exercises**](#hands-on-exercises)
 - [Quick Reference](#quick-reference-github-copilot-chat)
 - [Tips for Effective Prompts](#tips-for-effective-prompts)
@@ -120,8 +123,8 @@ Understanding the full range of Copilot features enables you to:
    - Agent Mode for complex multi-file tasks
 
 2. **Faster Code Comprehension**
-   - Use `@workspace` to understand project architecture
-   - Use `/explain` to decode unfamiliar code
+   - Use `#codebase` to search project-wide for patterns and definitions
+   - Use `/explain` to decode unfamiliar templates, macros, and pointer semantics
    - Use `#file:` references for context-aware answers
 
 3. **Accelerated Development**
@@ -138,26 +141,46 @@ Understanding the full range of Copilot features enables you to:
 
 ## Learning Path
 
-This lesson covers five key areas. Work through them sequentially for the best learning experience.
+This lesson is divided into three progressive sections:
 
-| Topic | What You'll Learn | Estimated Time |
-|-------|-------------------|----------------|
-| Get Started with Chat | Three ways to access Copilot Chat | 5 min |
-| Copilot Chat Modes | Ask, Edit, Agent - when to use each | 10 min |
-| Chat Participants & Slash Commands | `@workspace`, `@terminal`, `/fix`, `/explain` | 10 min |
-| Inline Chat & Copilot Edits | In-editor completions, multi-file editing | 10 min |
-| **[Hands-On Exercises](hands-on-exercises.md)** | Try each mode with walkthrough | 10 min |
+| Section | Topics | Time |
+|---------|--------|------|
+| **1. Welcome & Setup** | Workshop objectives, Copilot overview, workspace setup, high-level architecture | 40 min |
+| **2. Copilot Fundamentals** | Inline suggestions, understanding C++ (templates, macros, pointers), navigating large repos, /explain, /fix | 45 min |
+| **3. Debugging & Refactoring** | Compiler errors, runtime issues (null pointers, memory), @terminal + /fix workflow | 60 min |
+| | **Total** | **2h 25m** |
 
 ---
 
-## Agenda: Basic Feature Overview (45 min)
+## Agenda
 
-| Sub-Topic                        | Focus                                               | Time   |
-|----------------------------------|-----------------------------------------------------|--------|
-| Copilot Chat Modes               | Ask, Edit, Agent mode - when to use each            | 10 min |
-| Chat Participants & Slash Cmds   | @workspace, @terminal, /fix, /explain, /tests, /doc | 10 min |
-| Inline Chat & Copilot Edits      | In-editor completions, multi-file editing           | 10 min |
-| **[Hands-On Exercises](hands-on-exercises.md)** | Try each mode with walkthrough in VS Code  | 15 min |
+### Section 1 — Welcome & Setup (40 min)
+
+| Sub-Topic | Focus | Time |
+|-----------|-------|------|
+| Workshop Objectives | Goals, expected outcomes, logistics | 5 min |
+| GitHub Copilot Overview | What it is, how it works (high level) | 10 min |
+| Workspace Setup for C++ | VS Code, extensions, open ODrive repo, verify Copilot | 15 min |
+| High-Level Copilot Architecture | LLM, context window, prompt construction (keep it high level) | 10 min |
+
+### Section 2 — Copilot Fundamentals for C++ Development (45 min)
+
+| Sub-Topic | Focus | Time |
+|-----------|-------|------|
+| Inline Code Suggestions | Comment-driven completions, Tab/Escape, C++ specifics | 10 min |
+| Understanding Unfamiliar C++ | Ask Mode + /explain: templates, macros, pointers | 10 min |
+| Navigating Large C++ Repos | #codebase, #file: references, tracing code paths | 10 min |
+| /explain and /fix with C++ | Slash commands on real firmware code | 10 min |
+| **[Hands-On Exercises 1–4](hands-on-exercises.md)** | Practice fundamentals | 5 min |
+
+### Section 3 — Debugging and Refactoring C++ with Copilot (60 min)
+
+| Sub-Topic | Focus | Time |
+|-----------|-------|------|
+| Diagnosing Compiler Errors | Paste errors into Chat, template errors, linker errors | 15 min |
+| Runtime Issues | Null pointers, memory bugs, undefined behavior, ISR safety | 15 min |
+| @terminal and /fix Workflow | Build → analyze errors → fix → rebuild cycle | 15 min |
+| **[Hands-On Exercises 5–7](hands-on-exercises.md)** | Practice debugging | 15 min |
 
 ---
 
@@ -464,16 +487,22 @@ Agent Mode can make coordinated changes across multiple files:
 
 For detailed hands-on exercises with step-by-step instructions, see the separate exercises document:
 
-📋 **[Hands-On Exercises](hands-on-exercises.md)** (15 min)
+📋 **[Hands-On Exercises](hands-on-exercises.md)** (30 min)
 
-The exercises cover:
-- **Exercise 1:** Explore the Codebase (Ask Mode)
-- **Exercise 2:** Generate Documentation (Edit Mode + /doc)
-- **Exercise 3:** Fix a Bug (/fix command)
-- **Exercise 4:** Generate Unit Tests (/tests command)
-- **Exercise 5:** Architecture Deep Dive (@workspace)
+The exercises are organized by lesson section:
 
-> 💡 **Tip:** Focus on Exercises 1-3 if short on time. They demonstrate the core interaction patterns.
+**Section 2 — Copilot Fundamentals:**
+- **Exercise 1:** Inline Code Suggestions for C++
+- **Exercise 2:** Understand C++ Templates, Macros & Pointers
+- **Exercise 3:** Navigate a Large C++ Repo with #codebase
+- **Exercise 4:** /explain and /fix with C++ Examples
+
+**Section 3 — Debugging & Refactoring:**
+- **Exercise 5:** Diagnose Compiler Errors
+- **Exercise 6:** Debug Runtime Issues (null pointers, memory)
+- **Exercise 7:** @terminal and /fix Workflow
+
+> 💡 **Tip:** Do Exercises 1–4 after Section 2 and Exercises 5–7 after Section 3.
 
 ---
 
@@ -501,7 +530,7 @@ The exercises cover:
 
 | Participant | Description | Example |
 |-------------|-------------|---------|
-| `@workspace` | Project-wide context and code search | `@workspace how is authentication implemented?` |
+
 | `@terminal` | Shell commands and terminal help | `@terminal list the 5 largest files` |
 | `@vscode` | VS Code features and settings | `@vscode how to enable word wrapping?` |
 | `@github` | GitHub repos, issues, and PRs | `@github What are all open PRs assigned to me?` |
@@ -672,15 +701,15 @@ Extend chat with custom capabilities by integrating external tools and services 
 
 ---
 
-### Q: What's the difference between @workspace and #codebase?
+### Q: How do I search across my project in Chat?
 
-**Short Answer:** `@workspace` is a chat participant; `#codebase` is a tool for search.
+**Short Answer:** Use `#codebase` to perform a semantic search across your workspace.
 
 **Detailed Explanation:**
-- **@workspace:** Invokes a specialized participant that understands your project structure. Good for architectural questions.
-- **#codebase:** Performs semantic search across your code. Good for finding specific patterns or implementations.
+- **#codebase:** Performs semantic search across your code. Good for finding specific patterns, tracing definitions, and understanding how things connect.
+- **#file:** References a specific file for context-aware questions.
 
-Use `@workspace` for "how does X work?" questions. Use `#codebase` for "find all instances of X" queries.
+Use `#codebase` for "find all instances of X" and "how does X work?" queries. Use `#file:` when you know the specific file you want to discuss.
 
 ---
 
@@ -761,11 +790,10 @@ Generate this function with:
 - **Edit Mode:** Targeted code changes (Ctrl+I)
 - **Agent Mode:** Complex autonomous tasks
 
-### 2. Chat Participants Extend Capabilities
-- `@workspace` for project-wide context
-- `@terminal` for shell and build help
-- `@vscode` for IDE configuration
-- `@github` for repository integration
+### 2. Navigating Large C++ Codebases
+- `#codebase` for project-wide semantic search
+- `#file:` for referencing specific files
+- `/explain` to decode templates, macros, and pointer semantics
 
 ### 3. Slash Commands Accelerate Common Tasks
 - `/doc` - Generate documentation
@@ -773,12 +801,18 @@ Generate this function with:
 - `/fix` - Resolve errors
 - `/tests` - Create unit tests
 
-### 4. Context is King
+### 4. Debugging Workflow
+- Paste compiler errors into Chat for diagnosis
+- Use `/fix` for targeted corrections
+- Use `@terminal` for build commands and output analysis
+- Chain: build → diagnose → fix → rebuild
+
+### 5. Context is King
 - Use `#file:` to reference specific files
 - Provide constraints and requirements
 - Iterate with follow-up questions
 
-### 5. Practice Makes Perfect
+### 6. Practice Makes Perfect
 - Start with Ask Mode to explore
 - Progress to Edit Mode for changes
 - Graduate to Agent Mode for complex tasks

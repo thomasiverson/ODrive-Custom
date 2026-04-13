@@ -1,5 +1,595 @@
 # Lesson 2: Hands-On Exercises
 
+**Duration:** 30 minutes  
+**Format:** Individual practice  
+**Goal:** Practice GitHub Copilot fundamentals for C++ development, debugging, and refactoring
+
+---
+
+## Overview
+
+These exercises map to the three lesson sections. Complete as many as time allows.
+
+| Exercise | Lesson Section | Focus | Time |
+|----------|---------------|-------|------|
+| 1. Inline Code Suggestions | Copilot Fundamentals | Get C++ completions as you type | 3 min |
+| 2. Understand C++ Templates & Macros | Copilot Fundamentals | Use Ask Mode + /explain on unfamiliar C++ | 5 min |
+| 3. Navigate a Large C++ Repo | Copilot Fundamentals | Use #codebase to find patterns and trace code | 5 min |
+| 4. /explain and /fix on C++ Code | Copilot Fundamentals | Slash commands on real firmware code | 5 min |
+| 5. Diagnose Compiler Errors | Debugging & Refactoring | Use Copilot to understand and fix build errors | 5 min |
+| 6. Debug Runtime Issues | Debugging & Refactoring | Null pointers, memory issues, undefined behavior | 4 min |
+| 7. @terminal and /fix Workflow | Debugging & Refactoring | Build in terminal, analyze errors, fix code | 3 min |
+
+> **Tip:** Exercises 1–4 cover **Copilot Fundamentals**. Exercises 5–7 cover **Debugging & Refactoring**. Prioritize the section you're currently on.
+
+---
+
+## Before You Start
+
+### Quick Mode Refresher
+
+| Mode | Access | Use For |
+|------|--------|---------|
+| **Ask Mode** | Chat view (`Ctrl+Alt+I`) | Questions, exploration, understanding |
+| **Edit Mode** | Inline chat (`Ctrl+I`) | Targeted code changes, docs, refactoring |
+| **Agent Mode** | Chat view → Agent toggle | Complex multi-step, cross-file tasks |
+
+### Useful References
+
+| Feature | Syntax | Example |
+|---------|--------|---------|
+| Reference a file | `#file:` | `#file:motor.cpp` |
+| Search codebase | `#codebase` | `find all uses of DRV8301 #codebase` |
+| Terminal help | `@terminal` | `@terminal how do I build with tup?` |
+| VS Code help | `@vscode` | `@vscode configure Cortex-Debug` |
+| Slash commands | `/explain`, `/fix`, `/doc`, `/tests` | Select code → `Ctrl+I` → `/fix` |
+
+---
+
+## Section A: Copilot Fundamentals for C++ Development
+
+---
+
+### Exercise 1: Inline Code Suggestions (3 min)
+
+**Goal:** Experience Copilot's inline completions for C++ code
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Open `Firmware/MotorControl/utils.cpp` (or any `.cpp` file)
+2. Position your cursor at the end of the file
+3. Type a comment, then start the function signature:
+   ```cpp
+   // Clamp a float value between min and max bounds
+   float clamp_float(
+   ```
+4. Observe the inline suggestion — press `Tab` to accept
+5. Try another: type a comment describing an ISR-safe ring buffer, then start the struct
+
+**Tips for better suggestions:**
+- Write a descriptive comment *before* the code
+- Use meaningful names: `calculate_torque` not `calc`
+- Have related files open in editor tabs for context
+
+**Success Criteria:**
+- ✅ Received and accepted an inline suggestion
+- ✅ Comment-driven suggestion matched your intent
+- ✅ Understand how to accept (`Tab`) or reject (`Escape`)
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**Comments that produce good inline completions:**
+```cpp
+// Calculate motor torque from phase current using the torque constant Kt
+// Input: phase_current in amps, torque_constant in Nm/A
+// Returns: torque in Nm
+float calculate_torque(float phase_current, float torque_constant) {
+```
+
+```cpp
+// Convert encoder counts to radians
+// encoder_cpr: counts per revolution
+float counts_to_radians(int32_t counts, uint32_t encoder_cpr) {
+```
+
+The more specific your comment, the better the suggestion. Including parameter names, units, and constraints guides Copilot effectively.
+</details>
+
+---
+
+### Exercise 2: Understand Unfamiliar C++ — Templates, Macros, Pointers (5 min)
+
+**Goal:** Use Ask Mode and /explain to decode complex C++ constructs
+
+<details>
+<summary>📋 Instructions</summary>
+
+**Part A — Templates:**
+
+1. Open Chat view (`Ctrl+Alt+I`) in Ask Mode
+2. Ask:
+   ```
+   Explain the C++ templates used in #file:Firmware/communication/interface_can.hpp.
+   What are the template parameters and how does template specialization
+   work here? Explain it as if I'm coming from a C or Ada background.
+   ```
+
+**Part B — Macros:**
+
+3. Ask:
+   ```
+   Find all preprocessor macros (#define) in #file:Firmware/MotorControl/board_config_v3.h.
+   Explain each macro — what does it control, and what are the risks
+   of changing its value on a live motor controller?
+   ```
+
+**Part C — Pointers & Memory:**
+
+4. Select a function that uses raw pointers (e.g., in `low_level.cpp` or `motor.cpp`)
+5. Press `Ctrl+I` and type: `/explain`
+6. Follow up: "What are the pointer ownership semantics here? Could this cause a dangling pointer or use-after-free?"
+
+**Success Criteria:**
+- ✅ Can explain what a template parameter does in plain English
+- ✅ Understand at least 3 macros and their effects
+- ✅ Identified pointer ownership in one function
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**Effective prompts for C++ constructs:**
+
+For templates:
+```
+What does `template<typename T>` mean in this context? Show me a
+concrete example with actual types substituted in.
+```
+
+For macros:
+```
+List every #define in this file. For each, tell me:
+1. What it controls
+2. Default value
+3. What breaks if I change it
+```
+
+For pointers:
+```
+This function takes a raw pointer parameter. Explain:
+- Who owns the pointed-to memory?
+- When is it allocated and freed?
+- Is it safe to cache this pointer across function calls?
+```
+</details>
+
+---
+
+### Exercise 3: Navigate a Large C++ Repo (5 min)
+
+**Goal:** Use `#codebase` and `#file:` to trace code paths across many files
+
+<details>
+<summary>📋 Instructions</summary>
+
+Large C++ codebases (common in aerospace and embedded) are hard to navigate. Use Copilot to map them quickly.
+
+1. Open Chat view (`Ctrl+Alt+I`)
+2. **Trace an error code:**
+   ```
+   Where is ERROR_PHASE_RESISTANCE_OUT_OF_RANGE defined in this project?
+   Trace every file where it is raised or checked. Show me the full
+   call chain from detection to user notification. #codebase
+   ```
+
+3. **Map class relationships:**
+   ```
+   Explain the relationship between the Axis, Motor, Encoder, and
+   Controller classes in #file:Firmware/MotorControl. How are they
+   composed? Draw a Mermaid class diagram.
+   ```
+
+4. **Find patterns:**
+   ```
+   Find all interrupt handlers (functions ending with _IRQHandler) in
+   the firmware. For each, list what peripheral it handles and which
+   file it's in. #codebase
+   ```
+
+**Success Criteria:**
+- ✅ Traced an error code from definition to every usage
+- ✅ Understand the class hierarchy in MotorControl
+- ✅ Found interrupt handlers across the codebase
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**Effective navigation prompts:**
+
+```
+Show me every file that #includes axis.hpp. What does each file
+use from it? #codebase
+```
+
+```
+Trace the data flow of a position setpoint from USB input through
+the control loop to PWM output. List every function it passes
+through. #codebase
+```
+
+```
+What state machine controls the motor startup sequence? Show me the
+states, transitions, and which file implements each. #codebase
+```
+</details>
+
+---
+
+### Exercise 4: /explain and /fix with C++ Examples (5 min)
+
+**Goal:** Use slash commands on real firmware code
+
+<details>
+<summary>📋 Instructions</summary>
+
+**Part A — /explain:**
+
+1. Open `Firmware/MotorControl/foc.cpp`
+2. Select the `FOC_voltage` or `FOC_current` function (or any substantial function)
+3. Press `Ctrl+I` and type: `/explain`
+4. Read the explanation, then ask a follow-up:
+   ```
+   What is the Clarke transform doing here? Explain the math
+   in simple terms with the actual variable names from this code.
+   ```
+
+**Part B — /fix:**
+
+1. Open `Firmware/MotorControl/controller.cpp`
+2. Select a section of code
+3. Press `Ctrl+I` and type:
+   ```
+   /fix Check this code for:
+   - Integer overflow on arithmetic operations
+   - Missing null checks on pointer dereferences
+   - Race conditions if called from ISR context
+   ```
+4. Review the suggested fix — does it make sense for embedded?
+
+**Success Criteria:**
+- ✅ Got a clear explanation of a complex function
+- ✅ /fix identified at least one real or potential issue
+- ✅ Understand the difference between /explain (read-only) and /fix (suggests changes)
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**Targeted /explain prompts:**
+```
+/explain Focus on the control theory: what algorithm is this
+implementing, what are the inputs/outputs, and what are the units?
+```
+
+**Targeted /fix prompts for embedded C++:**
+```
+/fix This code runs in a high-priority ISR. Check for:
+- Dynamic memory allocation (malloc/new)
+- Blocking calls (mutexes, printf)
+- Shared variable access without volatile or atomics
+```
+
+```
+/fix Refactor this to use static allocation instead of dynamic.
+This runs on a microcontroller with 128KB RAM.
+```
+</details>
+
+---
+
+## Section B: Debugging and Refactoring C++ with Copilot
+
+---
+
+### Exercise 5: Diagnose Compiler Errors (5 min)
+
+**Goal:** Use Copilot to understand and fix C++ build errors
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Open `Firmware/MotorControl/motor.cpp`
+2. Introduce a deliberate error — for example, change a variable type:
+   ```cpp
+   // Change a float to int to cause a narrowing conversion error
+   // Or remove a semicolon, break a template parameter, etc.
+   ```
+3. Save the file — observe the squiggly error underlines
+4. Hover over the error to see the compiler message
+5. Select the line with the error, press `Ctrl+I` and type: `/fix`
+6. Alternatively, paste the compiler error into Chat:
+   ```
+   I got this compiler error:
+   error: cannot convert 'int' to 'float*' in assignment
+   
+   Explain what this means, why it happened, and how to fix it.
+   The code is in #file:Firmware/MotorControl/motor.cpp
+   ```
+7. **Undo** your deliberate error after the exercise (`Ctrl+Z`)
+
+**Real-World Scenario:**
+Try asking about a template error:
+```
+Explain this error message:
+error: no matching function for call to 'std::tuple<int, float>::get<2>()'
+note: candidate template ignored: invalid explicitly-specified argument
+
+What does "candidate template ignored" mean and how do I fix it?
+```
+
+**Success Criteria:**
+- ✅ Copilot correctly explained a compiler error
+- ✅ /fix generated a valid correction
+- ✅ Understand how to paste terminal error output into Chat for diagnosis
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**For cryptic template errors:**
+```
+This template error is 50 lines long. Summarize:
+1. What is the root cause (first error only)?
+2. Which line of MY code caused it?
+3. What's the fix?
+Ignore the template instantiation backtrace.
+```
+
+**For linker errors:**
+```
+I'm getting "undefined reference to `Motor::update()'".
+This is a linker error, not a compile error. Explain the difference
+and show me how to check that motor.cpp is included in the build.
+```
+</details>
+
+---
+
+### Exercise 6: Debug Runtime Issues — Null Pointers & Memory (4 min)
+
+**Goal:** Use Copilot to identify and fix runtime bugs in C++ code
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Open Chat view in Ask Mode
+2. **Null pointer analysis:**
+   ```
+   Analyze #file:Firmware/MotorControl/axis.cpp for potential null
+   pointer dereferences. Which pointers are used without null checks?
+   For each, show the line number and suggest a safe alternative.
+   ```
+
+3. **Memory issue analysis:**
+   ```
+   Search for all uses of malloc, new, or free in the Firmware/ directory.
+   Are any of these in ISR context or time-critical loops?
+   Suggest replacements using static allocation. #codebase
+   ```
+
+4. **Undefined behavior:**
+   ```
+   Check #file:Firmware/MotorControl/controller.cpp for potential
+   undefined behavior:
+   - Signed integer overflow
+   - Uninitialized variables
+   - Out-of-bounds array access
+   - Strict aliasing violations
+   ```
+
+**Success Criteria:**
+- ✅ Identified at least one potential null pointer issue
+- ✅ Found dynamic allocation usage (if any) and understand why it's risky in embedded
+- ✅ Understand what "undefined behavior" means in C++ and why it matters
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**Memory-focused prompts:**
+```
+Is there any stack overflow risk in this function? Estimate the
+stack usage and compare it to a typical FreeRTOS task stack size
+of 1024 words.
+```
+
+```
+This code stores a pointer to a local variable. Explain why this
+is a dangling pointer bug and how to fix it.
+```
+
+```
+Find all global mutable variables in #file:motor.cpp. Which ones
+are accessed from both ISR and task context? Are they protected
+with volatile, atomics, or critical sections?
+```
+</details>
+
+---
+
+### Exercise 7: @terminal and /fix Workflow (3 min)
+
+**Goal:** Use `@terminal` to understand build output and chain it with `/fix`
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Ask `@terminal` about the build system:
+   ```
+   @terminal What is the exact command to build the ODrive firmware
+   for the v3.6-56V board? What does each flag mean?
+   ```
+
+2. If you have build errors in the terminal, select the error text, then:
+   - Right-click → "Copilot" → "Explain This"
+   - Or copy-paste into Chat:
+     ```
+     I ran the build and got this terminal output. Explain the errors
+     and suggest fixes:
+     
+     [paste terminal output here]
+     ```
+
+3. Use `@terminal` for tool commands:
+   ```
+   @terminal How do I run the Python test suite for ODrive?
+   Show me the command and explain how to run just one test file.
+   ```
+
+4. Chain the workflow — fix and rebuild:
+   ```
+   The build error says "undefined reference to Motor::check_timing".
+   Use /fix to add the missing function definition, then show me
+   the command to rebuild.
+   ```
+
+**Success Criteria:**
+- ✅ Used @terminal to get a build command
+- ✅ Can explain a build error using Chat
+- ✅ Understand the fix → rebuild workflow
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**@terminal examples:**
+```
+@terminal Show me how to use arm-none-eabi-objdump to disassemble
+a specific function from the firmware .elf file
+```
+
+```
+@terminal I see "region 'FLASH' overflowed by 1234 bytes" in my
+build output. What does this mean and how do I reduce firmware size?
+```
+
+```
+@terminal Generate a one-liner to find all .cpp files in Firmware/
+that have been modified in the last 24 hours
+```
+</details>
+
+---
+
+## Summary: What You Practiced
+
+| Exercise | Lesson Section | Key Skill |
+|----------|---------------|-----------|
+| 1. Inline Suggestions | Fundamentals | Comment-driven C++ completions |
+| 2. Templates & Macros | Fundamentals | Ask Mode + /explain for unfamiliar C++ |
+| 3. Navigate Large Repo | Fundamentals | #codebase for tracing code across files |
+| 4. /explain and /fix | Fundamentals | Slash commands on real firmware |
+| 5. Compiler Errors | Debugging | Diagnose and fix build errors with Copilot |
+| 6. Runtime Issues | Debugging | Find null pointers, memory bugs, UB |
+| 7. @terminal + /fix | Debugging | Terminal ↔ Chat ↔ Editor workflow |
+
+**Key Takeaways:**
+- **Inline suggestions** work best with descriptive comments and meaningful names
+- **Ask Mode + /explain** decodes templates, macros, and pointer semantics
+- **#codebase** replaces manual grep for navigating large C++ repos
+- **/fix** can target embedded-specific issues (ISR safety, static allocation, volatile)
+- **@terminal** bridges build output and code fixes
+
+---
+
+## Bonus Challenges (If Time Permits)
+
+### Challenge 1: Template Metaprogramming
+```
+Explain the SFINAE pattern used in this codebase. Find an example
+in the communication/ directory and rewrite it using C++17
+if constexpr for readability. #codebase
+```
+
+### Challenge 2: Refactor for Safety
+```
+Find a function in #file:Firmware/MotorControl/motor.cpp that uses
+raw pointers. Refactor it to use std::span (C++20) or at minimum
+add bounds checking. Explain what safety guarantees the refactored
+version provides.
+```
+
+### Challenge 3: Memory Map Analysis
+```
+@terminal Show me how to use arm-none-eabi-size to analyze the
+firmware binary. Then explain the output — what is .text, .data,
+.bss, and how much RAM/Flash is used vs available on STM32F405?
+```
+
+### Challenge 4: Multi-File Bug Hunt
+Use Agent Mode:
+```
+Search the entire Firmware/MotorControl/ directory for variables
+that are written in ISR context and read in task context without
+proper synchronization (volatile, atomics, or critical sections).
+Show each finding with file, line, and a suggested fix.
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Chat view not opening | Verify GitHub Copilot Chat extension is installed |
+| Inline chat not appearing | Press `Ctrl+I` with cursor in editor (not terminal) |
+| Suggestions not relevant | Add more context with `#file:` references |
+| /explain too verbose | Ask "Explain in 3 sentences" or "Focus on the algorithm only" |
+| /fix suggests wrong language | Ensure the file has the correct language mode (bottom-right in VS Code) |
+| @terminal not finding commands | Ensure a terminal is open; try opening a new one first |
+| Build errors not recognized | Paste the exact error text into Chat for best results |
+
+---
+
+## Quick Reference
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Alt+I` | Open Chat view |
+| `Ctrl+I` | Inline chat (in editor) |
+| `Ctrl+Shift+Alt+L` | Quick Chat |
+| `Tab` | Accept inline suggestion |
+| `Escape` | Dismiss suggestion |
+
+### Chat Participants
+
+| Participant | Use For |
+|-------------|---------|
+| `@terminal` | Shell/build commands |
+| `@vscode` | IDE configuration |
+| `@github` | Repos, issues, PRs |
+
+### Slash Commands
+
+| Command | Use For |
+|---------|---------|
+| `/doc` | Generate documentation |
+| `/explain` | Explain code |
+| `/fix` | Fix errors |
+| `/tests` | Generate tests |
+
+---
+
+*Lesson 2 Hands-On Exercises — Copilot Fundamentals & Debugging for C++*  
+*Duration: 30 minutes*
+# Lesson 2: Hands-On Exercises
+
 **Duration:** 15 minutes  
 **Format:** Individual practice  
 **Goal:** Practice using GitHub Copilot's three modes, chat participants, and slash commands
