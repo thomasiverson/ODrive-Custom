@@ -198,14 +198,6 @@ Build the ODrive firmware by running the tup build command. If there are errors,
 
 **Type in Chat:**
 ```
-@terminal What is the tup command to build only the firmware for the v3.6 board variant? Explain the flags.
-```
-
-**Presenter Says:**
-> "It knows your project's build system and can generate the exact command. Let me try another one."
-
-**Type in Chat:**
-```
 @terminal list the 5 largest files in the Firmware directory, sorted by size
 ```
 
