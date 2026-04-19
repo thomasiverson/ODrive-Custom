@@ -2,6 +2,12 @@
 name: Ada to C++ Migrator
 description: Specialized agent for migrating Ada embedded systems to Modern C++ (C++20/23) with safety preservation
 tools: ['execute/runInTerminal', 'read', 'edit/editFiles', 'search/codebase', 'web/githubRepo']
+handoffs:
+  - label: Start Implementation
+    agent: agent
+    prompt: Implement the migration plan for the specified module
+    send: true
+    model: GPT-4.1 (copilot)
 ---
 
 # Ada to Modern C++ Migration Agent

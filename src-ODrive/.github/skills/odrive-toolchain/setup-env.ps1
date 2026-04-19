@@ -1,8 +1,9 @@
 # ODrive Development Environment Setup
 # Run this script at the start of each session: . .\setup-env.ps1
 
-$TupPath = "C:\Users\gabhardwaj\Downloads\tup-latest"
-$ArmGccPath = "C:\Program Files\Arm\GNU Toolchain mingw-w64-x86_64-arm-none-eabi\bin"
+# Update these paths to match your local installation
+$TupPath = $env:TUP_DIR ?? "C:\tools\tup"
+$ArmGccPath = $env:ARM_GCC_DIR ?? "C:\Program Files\Arm\GNU Toolchain mingw-w64-x86_64-arm-none-eabi\bin"
 
 # Add tools to PATH if not already present
 if ($env:PATH -notlike "*$TupPath*") {
