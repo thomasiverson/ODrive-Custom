@@ -12,5 +12,4 @@ This repository contains materials for a 2-day hands-on hackathon teaching devel
 
 | Document | Description |
 |----------|-------------|
-| [README-27.md](README-27.md) | Agenda, workshop overview, lesson summary, and quick start guide for Jan 27. |
-| [README-28and29.md](README-28and29.md) | Agenda, workshop overview, lesson summary, and quick start guide for Jan. 28 & 29 |
+| [README-21and22.md](README-21and22.md) | Agenda, workshop overview, lesson summary, and quick start guide for Apr. 21 & 22 |
