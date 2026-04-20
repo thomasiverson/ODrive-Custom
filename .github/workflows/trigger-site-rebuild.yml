@@ -1,0 +1,19 @@
+name: Trigger workshop site rebuild
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'lessons/**'
+
+jobs:
+  trigger-site-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger site repo deployment
+        run: |
+          gh api repos/thomasiverson/odrive-workshop-site/dispatches \
+            --method POST \
+            --field event_type=content-updated
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DEPLOY_TOKEN }}
