@@ -1,3 +1,6 @@
+<img width="1137" height="601" alt="image" src="https://github.com/user-attachments/assets/53151b07-5511-4a30-880c-0380284e6122" />
+
+
 # Lesson 3: Planning & Steering Documents - GitHub Copilot Customization
 
 **Session Duration:** 60 minutes  
