@@ -1,3 +1,7 @@
+
+<img width="1135" height="635" alt="image" src="https://github.com/user-attachments/assets/08380fee-0495-4586-8265-3c6fd35d0ef3" />
+
+
 # Lesson 2: Copilot Fundamentals, Debugging & Refactoring for C++
 
 **Session Duration:** 2 hours 25 minutes (three sections)  

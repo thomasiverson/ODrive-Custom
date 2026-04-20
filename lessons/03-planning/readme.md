@@ -1,3 +1,17 @@
+<img width="1137" height="601" alt="image" src="https://github.com/user-attachments/assets/53151b07-5511-4a30-880c-0380284e6122" />
+<img width="1138" height="637" alt="image" src="https://github.com/user-attachments/assets/d6037570-6f11-466b-a209-a625a57d8715" />
+<img width="1162" height="635" alt="image" src="https://github.com/user-attachments/assets/839ddc25-c820-4105-950b-1869caf49ddc" />
+<img width="1122" height="627" alt="image" src="https://github.com/user-attachments/assets/86e5d2f0-c722-455f-8cb7-dc1ea18c7c83" />
+<img width="1126" height="583" alt="image" src="https://github.com/user-attachments/assets/c632d452-b2a1-45e4-9a4f-de58e9b80c04" />
+<img width="1110" height="606" alt="image" src="https://github.com/user-attachments/assets/31896c39-0941-4c85-afb2-d789f9e56aed" />
+<img width="1108" height="588" alt="image" src="https://github.com/user-attachments/assets/69b1aa1c-0071-43cd-a521-b227949c7920" />
+
+
+
+
+
+
+
 # Lesson 3: Planning & Steering Documents - GitHub Copilot Customization
 
 **Session Duration:** 60 minutes  

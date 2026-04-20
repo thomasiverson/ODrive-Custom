@@ -1,3 +1,19 @@
+<img width="1110" height="611" alt="image" src="https://github.com/user-attachments/assets/8975d2dd-68bd-4099-aa47-48ccef683047" />
+<img width="1132" height="605" alt="image" src="https://github.com/user-attachments/assets/a01d1d87-e78e-45f3-a54b-ca7b0b65aeda" />
+<img width="1096" height="580" alt="image" src="https://github.com/user-attachments/assets/5717b983-b303-464a-8185-e127bb2e4868" />
+<img width="1112" height="575" alt="image" src="https://github.com/user-attachments/assets/b8433820-651c-4d95-a3af-50b5ad98f0fd" />
+<img width="1113" height="602" alt="image" src="https://github.com/user-attachments/assets/4981bdb7-6381-4b66-8fff-8b6b04c0650b" />
+<img width="1102" height="612" alt="image" src="https://github.com/user-attachments/assets/3547b0f6-bb4b-4103-ae86-d3c02074ad54" />
+<img width="1091" height="587" alt="image" src="https://github.com/user-attachments/assets/a740c464-7818-4a9c-9a1e-b07a9194e090" />
+<img width="1112" height="575" alt="image" src="https://github.com/user-attachments/assets/4ce62ac9-0759-4138-88ed-58bb2e14851d" />
+<img width="1075" height="562" alt="image" src="https://github.com/user-attachments/assets/3488f74f-85bf-4d9b-98cb-a57ff09a4a7c" />
+<img width="1102" height="601" alt="image" src="https://github.com/user-attachments/assets/5183e487-66a6-4855-b6d1-756384bb6535" />
+<img width="1092" height="597" alt="image" src="https://github.com/user-attachments/assets/88b87f51-813c-4145-af10-94c41856aade" />
+<img width="1102" height="597" alt="image" src="https://github.com/user-attachments/assets/74fb159d-11b2-4d8e-965f-118269710f70" />
+<img width="1102" height="597" alt="image" src="https://github.com/user-attachments/assets/82956bc7-7f42-40cd-81bb-5f7045a4dd48" />
+<img width="1112" height="598" alt="image" src="https://github.com/user-attachments/assets/e7c6e7ee-0312-4328-8c73-c58ab9240b8a" />
+
+
 # Lesson 4: Agentic Development & Context Engineering
 
 **Session Duration:** 45 minutes  

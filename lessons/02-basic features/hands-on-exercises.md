@@ -12,15 +12,16 @@ These exercises map to the three lesson sections. Complete as many as time allow
 
 | Exercise | Lesson Section | Focus | Time |
 |----------|---------------|-------|------|
-| 1. Inline Code Suggestions | Copilot Fundamentals | Get C++ completions as you type | 3 min |
-| 2. Understand C++ Templates & Macros | Copilot Fundamentals | Use Ask Mode + /explain on unfamiliar C++ | 5 min |
-| 3. Navigate a Large C++ Repo | Copilot Fundamentals | Use #codebase to find patterns and trace code | 5 min |
-| 4. /explain and /fix on C++ Code | Copilot Fundamentals | Slash commands on real firmware code | 5 min |
-| 5. Diagnose Compiler Errors | Debugging & Refactoring | Use Copilot to understand and fix build errors | 5 min |
-| 6. Debug Runtime Issues | Debugging & Refactoring | Null pointers, memory issues, undefined behavior | 4 min |
-| 7. @terminal and /fix Workflow | Debugging & Refactoring | Build in terminal, analyze errors, fix code | 3 min |
+| 1. Explore the Project with Ask Mode | Copilot Fundamentals | Understand project structure, dependencies, and layout | 5 min |
+| 2. Inline Code Suggestions | Copilot Fundamentals | Get C++ completions as you type | 3 min |
+| 3. Understand C++ Templates & Macros | Copilot Fundamentals | Use Ask Mode + /explain on unfamiliar C++ | 5 min |
+| 4. Navigate a Large C++ Repo | Copilot Fundamentals | Use #codebase to find patterns and trace code | 5 min |
+| 5. /explain and /fix on C++ Code | Copilot Fundamentals | Slash commands on real firmware code | 5 min |
+| 6. Diagnose Compiler Errors | Debugging & Refactoring | Use Copilot to understand and fix build errors | 5 min |
+| 7. Debug Runtime Issues | Debugging & Refactoring | Null pointers, memory issues, undefined behavior | 4 min |
+| 8. @terminal and /fix Workflow | Debugging & Refactoring | Build in terminal, analyze errors, fix code | 3 min |
 
-> **Tip:** Exercises 1–4 cover **Copilot Fundamentals**. Exercises 5–7 cover **Debugging & Refactoring**. Prioritize the section you're currently on.
+> **Tip:** Exercises 1–5 cover **Copilot Fundamentals**. Exercises 6–8 cover **Debugging & Refactoring**. Prioritize the section you're currently on.
 
 ---
 
@@ -50,7 +51,76 @@ These exercises map to the three lesson sections. Complete as many as time allow
 
 ---
 
-### Exercise 1: Inline Code Suggestions (3 min)
+### Exercise 1: Explore the Project with Ask Mode (5 min)
+
+**Goal:** Use Ask Mode to understand the ODrive project before writing any code
+
+<details>
+<summary>📋 Instructions</summary>
+
+1. Open the Chat view (`Ctrl+Alt+I`) and make sure you are in **Ask Mode**
+2. Paste the following prompt and review the response:
+
+   ```
+   I'm new to the ODrive firmware project. Please answer the following:
+
+   1. **Project overview** — What is this project, what hardware does it
+      target, and what is the overall architecture (RTOS, control loops,
+      communication layers)?
+
+   2. **Dependencies** — List every external dependency the firmware relies
+      on (RTOS, HAL libraries, driver ICs, third-party libs, build tools).
+      For each, note the version or source if visible in the repo.
+
+   3. **Project layout** — Describe the directory structure. What lives in
+      Firmware/MotorControl/, Firmware/Drivers/, Firmware/Board/,
+      Firmware/communication/, tools/, and docs/? How do they relate?
+
+   4. **Adding a new module** — If I wanted to add a new control module
+      (e.g., a thermal protection module), which files and build
+      configuration would I need to create or modify? Are there
+      registration steps, header includes, or build-system entries
+      (Tup/Makefile) that must be updated?
+
+   #codebase
+   ```
+
+3. Read through the response. Verify the information by spot-checking a few of the directories and files mentioned.
+4. Ask a follow-up to go deeper on anything that surprised you, for example:
+   ```
+   Which third-party libraries are vendored directly in the repo versus
+   pulled in during the build? #codebase
+   ```
+
+**Success Criteria:**
+- ✅ Can describe the ODrive firmware architecture in one paragraph
+- ✅ Know at least 4 external dependencies and where they live
+- ✅ Understand which files to touch when adding a new module
+</details>
+
+<details>
+<summary>💡 Solution</summary>
+
+**Key things the response should cover:**
+
+| Area | Expected Answer |
+|------|----------------|
+| Architecture | FreeRTOS on STM32, FOC control loop, USB/CAN/UART comms |
+| Dependencies | FreeRTOS, STM32 HAL, CMSIS, DRV8301 driver, Tup build system, ARM GCC toolchain |
+| Layout | `MotorControl/` = FOC + PID, `Drivers/` = HAL wrappers, `Board/` = pin maps + linker scripts, `communication/` = protocol handlers |
+| New module | Add `.cpp`/`.hpp` in `MotorControl/`, include in `Tupfile` or `Makefile`, register with `Axis` or `Motor`, add to interface generator for remote access |
+
+**Good follow-up prompts:**
+```
+Show me an example of how an existing module (e.g., Thermistor or
+Encoder) is wired into the Axis class. I want to follow the same
+pattern for my new module. #codebase
+```
+</details>
+
+---
+
+### Exercise 2: Inline Code Suggestions (3 min)
 
 **Goal:** Experience Copilot's inline completions for C++ code
 
@@ -100,7 +170,7 @@ The more specific your comment, the better the suggestion. Including parameter n
 
 ---
 
-### Exercise 2: Understand Unfamiliar C++ — Templates, Macros, Pointers (5 min)
+### Exercise 3: Understand Unfamiliar C++ — Templates, Macros, Pointers (5 min)
 
 **Goal:** Use Ask Mode and /explain to decode complex C++ constructs
 
@@ -112,7 +182,7 @@ The more specific your comment, the better the suggestion. Including parameter n
 1. Open Chat view (`Ctrl+Alt+I`) in Ask Mode
 2. Ask:
    ```
-   Explain the C++ templates used in #file:Firmware/communication/interface_can.hpp.
+   Explain the C++ templates used in #file:Firmware/communication/can/can_helpers.hpp.
    What are the template parameters and how does template specialization
    work here? Explain it as if I'm coming from a C or Ada background.
    ```
@@ -121,7 +191,7 @@ The more specific your comment, the better the suggestion. Including parameter n
 
 3. Ask:
    ```
-   Find all preprocessor macros (#define) in #file:Firmware/MotorControl/board_config_v3.h.
+   Find all preprocessor macros (#define) in #file:Firmware/Board/v3/Inc/main.h.
    Explain each macro — what does it control, and what are the risks
    of changing its value on a live motor controller?
    ```
@@ -168,7 +238,7 @@ This function takes a raw pointer parameter. Explain:
 
 ---
 
-### Exercise 3: Navigate a Large C++ Repo (5 min)
+### Exercise 4: Navigate a Large C++ Repo (5 min)
 
 **Goal:** Use `#codebase` and `#file:` to trace code paths across many files
 
@@ -229,7 +299,7 @@ states, transitions, and which file implements each. #codebase
 
 ---
 
-### Exercise 4: /explain and /fix with C++ Examples (5 min)
+### Exercise 5: /explain and /fix with C++ Examples (5 min)
 
 **Goal:** Use slash commands on real firmware code
 
@@ -239,7 +309,7 @@ states, transitions, and which file implements each. #codebase
 **Part A — /explain:**
 
 1. Open `Firmware/MotorControl/foc.cpp`
-2. Select the `FOC_voltage` or `FOC_current` function (or any substantial function)
+2. Select the `FieldOrientedController::update` function or `AlphaBetaFrameController::on_measurement`
 3. Press `Ctrl+I` and type: `/explain`
 4. Read the explanation, then ask a follow-up:
    ```
@@ -295,7 +365,7 @@ This runs on a microcontroller with 128KB RAM.
 
 ---
 
-### Exercise 5: Diagnose Compiler Errors (5 min)
+### Exercise 6: Diagnose Compiler Errors (5 min)
 
 **Goal:** Use Copilot to understand and fix C++ build errors
 
@@ -359,7 +429,7 @@ and show me how to check that motor.cpp is included in the build.
 
 ---
 
-### Exercise 6: Debug Runtime Issues — Null Pointers & Memory (4 min)
+### Exercise 7: Debug Runtime Issues — Null Pointers & Memory (4 min)
 
 **Goal:** Use Copilot to identify and fix runtime bugs in C++ code
 
@@ -421,7 +491,7 @@ with volatile, atomics, or critical sections?
 
 ---
 
-### Exercise 7: @terminal and /fix Workflow (3 min)
+### Exercise 8: @terminal and /fix Workflow (3 min)
 
 **Goal:** Use `@terminal` to understand build output and chain it with `/fix`
 
@@ -623,7 +693,7 @@ Before starting the exercises, familiarize yourself with the three modes:
 ### Edit Mode
 - Open a source file (e.g., `controller.cpp`)
 - Select code and press `Ctrl+I`
-- Try: "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in #controller.cpp to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
+- Try: "Add a new configuration variable `float emergency_decel_rate` to the `Controller::Config_t` struct. Then, update the `update()` method in #file:Firmware/MotorControl/controller.cpp to use this rate when an emergency stop is triggered."
 
 ### Agent Mode
 - In Chat view, switch to Agent mode
