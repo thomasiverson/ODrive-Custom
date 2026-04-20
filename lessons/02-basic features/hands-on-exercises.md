@@ -191,7 +191,7 @@ The more specific your comment, the better the suggestion. Including parameter n
 
 3. Ask:
    ```
-   Find all preprocessor macros (#define) in #file:Firmware/MotorControl/board_config_v3.h.
+   Find all preprocessor macros (#define) in #file:Firmware/Board/v3/Inc/main.h.
    Explain each macro — what does it control, and what are the risks
    of changing its value on a live motor controller?
    ```
