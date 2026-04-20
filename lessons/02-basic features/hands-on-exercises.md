@@ -182,7 +182,7 @@ The more specific your comment, the better the suggestion. Including parameter n
 1. Open Chat view (`Ctrl+Alt+I`) in Ask Mode
 2. Ask:
    ```
-   Explain the C++ templates used in #file:Firmware/communication/interface_can.hpp.
+   Explain the C++ templates used in #file:Firmware/communication/can/can_helpers.hpp.
    What are the template parameters and how does template specialization
    work here? Explain it as if I'm coming from a C or Ada background.
    ```
@@ -309,7 +309,7 @@ states, transitions, and which file implements each. #codebase
 **Part A — /explain:**
 
 1. Open `Firmware/MotorControl/foc.cpp`
-2. Select the `FOC_voltage` or `FOC_current` function (or any substantial function)
+2. Select the `FieldOrientedController::update` function or `AlphaBetaFrameController::on_measurement`
 3. Press `Ctrl+I` and type: `/explain`
 4. Read the explanation, then ask a follow-up:
    ```
@@ -693,7 +693,7 @@ Before starting the exercises, familiarize yourself with the three modes:
 ### Edit Mode
 - Open a source file (e.g., `controller.cpp`)
 - Select code and press `Ctrl+I`
-- Try: "Add a new configuration variable `float soft_stop_rate` to the `ControllerConfig` struct. Then, update the `update()` method in #controller.cpp to use this rate to decelerate the velocity setpoint to zero when the axis state changes to `IDLE`."
+- Try: "Add a new configuration variable `float emergency_decel_rate` to the `Controller::Config_t` struct. Then, update the `update()` method in #file:Firmware/MotorControl/controller.cpp to use this rate when an emergency stop is triggered."
 
 ### Agent Mode
 - In Chat view, switch to Agent mode
