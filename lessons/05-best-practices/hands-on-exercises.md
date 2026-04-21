@@ -59,7 +59,7 @@ Questions:
 
 **🤖 Agent Mode - Generate the guard class:**
 ```
-@workspace Create a scoped GPIO guard class using RAII
+Create a scoped GPIO guard class using RAII
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
 
@@ -193,7 +193,7 @@ Output: Complete enum definition with Doxygen comments
 
 **🤖 Agent Mode - Apply the refactoring:**
 ```
-@workspace Refactor run_offset_calibration to use ErrorCode returns
+Refactor run_offset_calibration to use ErrorCode returns
 
 Context: 
 - #file:src-ODrive/Firmware/MotorControl/encoder.cpp
@@ -218,7 +218,7 @@ Important:
 
 **🤖 Agent Mode - Update axis.cpp:**
 ```
-@workspace Update the caller of run_offset_calibration in axis.cpp
+Update the caller of run_offset_calibration in axis.cpp
 
 Context:
 - #file:src-ODrive/Firmware/MotorControl/axis.cpp
@@ -303,7 +303,7 @@ Is this design correct? Any issues?
 
 **🤖 Agent Mode - Generate implementation:**
 ```
-@workspace Create a lock-free ring buffer for ISR-to-task communication
+Create a lock-free ring buffer for ISR-to-task communication
 
 Create: Firmware/Utils/ring_buffer.hpp
 
@@ -420,7 +420,7 @@ TEST_CASE("RingBuffer::peek - returns next item without removing") {
 
 **Step 2: 🟢 Implement the minimal code**
 ```
-@workspace Add peek() method to RingBuffer that reads without removing
+Add peek() method to RingBuffer that reads without removing
 
 Implementation: Just like read() but don't advance tail_
 ```
@@ -492,7 +492,7 @@ void task() {
 | Copilot doesn't see file changes | Reload VS Code window (Ctrl+Shift+P → "Reload Window") |
 | Compilation errors | Check include paths: `-I. -Idoctest` |
 | Tests don't run | Ensure `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN` is in test file |
-| Agent mode not working | Use `@workspace` prefix and provide file context with `#file:` |
+| Agent mode not working | Ensure you're in Agent Mode and provide file context with `#file:` |
 | Error codes not checked | Add `[[nodiscard]]` and enable `-Werror=unused-result` |
 
 ---

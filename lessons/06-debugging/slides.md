@@ -719,7 +719,7 @@ float get_position() const {  // Now const-correct
 | `/fix` | Logic bugs (single file) | `/fix buffer overflow` |
 | `/explain` | Understand code | `/explain why this crashes` |
 | `/tests` | Generate tests | `/tests for this function` |
-| `@workspace` | Find patterns | `@workspace how are ISRs handled?` |
+| **Agent Mode** | Find patterns | Describe what patterns you're looking for |
 | **ODrive Engineer** | Multi-file bugs | Select from dropdown, describe bug |
 | **ODrive QA** | Build & test | Select from dropdown, request verification |
 
