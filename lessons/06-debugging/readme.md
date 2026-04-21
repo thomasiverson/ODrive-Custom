@@ -772,7 +772,7 @@ while (dma1->SR & DMA_BUSY) {
 
 **🤖 Agent Mode Prompt:**
 ```
-@workspace find all places where motor_current_limit is written
+Find all places where motor_current_limit is written
 ```
 
 Or for more context-aware search, select **ODrive Engineer** from dropdown:
@@ -1230,7 +1230,7 @@ float Encoder::calculate_rpm() {
 | `@terminal` | Build/compile errors | Terminal output | Diagnosis + fix |
 | `/fix` | Logic bugs | Selected code | Code correction |
 | `/explain` | Understanding code | Selected code | Explanation |
-| `@workspace` | Finding code | Search query | File locations |
+| **Agent Mode** | Finding code | Search query | File locations |
 | `@ODrive-Engineer` | Complex multi-file bugs | Description + context | Analysis + orchestrated fix |
 | `@ODrive-QA` | Test failures, build issues | Test output + context | Diagnosis + test suggestions |
 
@@ -1258,7 +1258,7 @@ float Encoder::calculate_rpm() {
 ```
 1. Reproduce the bug
    ↓
-2. @workspace: Find related code
+2. Agent Mode: Find related code
    (or @ODrive-Engineer for deeper analysis)
    ↓
 3. /explain: Understand the logic
@@ -1435,8 +1435,6 @@ Yes! The core tools work without custom agents:
 - `@terminal` - Works with any terminal output
 - `/fix` - Works on any code selection
 - `/explain` - Works on any code selection
-- `@workspace` - Works on any workspace
-
 Custom agents (`@ODrive-Engineer`, `@ODrive-QA`) add domain expertise and can invoke specialized skills, but aren't required for basic debugging.
 
 ---

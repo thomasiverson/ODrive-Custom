@@ -150,7 +150,7 @@ Provide specific recommendations with code examples.
 
 **🤖 Agent Mode Prompt (Implementation):**
 ```
-@workspace Implement RAII improvements for GPIO class
+Implement RAII improvements for GPIO class
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
          #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp
@@ -193,7 +193,7 @@ Focus on:
 
 **🤖 Agent Mode Prompt (Convert to Generic):**
 ```
-@workspace Make buffer class generic using templates
+Make buffer class generic using templates
 
 Context: #file:src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp
 
@@ -234,7 +234,7 @@ Provide a prioritized list with rationale for each change.
 
 **🤖 Agent Mode Prompt (Apply Fixes):**
 ```
-@workspace Apply const correctness improvements to GPIO class
+Apply const correctness improvements to GPIO class
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
          #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.cpp
@@ -292,7 +292,7 @@ For each issue, suggest static allocation alternatives:
 
 **🤖 Agent Mode Prompt (Refactor to Static):**
 ```
-@workspace Refactor SPI arbiter to use static allocation only
+Refactor SPI arbiter to use static allocation only
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.cpp
          #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
@@ -342,7 +342,7 @@ Output: Complete error code enum with documentation
 
 **🤖 Agent Mode Prompt (Convert Function):**
 ```
-@workspace Convert calibration function to use error codes
+Convert calibration function to use error codes
 
 Context: #file:src-ODrive/Firmware/MotorControl/encoder.cpp:run_offset_calibration
 
@@ -460,7 +460,7 @@ Then create a state transition diagram in Mermaid format showing:
 
 **🤖 Agent Mode Prompt (Generate State Machine):**
 ```
-@workspace Create LED controller with state machine pattern
+Create LED controller with state machine pattern
 
 Reference: #file:src-ODrive/Firmware/MotorControl/axis.cpp
            #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
@@ -519,7 +519,7 @@ Create a HAL Design Checklist for new abstractions based on these patterns.
 
 **🤖 Agent Mode Prompt (Create New HAL):**
 ```
-@workspace Create UART HAL abstraction following ODrive patterns
+Create UART HAL abstraction following ODrive patterns
 
 References: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
             #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
@@ -618,7 +618,7 @@ Provide design recommendations based on ODrive patterns:
 
 **Step 2 - 🤖 Agent Mode (Implementation):**
 ```
-@workspace Create LED driver with state machine
+Create LED driver with state machine
 
 Design validated. Now implement:
 
@@ -697,7 +697,7 @@ Provide SPI transaction pseudocode for:
 
 **Step 2 - 🤖 Agent Mode (Implement Driver):**
 ```
-@workspace Create ADXL345 accelerometer driver using SPI arbiter
+Create ADXL345 accelerometer driver using SPI arbiter
 
 Context: #file:src-ODrive/Firmware/Drivers/STM32/stm32_spi_arbiter.hpp
          #file:src-ODrive/Firmware/MotorControl/encoder.cpp (error handling pattern)
@@ -791,7 +791,7 @@ Provide recommendations based on:
 
 **Step 2 - 🤖 Agent Mode (Implementation):**
 ```
-@workspace Create lock-free ring buffer for ISR-to-task communication
+Create lock-free ring buffer for ISR-to-task communication
 
 Context: #file:src-ODrive/Firmware/fibre-cpp/include/fibre/bufptr.hpp
 
@@ -1696,7 +1696,7 @@ You validate that code adheres to modern C++ best practices and embedded systems
 ### RAII Compliance
 ```cpp
 // Run this validation on any class managing resources
-@workspace Validate RAII implementation in:
+Validate RAII implementation in:
 #file:path/to/class.hpp
 
 Checklist:
@@ -1719,7 +1719,7 @@ For each violation, provide:
 ### Memory Allocation Audit
 ```cpp
 // Search entire codebase for heap usage
-@workspace Audit dynamic memory allocation:
+Audit dynamic memory allocation:
 
 Search for:
 - new, delete, new[], delete[]
@@ -1743,7 +1743,7 @@ Output:
 ### Exception Safety Audit
 ```cpp
 // Verify no exception usage
-@workspace Verify exception-free code:
+Verify exception-free code:
 
 Search for:
 - throw statements
@@ -1765,7 +1765,7 @@ Output:
 
 ### Const Correctness Audit
 ```cpp
-@workspace Audit const correctness:
+Audit const correctness:
 #file:path/to/class.hpp
 
 Check:
@@ -1789,7 +1789,7 @@ Output:
 
 ### Volatile Correctness Audit
 ```cpp
-@workspace Audit volatile usage for ISR safety:
+Audit volatile usage for ISR safety:
 
 Search for:
 1. Variables accessed from both ISR and task (should be volatile)
@@ -1810,7 +1810,7 @@ Output:
 
 ### State Machine Validation
 ```cpp
-@workspace Validate state machine implementation:
+Validate state machine implementation:
 #file:path/to/state_machine.cpp
 
 Check:
@@ -1832,7 +1832,7 @@ Generate:
 
 ### HAL Abstraction Quality
 ```cpp
-@workspace Validate HAL abstraction:
+Validate HAL abstraction:
 #file:path/to/hal.hpp
 
 Checklist:
@@ -1855,7 +1855,7 @@ For each violation:
 
 ### Performance Critical Path Analysis
 ```cpp
-@workspace Analyze hot path performance:
+Analyze hot path performance:
 #file:path/to/critical_code.cpp
 
 Identify:
@@ -1883,7 +1883,7 @@ Use these prompts to validate completed exercises:
 
 ### After LED Driver Exercise:
 ```
-@workspace Validate LED driver implementation:
+Validate LED driver implementation:
 #file:Firmware/Drivers/led_controller.hpp
 #file:Firmware/Drivers/led_controller.cpp
 
@@ -1903,7 +1903,7 @@ Provide:
 
 ### After SPI Driver Exercise:
 ```
-@workspace Validate SPI driver implementation:
+Validate SPI driver implementation:
 #file:Firmware/Drivers/Sensors/adxl345.hpp
 #file:Firmware/Drivers/Sensors/adxl345.cpp
 
@@ -1923,7 +1923,7 @@ Provide:
 
 ### After Ring Buffer Exercise:
 ```
-@workspace Validate ring buffer implementation:
+Validate ring buffer implementation:
 #file:Firmware/Utils/ring_buffer.hpp
 #file:Tests/ring_buffer_test.cpp
 
@@ -1958,7 +1958,7 @@ jobs:
         uses: github/copilot-cli-action@v1
         with:
           prompt: |
-            @workspace Load validation persona:
+            Load validation persona:
             #file:.github/copilot-persona-validator.md
             
             Validate all changed files in this PR:
@@ -1985,7 +1985,7 @@ jobs:
 
 ### Daily Code Review:
 ```
-@workspace Load validator persona:
+Load validator persona:
 #file:.github/copilot-persona-validator.md
 
 Review today's changes:
@@ -2001,7 +2001,7 @@ Focus on:
 ```bash
 # .git/hooks/pre-commit
 gh copilot ask "
-@workspace Load validator persona and check staged files:
+Load validator persona and check staged files:
 $(git diff --cached --name-only)
 
 Fail commit if critical violations found.
@@ -2010,7 +2010,7 @@ Fail commit if critical violations found.
 
 ### Team Code Review:
 ```
-@workspace Validate PR #123:
+Validate PR #123:
 #file:.github/copilot-persona-validator.md
 
 Files changed:
@@ -2095,7 +2095,7 @@ This validator persona should:
 **After completing any exercise:**
 
 ```
-@workspace Load validator and check my work:
+Load validator and check my work:
 #file:.github/copilot-persona-validator.md
 #file:Firmware/Drivers/led_controller.hpp
 #file:Firmware/Drivers/led_controller.cpp
@@ -2106,7 +2106,7 @@ Run full validation suite and provide detailed report.
 **Before committing code:**
 
 ```
-@workspace Quick validation:
+Quick validation:
 #file:.github/copilot-persona-validator.md
 
 Check these staged files:
@@ -2118,7 +2118,7 @@ Focus on critical issues only.
 **For team code reviews:**
 
 ```
-@workspace Full PR review:
+Full PR review:
 #file:.github/copilot-persona-validator.md
 
 Review all files in PR #42
@@ -2162,7 +2162,7 @@ Generate embedded C++ components following ODrive architecture patterns.
 
 ## Usage
 In Copilot Chat:
-@workspace /skill Generate SPI driver for IMU sensor
+/skill Generate SPI driver for IMU sensor
 
 ## Expected Inputs
 - Peripheral type (UART, SPI, I2C, GPIO, Timer)
@@ -2222,7 +2222,7 @@ By the end of this lesson, participants should be able to:
 
 **Prompt to use:**
 ```
-@workspace Create RAII wrapper for TIM peripheral
+Create RAII wrapper for TIM peripheral
 
 Reference patterns: #file:src-ODrive/Firmware/Drivers/STM32/stm32_gpio.hpp
 
@@ -2563,7 +2563,7 @@ Requirements:
 1. Create `.github/copilot-instructions.md` with embedded constraints
 2. Include "no heap, no exceptions, static allocation" in every prompt
 3. Reference existing ODrive patterns with `#file:`
-4. Use `@workspace` for multi-file operations
+4. Use Agent mode for multi-file operations
 
 ---
 
